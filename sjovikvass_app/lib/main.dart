@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/screens/homescreen/home_screen.dart';
+import 'package:sjovikvass_app/styles/my_colors.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: MyColors.primary,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: HomeScreen(),
