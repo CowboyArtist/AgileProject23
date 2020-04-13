@@ -10,17 +10,40 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Sjövik Vass App')),
-      body: LandingScreen(),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AddObjectScreen()),
-        );
-      }),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        body: TabBarView(children: <Widget>[
+          LandingScreen(),
+          Center(child: Text('Leverantörer')),
+          Center(child: Text('Statistik')),
+        ]),
+        floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddObjectScreen()),
+              );
+            }),
+        bottomNavigationBar: Container(
+          margin: EdgeInsets.only(bottom: 40.0),
+          child: TabBar(
+              indicatorSize: TabBarIndicatorSize.label,
+              labelColor: Colors.black87,
+              tabs: [
+                Tab(
+                  icon: Icon(Icons.filter_list),
+                ),
+                Tab(
+                  icon: Icon(Icons.shop),
+                ),
+                Tab(
+                  icon: Icon(Icons.multiline_chart),
+                )
+              ]),
+        ),
+      ),
     );
   }
 }
