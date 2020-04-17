@@ -14,7 +14,8 @@ Jonathan Eksberg
 ## Projektmål
 Leverera värde till projektets externa stakeholder.
 Skapa en produkt där alla medlemmar är nöjda med resultatet.
-Ambition
+
+## Ambition
 Lära sig mer om scrum-arbetssättet.
 Utveckla våra färdigheter inom applikationsutveckling.
 
@@ -31,7 +32,8 @@ Ansvarar för att produktbacklogg är ordnad efter prioritet.
 Flyttar user stories i trello från product backlog till done.
 Scrum master- Martin Lillö
 Ska se till att Scrum följs
-Konsekvenser av att komma sent / inte dyka upp på möten
+
+## Konsekvenser av att komma sent / inte dyka upp på möten
 En otrolig skam.
 Om det behövs upprättas mer konkreta åtgärder.
 
