@@ -1,7 +1,7 @@
-##Gruppkontrakt 
+# Gruppkontrakt 
 DAT257 Grupp 23
 
-#Medlemmar
+## Medlemmar
 
 David Lidevi
 David Arvidson
@@ -11,14 +11,14 @@ Simon Torell
 Jesper Larsson
 Jonathan Eksberg
 
-#Projektmål
+## Projektmål
 Leverera värde till projektets externa stakeholder.
 Skapa en produkt där alla medlemmar är nöjda med resultatet.
 Ambition
 Lära sig mer om scrum-arbetssättet.
 Utveckla våra färdigheter inom applikationsutveckling.
 
-#Projektroller
+## Projektroller
 Roll som projektledare är ospecificerat. 
 Beslut under projektet sker genom demokratiska beslut, där majoriteten vinner. 
 Tydlig ägarfördelning för features, två personer per feature.
@@ -35,22 +35,22 @@ Konsekvenser av att komma sent / inte dyka upp på möten
 En otrolig skam.
 Om det behövs upprättas mer konkreta åtgärder.
 
-#Spelregler 
+## Spelregler 
 Agenda kring varje möte som alla är ansvariga för att driva framåt.
 Transparens och öppenhet i kommunikation. Ingen konflikträdsla. Om problem dyker upp bör detta inte undanhållas gruppen. 
 Ändra inte andras innehåll utan dennes godkännande. Stavfel och liknande kan ändras.
 Gemensamt ansvar att uppdatera dokumentet mötesprotokoll i samband med varje möte. 
 
-#Kommunikation 
+## Kommunikation 
 Bestämma regelbundna tider för möten. Måndagar 10-12. 
 Kommunikationen internt sker genom Messenger.
 Möten genom Discord.
 Vid varje mötestillfälle bokas nästa möte in.
 
-#Rättigheter
+## Rättigheter
 Om produkten resulterar i ett ekonomiskt värde äger alla godkända gruppmedlemmarna lika delar av rättigheterna.
 
-#Reflektion 
+## Reflektion 
 Veckovis avstämning angående gruppens arbetsbalans. 
 KPIer
 Velocity, vikta features med avseende på omfattning.
