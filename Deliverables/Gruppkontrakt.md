@@ -3,8 +3,7 @@ DAT257 Grupp 23
 
 ## Medlemmar
 
-David Lidevi
-David Arvidson
+David Lidevi  David Arvidson
 Martin Lillö
 Jonathan Heinin
 Simon Torell
