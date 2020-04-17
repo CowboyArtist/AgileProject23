@@ -33,18 +33,22 @@ Ska se till att Scrum följs
 Konsekvenser av att komma sent / inte dyka upp på möten
 En otrolig skam.
 Om det behövs upprättas mer konkreta åtgärder.
+
 Spelregler 
 Agenda kring varje möte som alla är ansvariga för att driva framåt.
 Transparens och öppenhet i kommunikation. Ingen konflikträdsla. Om problem dyker upp bör detta inte undanhållas gruppen. 
 Ändra inte andras innehåll utan dennes godkännande. Stavfel och liknande kan ändras.
 Gemensamt ansvar att uppdatera dokumentet mötesprotokoll i samband med varje möte. 
+
 Kommunikation 
 Bestämma regelbundna tider för möten. Måndagar 10-12. 
 Kommunikationen internt sker genom Messenger.
 Möten genom Discord.
 Vid varje mötestillfälle bokas nästa möte in.
+
 Rättigheter
 Om produkten resulterar i ett ekonomiskt värde äger alla godkända gruppmedlemmarna lika delar av rättigheterna.
+
 Reflektion 
 Veckovis avstämning angående gruppens arbetsbalans. 
 KPIer
