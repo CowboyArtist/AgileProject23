@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sjovikvass_app/models/stored_object_model.dart';
+import 'package:sjovikvass_app/services/database_service.dart';
 
 class AddObjectScreen extends StatefulWidget {
   @override
@@ -6,6 +8,28 @@ class AddObjectScreen extends StatefulWidget {
 }
 
 class _AddObjectScreenState extends State<AddObjectScreen> {
+
+  TextEditingController _titleController = TextEditingController();
+  String _title = '';
+  
+  TextEditingController _descriptionController = TextEditingController();
+  String _description = '';
+  
+
+
+  _submitStoredObject() async {
+
+    StoredObject storedObject = StoredObject(
+      title: 'Testobjekt',
+      description: 'Detta är ett testobjekt',
+      model: 'Testy 3000'
+    );
+    print(storedObject.title + 'is created');
+
+    DatabaseService.addObjectToDB(storedObject);
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -26,8 +50,13 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
           ),
         ),
         body: TabBarView(children: <Widget>[
-          Center(
-            child: Text('Lägg till objekt'),
+          Column(
+            children: <Widget>[
+              Center(
+                child: Text('Lägg till objekt'),
+              ),
+              FlatButton(onPressed: _submitStoredObject, child: Text('Lägg till testobjekt'))
+            ],
           ),
           Center(
             child: Text('Lägg till Leverantör'),
