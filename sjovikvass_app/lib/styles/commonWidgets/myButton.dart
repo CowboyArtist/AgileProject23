@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
+import 'package:sjovikvass_app/screens/boatImages/boatImages.dart';
 
 class MyButton {
-  static Column smallButton(Icon icon, String label) {
+  //todo: Perhaps use a higher-order function for onPressed
+  /*static Column smallButton(Icon icon, String label) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -16,7 +18,7 @@ class MyButton {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(16.0))),
             padding: EdgeInsets.all(10.0),
-            onPressed: () => print(label),
+            onPressed: () => BoatImages.showSelectImageDialog(),
           ),
         ),
         Text(
@@ -28,5 +30,5 @@ class MyButton {
         ),
       ],
     );
-  }
+  }*/
 }
