@@ -14,7 +14,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: MyColors.primary,
-        //visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: BoatImages(),
     );
