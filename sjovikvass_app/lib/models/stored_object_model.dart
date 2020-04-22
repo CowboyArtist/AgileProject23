@@ -8,6 +8,7 @@ class StoredObject {
   final String model;
   final String serialnumber;
   final String engine;
+  final String engineSerialnumber;
   final String imageUrl;
   final double space;
   final Timestamp timestamp;
@@ -21,6 +22,7 @@ class StoredObject {
     this.category,
     this.description,
     this.engine,
+    this.engineSerialnumber,
     this.model,
     this.serialnumber,
     this.imageUrl,
@@ -37,6 +39,7 @@ class StoredObject {
       description: doc['description'],
       category: doc['category'],
       engine: doc['engine'],
+      engineSerialnumber: doc['engineSerialnumber'],
       model: doc['model'],
       serialnumber: doc['serialnumber'],
       imageUrl: doc['imageUrl'],

@@ -11,6 +11,7 @@ class DatabaseService {
       'category': storedObject.category,
       'model': storedObject.model,
       'engine': storedObject.engine,
+      'engineSerialnumber': storedObject.engineSerialnumber,
       'imageUrl': storedObject.imageUrl,
       'timestamp': Timestamp.fromDate(DateTime.now()),
       'inDate': storedObject.inDate,
