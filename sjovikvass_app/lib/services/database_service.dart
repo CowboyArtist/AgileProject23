@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
@@ -20,5 +19,13 @@ class DatabaseService {
       'serialnumber': storedObject.serialnumber
     });
     print('Runs addObjectToDB with' + storedObject.title);
+  }
+
+  static Future<List<StoredObject>> getStoredObjects() async {
+    QuerySnapshot objectsSnapshot = await objectsRef.getDocuments();
+    List<StoredObject> objects = objectsSnapshot.documents
+        .map((doc) => StoredObject.fromDoc(doc))
+        .toList();
+    return objects;
   }
 }
