@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/myButton.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 
