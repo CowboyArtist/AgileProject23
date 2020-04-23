@@ -7,10 +7,7 @@ import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
-
-
 class WorkPage extends StatefulWidget {
-  
   @override
   _WorkPageState createState() => _WorkPageState();
 }
@@ -21,13 +18,68 @@ class _WorkPageState extends State<WorkPage> {
     WorkOrder(title: 'Jag heter simon', isDone: false, sum: 40.0)
   ];
 
+  _createAlertDialog(BuildContext context) {
+    TextEditingController workController = TextEditingController();
+    TextEditingController priceController = TextEditingController();
+
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Lägg till arbete'),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0)),
+            content: Container(
+              height: 200.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text('Beskrivning: '),
+                  TextField(
+                    controller: workController,
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Text('Pris:'),
+                  TextField(
+                    controller: priceController,
+                    keyboardType: TextInputType.number,
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                elevation: 5.0,
+                child: Text('Lägg till'),
+                onPressed: () {
+                  
+                  Navigator.of(context).pop(workController.text.toString());
+                  workOrders.add(
+                    WorkOrder(
+                      title: workController.text,
+                      isDone: false,
+                      sum: double.parse(priceController.text),
+
+                    ),
+                  );
+                 setState(() {
+                    
+                  });
+                },
+              )
+            ],
+          );
+        });
+  }
+
   double workTotalSum = 0;
 
-
-  _calculateSum() { 
+  _calculateSum() {
     double totalSum = 0;
-    for(WorkOrder workOrder in workOrders){
-      if(workOrder.isDone){
+    for (WorkOrder workOrder in workOrders) {
+      if (workOrder.isDone) {
         totalSum += workOrder.sum;
       }
     }
@@ -37,7 +89,7 @@ class _WorkPageState extends State<WorkPage> {
   }
 
   @override
-  void initState (){
+  void initState() {
     super.initState();
 
     _calculateSum();
@@ -71,7 +123,7 @@ class _WorkPageState extends State<WorkPage> {
                       iconSize: 30.0,
                       color: MyColors.primary,
                       icon: Icon(Icons.add),
-                      onPressed: () => print('Hej Simon'),
+                      onPressed: () => _createAlertDialog(context),
                     ),
                   ),
                   SizedBox(
@@ -150,7 +202,9 @@ class _WorkPageState extends State<WorkPage> {
             child: ListView.builder(
               itemCount: workOrders.length,
               itemBuilder: (BuildContext context, int index) {
-                return WorkListTile(workOrder: workOrders[index],);
+                return WorkListTile(
+                  workOrder: workOrders[index],
+                );
               },
             ),
           ),
