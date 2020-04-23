@@ -70,7 +70,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
         _model = '';
         _engine = '';
         _serialNumber = '';
-        _engineSerialNumber =  '';
+        _engineSerialNumber = '';
         _space = 0;
         _isLoading = false;
       });
@@ -177,7 +177,11 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
                   height: 150.0,
                   width: double.infinity,
                   child: Center(
-                    child: Text('To be implemented...'),
+                    child: Icon(
+                      Icons.add_a_photo,
+                      size: 32.0,
+                      color: Colors.black45,
+                    ),
                   ),
                 ),
                 SizedBox(height: 16.0),
@@ -218,13 +222,27 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text(
-                              '${_space} kvm',
-                              style: TextStyle(fontSize: 16.0),
+                            Row(
+                              children: <Widget>[
+                                Text('Yta:  ',style: TextStyle(fontSize: 16.0),),
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                                  decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(5.0)),
+                                  child: Text(
+                                    '${_space} kvm',
+                                    style: TextStyle(fontSize: 16.0),
+                                  ),
+                                ),
+                              ],
                             ),
-                            IconButton(
-                                icon: Icon(Icons.edit, size: 20.0),
-                                onPressed: () => showPickerNumber(context))
+                            Container(
+                              decoration: BoxDecoration(color: MyColors.lightBlue, borderRadius: BorderRadius.circular(10.0)),
+                              child: IconButton(
+                                highlightColor: MyColors.primary,
+                                color: MyColors.primary,
+                                  icon: Icon(Icons.edit, size: 18.0),
+                                  onPressed: () => showPickerNumber(context)),
+                            )
                           ],
                         ),
                       ),
@@ -314,12 +332,15 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
             ],
           ),
         ),
-        body: TabBarView(children: <Widget>[
-          _buildNewObjectView(),
-          Center(
-            child: Text('Lägg till Leverantör'),
-          ),
-        ]),
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: TabBarView(children: <Widget>[
+            _buildNewObjectView(),
+            Center(
+              child: Text('Lägg till Leverantör'),
+            ),
+          ]),
+        ),
         bottomNavigationBar: GestureDetector(
           onTap: _submitStoredObject,
           child: Container(

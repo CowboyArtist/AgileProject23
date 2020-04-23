@@ -28,4 +28,12 @@ class DatabaseService {
         .toList();
     return objects;
   }
+
+  static Future<QuerySnapshot> getStoredObjectsFuture() {
+    Future<QuerySnapshot> objects =
+        objectsRef.orderBy('timestamp', descending: true).getDocuments(); 
+        //Ändra till "outDate" när den finns.
+
+    return objects;
+  }
 }
