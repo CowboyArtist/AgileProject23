@@ -17,16 +17,19 @@ class _BoatImagesState extends State<BoatImages> {
   List<File> _images = [];
 
   _buildDarkerImage() {
-    return Container(
-      margin: EdgeInsets.all(10.0),
-      height: 150.0,
-      width: 350.0,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        gradient: LinearGradient(
-          colors: [Colors.transparent, Colors.black54],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+    return GestureDetector(
+      onTap: () => print('Metod för att kunna visa upp hela bilden'),
+      child: Container(
+        margin: EdgeInsets.all(10.0),
+        height: 150.0,
+        width: 350.0,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          gradient: LinearGradient(
+            colors: [Colors.transparent, Colors.black54],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
       ),
     );
