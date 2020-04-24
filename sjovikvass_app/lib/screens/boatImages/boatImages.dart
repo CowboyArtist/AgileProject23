@@ -2,12 +2,10 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
-import 'package:sjovikvass_app/styles/commonWidgets/myButton.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
 
 class BoatImages extends StatefulWidget {
   @override
@@ -18,20 +16,61 @@ class _BoatImagesState extends State<BoatImages> {
   File _image;
   List<File> _images = [];
 
+  _buildDarkerImage() {
+    return Container(
+      margin: EdgeInsets.all(10.0),
+      height: 150.0,
+      width: 350.0,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        gradient: LinearGradient(
+          colors: [Colors.transparent, Colors.black54],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+    );
+  }
+
+  _buildTimeStamp() {
+    return Positioned(
+      child: Text(
+        'Här har vi en fin timestamp',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+          fontSize: 20.0,
+        ),
+      ),
+      bottom: 16.0,
+      left: 16.0,
+    );
+  }
+
+  _buildSingleImage() {
+    return Container(
+      margin: EdgeInsets.all(10.0),
+      height: 150.0,
+      width: 350.0,
+      child: ClipRRect(
+        child: Image.file(_image, fit: BoxFit.cover),
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+    );
+  }
+
   List<Container> _buildImages() {
     return _images.map((_image) {
       var container = Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.all(10.0),
-              height: 150.0,
-              width: 350.0,
-              child: FittedBox(
-                child: Image.file(_image),
-                fit: BoxFit.cover,
-              ),
+            Stack(
+              children: <Widget>[
+                _buildSingleImage(),
+                _buildDarkerImage(),
+                _buildTimeStamp(),
+              ],
             ),
           ],
         ),
@@ -114,6 +153,24 @@ class _BoatImagesState extends State<BoatImages> {
     );
   }
 
+  _buildNewImageBtn() {
+    return ButtonTheme(
+      minWidth: 30.0,
+      height: 30.0,
+      child: RaisedButton(
+        color: MyColors.lightBlue,
+        child: Icon(
+          Icons.add_a_photo,
+          color: MyColors.primary,
+        ),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16.0))),
+        padding: EdgeInsets.all(10.0),
+        onPressed: () => _showSelectImageDialog(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,21 +182,7 @@ class _BoatImagesState extends State<BoatImages> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              ButtonTheme(
-                minWidth: 30.0,
-                height: 30.0,
-                child: RaisedButton(
-                  color: MyColors.lightBlue,
-                  child: Icon(
-                    Icons.add_a_photo,
-                    color: MyColors.primary,
-                  ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                  padding: EdgeInsets.all(10.0),
-                  onPressed: () => _showSelectImageDialog(),
-                ),
-              ),
+              _buildNewImageBtn(),
             ],
           ),
           Text(
