@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: MyColors.primary,
       ),
-      home: HomeScreen(),
+      home: BoatImages(),
     );
   }
 }
