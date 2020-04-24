@@ -38,48 +38,43 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
 
   _submitStoredObject() async {
     setState(() {
-      _titleController.text.isEmpty ? _validate = true : _validate = false;
+      _isLoading = true;
     });
-    if (!_isLoading && _title.isNotEmpty) {
-      setState(() {
-        _isLoading = true;
-      });
 
-      StoredObject storedObject = StoredObject(
-          title: _title,
-          description: _description,
-          category: _category,
-          space: _space.toDouble(),
-          model: _model,
-          serialnumber: _serialNumber,
-          engine: _engine,
-          engineSerialnumber: _engineSerialNumber);
-      print(storedObject.title + 'is created');
+    StoredObject storedObject = StoredObject(
+        title: _title,
+        description: _description,
+        category: _category,
+        space: _space.toDouble(),
+        model: _model,
+        serialnumber: _serialNumber,
+        engine: _engine,
+        engineSerialnumber: _engineSerialNumber);
+    print(storedObject.title + 'is created');
 
-      _titleController.clear();
-      _descriptionController.clear();
-      _engineSerialController.clear();
-      _engineController.clear();
-      _modelController.clear();
-      _serialController.clear();
+    _titleController.clear();
+    _descriptionController.clear();
+    _engineSerialController.clear();
+    _engineController.clear();
+    _modelController.clear();
+    _serialController.clear();
 
-      setState(() {
-        _category = 'Okategoriserad';
-      });
+    setState(() {
+      _category = 'Okategoriserad';
+    });
 
-      DatabaseService.addObjectToDB(storedObject);
+    DatabaseService.addObjectToDB(storedObject);
 
-      setState(() {
-        _title = '';
-        _description = '';
-        _model = '';
-        _engine = '';
-        _serialNumber = '';
-        _engineSerialNumber = '';
-        _space = 0;
-        _isLoading = false;
-      });
-    }
+    setState(() {
+      _title = '';
+      _description = '';
+      _model = '';
+      _engine = '';
+      _serialNumber = '';
+      _engineSerialNumber = '';
+      _space = 0;
+      _isLoading = false;
+    });
   }
 
   _buildFieldsForEngine() {
@@ -148,6 +143,48 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
         ],
       ),
     );
+  }
+
+  showAlertDialog(BuildContext context) {
+    setState(() {
+      _titleController.text.isEmpty ? _validate = true : _validate = false;
+    });
+
+    if (!_isLoading && _title.isNotEmpty) {
+      // set up the button
+      Widget okButton = FlatButton(
+        child: Text("Bekräfta"),
+        onPressed: () {
+          _submitStoredObject();
+          Navigator.of(context).pop();
+        },
+      );
+
+      Widget cancelButton = FlatButton(
+        child: Text("Avbryt"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text("Bekräfta objekt"),
+        content: Text("Vill du spara detta objekt?"),
+        actions: [
+          cancelButton,
+          okButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
   }
 
   showPickerNumber(BuildContext context) {
@@ -230,10 +267,16 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
                           children: <Widget>[
                             Row(
                               children: <Widget>[
-                                Text('Yta:  ',style: TextStyle(fontSize: 16.0),),
+                                Text(
+                                  'Yta:  ',
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
                                 Container(
-                                  padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                                  decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(5.0)),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 5.0, horizontal: 10.0),
+                                  decoration: BoxDecoration(
+                                      color: Colors.black12,
+                                      borderRadius: BorderRadius.circular(5.0)),
                                   child: Text(
                                     '${_space} kvm',
                                     style: TextStyle(fontSize: 16.0),
@@ -242,10 +285,12 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
                               ],
                             ),
                             Container(
-                              decoration: BoxDecoration(color: MyColors.lightBlue, borderRadius: BorderRadius.circular(10.0)),
+                              decoration: BoxDecoration(
+                                  color: MyColors.lightBlue,
+                                  borderRadius: BorderRadius.circular(10.0)),
                               child: IconButton(
-                                highlightColor: MyColors.primary,
-                                color: MyColors.primary,
+                                  highlightColor: MyColors.primary,
+                                  color: MyColors.primary,
                                   icon: Icon(Icons.edit, size: 18.0),
                                   onPressed: () => showPickerNumber(context)),
                             )
@@ -348,7 +393,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
           ]),
         ),
         bottomNavigationBar: GestureDetector(
-          onTap: _submitStoredObject,
+          onTap: () => showAlertDialog(context),
           child: Container(
               margin: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 40.0),
               padding: EdgeInsets.symmetric(vertical: 16.0),
