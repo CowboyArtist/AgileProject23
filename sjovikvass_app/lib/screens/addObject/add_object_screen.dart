@@ -1,7 +1,12 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
+import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
 class AddObjectScreen extends StatefulWidget {
@@ -28,6 +33,9 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
   TextEditingController _engineSerialController = TextEditingController();
   String _engineSerialNumber = '';
 
+  String _imageUrl = '';
+  File _image;
+
   int _space = 0;
 
   String _category = 'Okategoriserad';
@@ -39,6 +47,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
       setState(() {
         _isLoading = true;
       });
+      String imageUrl = await StorageService.uploadObjectMainImage(_image);
 
       StoredObject storedObject = StoredObject(
           title: _title,
@@ -48,7 +57,8 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
           model: _model,
           serialnumber: _serialNumber,
           engine: _engine,
-          engineSerialnumber: _engineSerialNumber,);
+          engineSerialnumber: _engineSerialNumber,
+          imageUrl: imageUrl);
       print(storedObject.title + 'is created');
 
       _titleController.clear();
@@ -69,13 +79,91 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
         _description = '';
         _model = '';
         _engine = '';
+        _imageUrl = '';
         _serialNumber = '';
         _engineSerialNumber = '';
         _space = 0;
         _isLoading = false;
+        _image = null;
       });
     }
   }
+
+// REFACTOR FROM HERE -------------
+  _handleImage(ImageSource source) async {
+    Navigator.pop(context);
+    File imageFile = await ImagePicker.pickImage(source: source);
+    if (imageFile != null) {
+      
+      setState(() {
+        //_imageUrl = imageUrl;
+        _image = imageFile;
+      });
+    }
+  }
+
+  _showSelectImageDialog() {
+    return Platform.isIOS ? _iosBottomSheet() : _androidDialog();
+  }
+
+  _iosBottomSheet() {
+    showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoActionSheet(
+            title: Text('Lägg till foto'),
+            actions: <Widget>[
+              CupertinoActionSheetAction(
+                child: Text('Ta ett foto'),
+                onPressed: () => print('Kör metod för att ta foto'),
+              ),
+              CupertinoActionSheetAction(
+                child: Text('Från galleriet'),
+                onPressed: () {
+                  _handleImage(ImageSource.gallery);
+                },
+              ),
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              child: Text('Avbryt'),
+              onPressed: () => Navigator.pop(context),
+            ),
+          );
+        });
+  }
+
+  _androidDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text('Lägg till foto'),
+          children: <Widget>[
+            SimpleDialogOption(
+              child: Text('Ta ett foto'),
+              onPressed: () {
+                _handleImage(ImageSource.camera);
+              },
+            ),
+            SimpleDialogOption(
+                child: Text('Från kamerarullen'),
+                onPressed: () {
+                  _handleImage(ImageSource.gallery);
+                }),
+            SimpleDialogOption(
+              child: Text(
+                'Avbryt',
+                style: TextStyle(color: Colors.redAccent),
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // REFACTOR TO HERE ----------------------
 
   _buildFieldsForEngine() {
     return Container(
@@ -170,17 +258,31 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
             child: Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.black12,
-                      borderRadius: BorderRadius.circular(10.0)),
-                  height: 150.0,
-                  width: double.infinity,
-                  child: Center(
-                    child: Icon(
-                      Icons.add_a_photo,
-                      size: 32.0,
-                      color: Colors.black45,
+                GestureDetector(
+                  onTap: _showSelectImageDialog,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(10.0)),
+                    height: 150.0,
+                    width: double.infinity,
+                    child: Center(
+                      child: _image == null
+                          ? Icon(
+                              Icons.add_a_photo,
+                              size: 32.0,
+                              color: Colors.black45,
+                            )
+                          : Container(
+                              width: double.infinity,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: Image(
+                                  image: FileImage(_image),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
                     ),
                   ),
                 ),
@@ -224,10 +326,16 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
                           children: <Widget>[
                             Row(
                               children: <Widget>[
-                                Text('Yta:  ',style: TextStyle(fontSize: 16.0),),
+                                Text(
+                                  'Yta:  ',
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
                                 Container(
-                                  padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                                  decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(5.0)),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 5.0, horizontal: 10.0),
+                                  decoration: BoxDecoration(
+                                      color: Colors.black12,
+                                      borderRadius: BorderRadius.circular(5.0)),
                                   child: Text(
                                     '${_space} kvm',
                                     style: TextStyle(fontSize: 16.0),
@@ -236,10 +344,12 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
                               ],
                             ),
                             Container(
-                              decoration: BoxDecoration(color: MyColors.lightBlue, borderRadius: BorderRadius.circular(10.0)),
+                              decoration: BoxDecoration(
+                                  color: MyColors.lightBlue,
+                                  borderRadius: BorderRadius.circular(10.0)),
                               child: IconButton(
-                                highlightColor: MyColors.primary,
-                                color: MyColors.primary,
+                                  highlightColor: MyColors.primary,
+                                  color: MyColors.primary,
                                   icon: Icon(Icons.edit, size: 18.0),
                                   onPressed: () => showPickerNumber(context)),
                             )
