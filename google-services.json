@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "448013642936",
+    "firebase_url": "https://storage-app-4bda9.firebaseio.com",
+    "project_id": "storage-app-4bda9",
+    "storage_bucket": "storage-app-4bda9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448013642936:android:5507aed2868f9ffcac984d",
+        "android_client_info": {
+          "package_name": "com.agile_team23.sjovikvass_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448013642936-gfg423cvmgc9pgisumnf8ge71emnb9qt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfXtZvXlb20kuomMxxz5LU5awMax0FqLI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448013642936-gfg423cvmgc9pgisumnf8ge71emnb9qt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "448013642936-csddj098shourgpjlb9bu8irs2rg76sd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.agileteam23.sjovikvassApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
