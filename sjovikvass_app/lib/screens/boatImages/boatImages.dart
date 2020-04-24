@@ -22,13 +22,15 @@ class _BoatImagesState extends State<BoatImages> {
     return _images.map((_image) {
       var container = Container(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Center(
-              child: Container(
-                height: 350.0,
-                width: 350.0,
-                margin: EdgeInsets.all(30.0),
+            Container(
+              margin: EdgeInsets.all(10.0),
+              height: 150.0,
+              width: 350.0,
+              child: FittedBox(
                 child: Image.file(_image),
+                fit: BoxFit.cover,
               ),
             ),
           ],
