@@ -73,7 +73,7 @@ class _BoatImagesState extends State<BoatImages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DetailAppBar.buildAppBar('Bilder'),
+      appBar: DetailAppBar.buildAppBar('Bilder', context),
       body: Center(child: FlatButton(child: Text('Testa dialogruta'), onPressed: _showSelectImageDialog,)),
     );
   }

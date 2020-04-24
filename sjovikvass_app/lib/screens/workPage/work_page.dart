@@ -1,22 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget.dart';
+import 'package:sjovikvass_app/services/database_service.dart';
 
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
+import 'package:sjovikvass_app/utils/constants.dart';
 
 class WorkPage extends StatefulWidget {
+  final String inObjectId;
+
+  WorkPage({
+    this.inObjectId,
+  });
+
   @override
   _WorkPageState createState() => _WorkPageState();
 }
 
 class _WorkPageState extends State<WorkPage> {
-  List<WorkOrder> workOrders = [
-    WorkOrder(title: 'Jag heter jonathan', isDone: true, sum: 10.0),
-    WorkOrder(title: 'Jag heter simon', isDone: false, sum: 40.0)
-  ];
+  int _totalOrders = 0;
+  int _doneOrders = 0;
+
+
+  
+
+  _setupTotalOrders() async {
+    int totalOrders = await DatabaseService.getTotalOrders(widget.inObjectId);
+
+    setState(() {
+      _totalOrders = totalOrders;
+    });
+  }
+
+  _setupDoneOrders() async {
+    int doneOrders = await DatabaseService.getDoneOrders(widget.inObjectId);
+
+    setState(() {
+      _doneOrders = doneOrders;
+    });
+  }
+
+  _setupPercentIndicator() {
+    _setupTotalOrders();
+    _setupDoneOrders();
+  }
 
   _createAlertDialog(BuildContext context) {
     TextEditingController workController = TextEditingController();
@@ -54,18 +85,16 @@ class _WorkPageState extends State<WorkPage> {
                 elevation: 5.0,
                 child: Text('Lägg till'),
                 onPressed: () {
-                  
                   Navigator.of(context).pop(workController.text.toString());
-                  workOrders.add(
-                    WorkOrder(
-                      title: workController.text,
-                      isDone: false,
-                      sum: double.parse(priceController.text),
 
-                    ),
-                  );
-                 setState(() {
-                    
+                  DatabaseService.addWorkOrderToObject(
+                      WorkOrder(
+                          isDone: false,
+                          title: workController.text,
+                          sum: double.parse(priceController.text)),
+                      widget.inObjectId);
+                  setState(() {
+                    _totalOrders++;
                   });
                 },
               )
@@ -74,31 +103,17 @@ class _WorkPageState extends State<WorkPage> {
         });
   }
 
-  double workTotalSum = 0;
-
-  _calculateSum() {
-    double totalSum = 0;
-    for (WorkOrder workOrder in workOrders) {
-      if (workOrder.isDone) {
-        totalSum += workOrder.sum;
-      }
-    }
-    setState(() {
-      workTotalSum = totalSum;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
 
-    _calculateSum();
+    _setupPercentIndicator();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DetailAppBar.buildAppBar('Arbete'),
+      appBar: DetailAppBar.buildAppBar('Arbete', context),
       body: Column(
         children: <Widget>[
           SizedBox(height: 15.0),
@@ -132,10 +147,11 @@ class _WorkPageState extends State<WorkPage> {
                   Text('Ny'),
                 ],
               ),
-              new CircularPercentIndicator(
+              CircularPercentIndicator(
                 radius: 100.0,
                 lineWidth: 8.0,
-                percent: 1.0,
+                percent: _doneOrders / _totalOrders,
+                animation: true,
                 center: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -143,7 +159,7 @@ class _WorkPageState extends State<WorkPage> {
                       height: 18.0,
                     ),
                     Text(
-                      "100%",
+                      "${(_doneOrders/_totalOrders * 100).round()}%",
                       style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
@@ -199,14 +215,25 @@ class _WorkPageState extends State<WorkPage> {
             height: 10.0,
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: workOrders.length,
-              itemBuilder: (BuildContext context, int index) {
-                return WorkListTile(
-                  workOrder: workOrders[index],
-                );
-              },
-            ),
+            child: StreamBuilder(
+                stream: DatabaseService.getWorkOrders(widget.inObjectId),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text('Hämtar data');
+                  }
+                  return ListView.builder(
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      WorkOrder workOrder =
+                          WorkOrder.fromDoc(snapshot.data.documents[index]);
+
+                      return WorkListTile(
+                        inObjectId: widget.inObjectId,
+                        workOrder: workOrder,
+                      );
+                    },
+                  );
+                }),
           ),
           Container(
             height: 50.0,
@@ -217,7 +244,21 @@ class _WorkPageState extends State<WorkPage> {
                   'Att fakturera:',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(workTotalSum.toString() + ' kr'),
+                Container(
+                  width: 100.0,
+                  child: StreamBuilder(
+                    stream: objectsRef.document(widget.inObjectId).snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (!snapshot.hasData) {
+                        return Text('Hämtar data');
+                      }
+                      print(snapshot.data);
+                      StoredObject storedObject =
+                          StoredObject.fromDoc(snapshot.data);
+                      return Text(storedObject.billingSum.toString() + ' kr');
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -230,7 +271,7 @@ class _WorkPageState extends State<WorkPage> {
                 style: TextStyle(fontSize: 20.0, color: Colors.white),
               ),
             ),
-            color: Colors.black12,
+            color: _doneOrders == _totalOrders ? Colors.green : Colors.black12,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
           ),

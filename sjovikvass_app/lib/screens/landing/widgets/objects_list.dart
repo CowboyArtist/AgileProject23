@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/screens/object/object_screen.dart';
+import 'package:sjovikvass_app/screens/workPage/work_page.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 
 //This Widget will return the list of objects required by the user
@@ -27,43 +28,53 @@ class _ObjectsListState extends State<ObjectsList> {
   }
 
   _buildObjectTile(StoredObject storedObject) {
-    
-    return Container(
-        margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-        height: 100.0,
-        decoration: BoxDecoration(
-            color: Colors.black45, borderRadius: BorderRadius.circular(10.0)),
-        child: Stack(
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    'assets/images/placeholder_boat.jpg',
-                    fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => WorkPage(
+                    inObjectId: storedObject.id,
+                  ))),
+      child: Container(
+          margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+          height: 100.0,
+          decoration: BoxDecoration(
+              color: Colors.black45, borderRadius: BorderRadius.circular(10.0)),
+          child: Stack(
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.asset(
+                      'assets/images/placeholder_boat.jpg',
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.black54,
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter)),
+              ),
+              Positioned(
+                  left: 16.0,
+                  bottom: 16.0,
+                  child: Text(
+                    storedObject.title,
+                    style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   )),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  gradient: LinearGradient(colors: [
-                    Colors.transparent,
-                    Colors.black54,
-                  ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-            ),
-            Positioned(
-                left: 16.0,
-                bottom: 16.0,
-                child: Text(
-                  storedObject.title,
-                  style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                )),
-          ],
-        ));
+            ],
+          )),
+    );
   }
 
   @override
@@ -72,7 +83,7 @@ class _ObjectsListState extends State<ObjectsList> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Expanded(
-            child: RefreshIndicator(
+          child: RefreshIndicator(
             onRefresh: () => _setupObjects(),
             child: FutureBuilder(
               future: _objects,
