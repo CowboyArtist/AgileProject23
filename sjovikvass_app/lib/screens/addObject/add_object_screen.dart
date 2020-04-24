@@ -153,7 +153,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
     if (!_isLoading && _title.isNotEmpty) {
       // set up the button
       Widget okButton = FlatButton(
-        child: Text("Bekräfta"),
+        child: Text("Spara"),
         onPressed: () {
           _submitStoredObject();
           Navigator.of(context).pop();
