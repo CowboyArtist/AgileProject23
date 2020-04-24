@@ -21,7 +21,9 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  multi_image_picker: ^4.6.5
+  image_cropper: ^1.2.0
+  image_picker: ^0.6.5+2
+  cached_network_image: ^2.0.0-rc
   
   flutter:
     sdk: flutter
