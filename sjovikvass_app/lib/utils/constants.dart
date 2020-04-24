@@ -7,3 +7,5 @@ final storageRef = FirebaseStorage.instance.ref();
 final objectsRef = _firestore.collection('storedObjects');
 
 final workOrderRef = _firestore.collection('workOrders');
+
+final imageRef = _firestore.collection('images');

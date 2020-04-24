@@ -37,6 +37,9 @@ dependencies:
   image_cropper: ^1.2.0
   image_picker: ^0.6.5+2
   cached_network_image: ^2.0.0-rc
+  uuid: ^2.0.4
+  path_provider: ^1.6.5
+  flutter_image_compress: ^0.6.7
   
 
 dev_dependencies:

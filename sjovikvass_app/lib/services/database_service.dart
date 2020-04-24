@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
+import 'package:sjovikvass_app/models/boatImage_model.dart';
+
+
 
 class DatabaseService {
   // Methods for work orders
@@ -118,5 +121,22 @@ class DatabaseService {
     //Ändra till "outDate" när den finns.
 
     return objects;
+  }
+  //Methods for image uploads
+  static void uploadImage(BoatImageModel boatImageModel, String inObjectId) {
+    imageRef.document(inObjectId).collection('hasImages').add({
+      'imageUrl': boatImageModel.imageUrl,
+      'timestamp': Timestamp.fromDate(DateTime.now()),
+      'comment': boatImageModel.comment,
+    });
+
+  }
+    static Stream getObjectImages(String inObjectId) {
+    Stream imageStream = imageRef
+        .document(inObjectId)
+        .collection('hasImages')
+        .snapshots();
+
+    return imageStream;
   }
 }

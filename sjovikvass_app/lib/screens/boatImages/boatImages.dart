@@ -2,12 +2,21 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:sjovikvass_app/services/database_service.dart';
+import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import 'package:sjovikvass_app/models/boatImage_model.dart';
+
 class BoatImages extends StatefulWidget {
+  final String inObjectId;
+  BoatImages({
+    this.inObjectId,
+  });
+
   @override
   _BoatImagesState createState() => _BoatImagesState();
 }
@@ -87,6 +96,13 @@ class _BoatImagesState extends State<BoatImages> {
     Navigator.pop(context);
     File imageFile = await ImagePicker.pickImage(source: source);
     if (imageFile != null) {
+      String imageUrl = await StorageService.uploadObjectImage(imageFile);
+      if (imageUrl != null) {
+        BoatImageModel boatImageModel = BoatImageModel(
+          imageUrl: imageUrl,
+        );
+        DatabaseService.uploadImage(boatImageModel, widget.inObjectId);
+      }
       setState(() {
         _image = imageFile;
         _images.insert(index, _image);
@@ -196,11 +212,15 @@ class _BoatImagesState extends State<BoatImages> {
             ),
           ),
           SizedBox(height: 20.0),
-          Expanded(
-            child: ListView(
-              children: _buildImages(),
-            ),
+          StreamBuilder(
+            stream: DatabaseService.getObjectImages(widget.inObjectId),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {},
           ),
+          // Expanded(
+          //   child: ListView(
+          //     children: _buildImages(),
+          //   ),
+          // ),
         ],
       ),
     );
