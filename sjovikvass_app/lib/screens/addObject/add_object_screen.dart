@@ -48,7 +48,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
           model: _model,
           serialnumber: _serialNumber,
           engine: _engine,
-          engineSerialnumber: _engineSerialNumber);
+          engineSerialnumber: _engineSerialNumber,);
       print(storedObject.title + 'is created');
 
       _titleController.clear();

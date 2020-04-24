@@ -13,6 +13,8 @@ class StoredObject {
   final double space;
   final Timestamp timestamp;
 
+  final double billingSum;
+
   final Timestamp inDate;
   final Timestamp outDate;
 
@@ -29,7 +31,8 @@ class StoredObject {
     this.space,
     this.timestamp,
     this.inDate,
-    this.outDate
+    this.outDate,
+    this.billingSum,
   });
 
   factory StoredObject.fromDoc(DocumentSnapshot doc) {
@@ -46,7 +49,8 @@ class StoredObject {
       timestamp: doc['timestamp'],
       space: doc['space'],
       inDate: doc['inDate'],
-      outDate: doc['outDate']
+      outDate: doc['outDate'],
+      billingSum: doc['billingSum'],
     );
   }
 }
