@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
+import 'package:sjovikvass_app/screens/boatImages/boatImages.dart';
 import 'package:sjovikvass_app/screens/object/object_screen.dart';
 import 'package:sjovikvass_app/screens/workPage/work_page.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
@@ -29,12 +31,14 @@ class _ObjectsListState extends State<ObjectsList> {
 
   _buildObjectTile(StoredObject storedObject) {
     return GestureDetector(
-      onTap: () => Navigator.push(
+      onTap:
+      () => Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (_) => WorkPage(
-                    inObjectId: storedObject.id,
+              builder: (_) => ObjectScreen(
+                    object: storedObject,
                   ))),
+      
       child: Container(
           margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
           height: 100.0,
@@ -46,10 +50,13 @@ class _ObjectsListState extends State<ObjectsList> {
                 width: double.infinity,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: Image.asset(
+                    child: storedObject.imageUrl == null ? Image.asset(
                       'assets/images/placeholder_boat.jpg',
                       fit: BoxFit.cover,
-                    )),
+                    )
+                    :
+                    Image(image: CachedNetworkImageProvider(storedObject.imageUrl), fit: BoxFit.cover,)
+                    ),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -72,6 +79,7 @@ class _ObjectsListState extends State<ObjectsList> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   )),
+                  
             ],
           )),
     );
