@@ -30,7 +30,7 @@ class _WorkPageState extends State<WorkPage> {
 
   _setupTotalOrders() async {
     int totalOrders = await DatabaseService.getTotalOrders(widget.inObjectId);
-
+    
     setState(() {
       _totalOrders = totalOrders;
     });
@@ -38,7 +38,7 @@ class _WorkPageState extends State<WorkPage> {
 
   _setupDoneOrders() async {
     int doneOrders = await DatabaseService.getDoneOrders(widget.inObjectId);
-
+    
     setState(() {
       _doneOrders = doneOrders;
     });
@@ -159,7 +159,7 @@ class _WorkPageState extends State<WorkPage> {
                       height: 18.0,
                     ),
                     Text(
-                      "${(_doneOrders/_totalOrders * 100).round()}%",
+                      _totalOrders == 0 ? '0 %' : "${(_doneOrders/_totalOrders * 100).round()}%",
                       style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
