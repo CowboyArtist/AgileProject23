@@ -34,7 +34,12 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
 
   bool _isLoading = false;
 
+  bool _validate = false;
+
   _submitStoredObject() async {
+    setState(() {
+      _titleController.text.isEmpty ? _validate = true : _validate = false;
+    });
     if (!_isLoading && _title.isNotEmpty) {
       setState(() {
         _isLoading = true;
@@ -204,6 +209,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
                         decoration: InputDecoration(
                           labelStyle: TextStyle(fontSize: 15.0),
                           labelText: 'Titel på objekt',
+                          errorText: _validate ? 'Titel måste anges' : null,
                         ),
                         onChanged: (input) => _title = input,
                       ),
