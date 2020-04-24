@@ -170,7 +170,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
       // set up the AlertDialog
       AlertDialog alert = AlertDialog(
         title: Text("Bekräfta objekt"),
-        content: Text("Vill du spara detta objekt?"),
+        content: Text("Vill du spara " + _title + '?'),
         actions: [
           cancelButton,
           okButton,
