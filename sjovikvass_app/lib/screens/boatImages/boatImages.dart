@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -23,7 +25,7 @@ class BoatImages extends StatefulWidget {
 
 class _BoatImagesState extends State<BoatImages> {
   File _image;
-  List<File> _images = [];
+  
 
   _buildDarkerImage() {
     return GestureDetector(
@@ -31,7 +33,7 @@ class _BoatImagesState extends State<BoatImages> {
       child: Container(
         margin: EdgeInsets.all(10.0),
         height: 150.0,
-        width: 350.0,
+        width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           gradient: LinearGradient(
@@ -44,10 +46,10 @@ class _BoatImagesState extends State<BoatImages> {
     );
   }
 
-  _buildTimeStamp() {
+  _buildTimeStamp(Timestamp timestamp) {
     return Positioned(
       child: Text(
-        'Här har vi en fin timestamp',
+        timestamp.toDate().toString(),
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w600,
@@ -59,40 +61,36 @@ class _BoatImagesState extends State<BoatImages> {
     );
   }
 
-  _buildSingleImage() {
+  _buildSingleImage(String imageUrl) {
     return Container(
       margin: EdgeInsets.all(10.0),
       height: 150.0,
-      width: 350.0,
+      width: double.infinity,
       child: ClipRRect(
-        child: Image.file(_image, fit: BoxFit.cover),
+        child: imageUrl != null
+            ? Image(
+                image: CachedNetworkImageProvider(imageUrl),
+                fit: BoxFit.cover,
+              )
+            : Image.asset('assets/images/placeholder_boat.jpg',
+                fit: BoxFit.cover),
         borderRadius: BorderRadius.circular(10.0),
       ),
     );
   }
 
-  List<Container> _buildImages() {
-    return _images.map((_image) {
-      var container = Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Stack(
-              children: <Widget>[
-                _buildSingleImage(),
-                _buildDarkerImage(),
-                _buildTimeStamp(),
-              ],
-            ),
-          ],
-        ),
-      );
-      return container;
-    }).toList();
+  _buildImageTile(BoatImageModel image) {
+    return Stack(
+      children: <Widget>[
+        _buildSingleImage(image.imageUrl),
+        _buildDarkerImage(),
+        _buildTimeStamp(image.timestamp),
+      ],
+    );
   }
 
   _handleImage(ImageSource source) async {
-    int index = 0;
+    
     Navigator.pop(context);
     File imageFile = await ImagePicker.pickImage(source: source);
     if (imageFile != null) {
@@ -103,11 +101,7 @@ class _BoatImagesState extends State<BoatImages> {
         );
         DatabaseService.uploadImage(boatImageModel, widget.inObjectId);
       }
-      setState(() {
-        _image = imageFile;
-        _images.insert(index, _image);
-        index++;
-      });
+      
     }
   }
 
@@ -214,13 +208,21 @@ class _BoatImagesState extends State<BoatImages> {
           SizedBox(height: 20.0),
           StreamBuilder(
             stream: DatabaseService.getObjectImages(widget.inObjectId),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {},
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (!snapshot.hasData) {
+                return Text('Laddar in bilder');
+              }
+              return Expanded(
+                child: ListView.builder(
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      BoatImageModel image = BoatImageModel.fromDoc(
+                          snapshot.data.documents[index]);
+                      return _buildImageTile(image);
+                    }),
+              );
+            },
           ),
-          // Expanded(
-          //   child: ListView(
-          //     children: _buildImages(),
-          //   ),
-          // ),
         ],
       ),
     );

@@ -14,7 +14,7 @@ class BoatImageModel {
   factory BoatImageModel.fromDoc(DocumentSnapshot doc) {
     return BoatImageModel(
       imageUrl: doc['imageUrl'],
-      timestamp: doc['timeStamp'],
+      timestamp: doc['timestamp'],
       comment: doc['comment'],
     );
   }
