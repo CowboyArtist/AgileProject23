@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/screens/addObject/add_object_screen.dart';
 import 'package:sjovikvass_app/screens/landing/landing_screen.dart';
 
+
+//Used to handle navigation
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
