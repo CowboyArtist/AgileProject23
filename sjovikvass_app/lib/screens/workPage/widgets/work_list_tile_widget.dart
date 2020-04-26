@@ -7,21 +7,28 @@ import 'package:sjovikvass_app/services/database_service.dart';
 class WorkListTile extends StatefulWidget {
   final WorkOrder workOrder;
   final String inObjectId;
-  
+  final ValueNotifier<int> valueNotifier;
 
-  WorkListTile({
-    this.workOrder,
-    this.inObjectId,
-   
-  });
+  WorkListTile({this.workOrder, this.inObjectId, this.valueNotifier});
 
   @override
   _WorkListTileState createState() => _WorkListTileState();
 }
 
 class _WorkListTileState extends State<WorkListTile> {
-
-
+  _toggleIsDone() {
+    setState(() {
+      widget.workOrder.isDone = !widget.workOrder.isDone;
+    });
+    DatabaseService.updateWorkOrder(widget.inObjectId, widget.workOrder);
+    if (widget.workOrder.isDone) {
+      DatabaseService.updateObject(widget.inObjectId, widget.workOrder.sum);
+      widget.valueNotifier.value++;
+    } else {
+      DatabaseService.updateObject(widget.inObjectId, -widget.workOrder.sum);
+      widget.valueNotifier.value--;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,17 +41,7 @@ class _WorkListTileState extends State<WorkListTile> {
       ),
       child: ListTile(
         leading: GestureDetector(
-          onTap: () => setState(() {
-            widget.workOrder.isDone = !widget.workOrder.isDone;
-            DatabaseService.updateWorkOrder(
-                widget.inObjectId, widget.workOrder);
-            widget.workOrder.isDone
-                ? DatabaseService.updateObject(
-                    widget.inObjectId, widget.workOrder.sum)
-                : DatabaseService.updateObject(
-                    widget.inObjectId, -widget.workOrder.sum);
-          
-          }),
+          onTap: () => _toggleIsDone(),
           child: AnimatedContainer(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
