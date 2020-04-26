@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
+
+//Custom AppBar for the entire app.
 class DetailAppBar {
   static AppBar buildAppBar(String title, BuildContext context) {
     return AppBar(

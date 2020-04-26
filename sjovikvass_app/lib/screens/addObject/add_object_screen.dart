@@ -9,12 +9,16 @@ import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
+
+//Screen for adding objects to the database with corresponding attributes.
 class AddObjectScreen extends StatefulWidget {
   @override
   _AddObjectScreenState createState() => _AddObjectScreenState();
 }
 
 class _AddObjectScreenState extends State<AddObjectScreen> {
+
+
   TextEditingController _titleController = TextEditingController();
   String _title = '';
 
@@ -42,8 +46,10 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
 
   bool _isLoading = false;
 
+  //Boolean validates if the user has completed reguired input
   bool _validate = false;
 
+  //Creates object, adds it to the database and resets all values.
   _submitStoredObject() async {
     if (!_isLoading && _title.isNotEmpty) {
       setState(() {
@@ -68,7 +74,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
           engine: _engine,
           engineSerialnumber: _engineSerialNumber,
           imageUrl: _imageUrl);
-      print(storedObject.title + 'is created');
+     
 
     _titleController.clear();
     _descriptionController.clear();
@@ -115,7 +121,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
   _showSelectImageDialog() {
     return Platform.isIOS ? _iosBottomSheet() : _androidDialog();
   }
-
+  //If device is IOS this mehod will run to show design standards for IOS
   _iosBottomSheet() {
     showCupertinoModalPopup(
         context: context,
@@ -142,6 +148,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
         });
   }
 
+  //If device is Android this mehod will run to show design standards for Android
   _androidDialog() {
     showDialog(
       context: context,
@@ -175,6 +182,8 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
 
   // REFACTOR TO HERE ----------------------
 
+
+  //Shows dynamic fields for categories with engine
   _buildFieldsForEngine() {
     return Container(
       padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 32.0),
@@ -208,6 +217,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
     );
   }
 
+  //Shows dynamic fields if category is not 'okategoriserad'
   _buildDynamicFields() {
     return Container(
       padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 32.0),
@@ -243,6 +253,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
     );
   }
 
+  //Confirmation dialog before adding object to database
   showAlertDialog(BuildContext context) {
     setState(() {
       _titleController.text.isEmpty ? _validate = true : _validate = false;
@@ -286,6 +297,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
     }
   }
 
+  //Dialog to select space that the object takes.
   showPickerNumber(BuildContext context) {
     new Picker(
         confirmText: 'Bekräfta',
@@ -304,6 +316,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
         }).showDialog(context);
   }
 
+  //Builds all fundamental fields for all objects
   _buildNewObjectView() {
     return _isLoading
         ? Center(child: Container(
@@ -453,6 +466,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
                           _category = newValue;
                         });
                       },
+                      //Hard coded categories. Add new categories here.
                       items: <String>[
                         'Okategoriserad',
                         'Båt',
@@ -468,6 +482,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
                       }).toList(),
                     )),
                 SizedBox(height: 16.0),
+                //Decides which dynamic fileds that will run.
                 _category == 'Okategoriserad'
                     ? SizedBox.shrink()
                     : _buildDynamicFields(),
@@ -502,13 +517,17 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
         body: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: TabBarView(children: <Widget>[
+            //Builds the view for creating new objects
             _buildNewObjectView(),
+
+            //Builds the view for creating new supplier (to be implemented (sprint 2))
             Center(
               child: Text('Lägg till Leverantör'),
             ),
           ]),
         ),
         bottomNavigationBar: GestureDetector(
+          //Need to dynamically change what to upload (object/supplier). Implement in sprint 2
           onTap: () => showAlertDialog(context),
           child: Container(
               margin: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 40.0),

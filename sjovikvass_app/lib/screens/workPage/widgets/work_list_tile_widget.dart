@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 
+
+//Defines the appearance of the list tile in the list of work_page.dart
 class WorkListTile extends StatefulWidget {
   final WorkOrder workOrder;
   final String inObjectId;
@@ -16,6 +17,8 @@ class WorkListTile extends StatefulWidget {
 }
 
 class _WorkListTileState extends State<WorkListTile> {
+
+  //Sets or resets if the work order is done and update the corresponding values in database
   _toggleIsDone() {
     setState(() {
       widget.workOrder.isDone = !widget.workOrder.isDone;

@@ -14,6 +14,8 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:sjovikvass_app/models/boatImage_model.dart';
 
+
+//The screen for adding images to an object for determine the physical state of the object
 class BoatImages extends StatefulWidget {
   final String inObjectId;
   BoatImages({
@@ -27,7 +29,8 @@ class BoatImages extends StatefulWidget {
 class _BoatImagesState extends State<BoatImages> {
   File _image;
 
-  _buildDarkerImage() {
+  //Adds black gradient overlay to make the white text stand out
+  _buildOverlay() {
     return Container(
       margin: EdgeInsets.all(10.0),
       height: 150.0,
@@ -43,6 +46,7 @@ class _BoatImagesState extends State<BoatImages> {
     );
   }
 
+  //Shows the date and time the image was added
   _buildTimeStamp(Timestamp timestamp) {
     return Positioned(
       child: Text(
@@ -58,6 +62,7 @@ class _BoatImagesState extends State<BoatImages> {
     );
   }
 
+  //Fetch image from database and displays in widget
   _buildSingleImage(String imageUrl) {
     return Container(
       margin: EdgeInsets.all(10.0),
@@ -76,6 +81,7 @@ class _BoatImagesState extends State<BoatImages> {
     );
   }
 
+  //The core of the list tile that shows the image
   _buildImageTile(BoatImageModel image) {
     return GestureDetector(
       onTap: () => Navigator.push(
@@ -89,19 +95,21 @@ class _BoatImagesState extends State<BoatImages> {
       child: Stack(
         children: <Widget>[
           _buildSingleImage(image.imageUrl),
-          _buildDarkerImage(),
+          _buildOverlay(),
           _buildTimeStamp(image.timestamp),
         ],
       ),
     );
   }
 
+  //Fetch the file from device and adds it to database
   _handleImage(ImageSource source) async {
     Navigator.pop(context);
     File imageFile = await ImagePicker.pickImage(source: source);
     if (imageFile != null) {
       String imageUrl = await StorageService.uploadObjectImage(imageFile);
       if (imageUrl != null) {
+        //Create BoatImageModel to be able to link imageUrl with the timestamp of the upload.
         BoatImageModel boatImageModel = BoatImageModel(
           imageUrl: imageUrl,
         );
@@ -171,6 +179,7 @@ class _BoatImagesState extends State<BoatImages> {
     );
   }
 
+  //Creates button according to the app style for adding new images
   _buildNewImageBtn() {
     return ButtonTheme(
       minWidth: 30.0,
@@ -211,6 +220,7 @@ class _BoatImagesState extends State<BoatImages> {
             ),
           ),
           SizedBox(height: 20.0),
+          //Fetch the stream of new images added to the database and displays it in the app UI
           StreamBuilder(
             stream: DatabaseService.getObjectImages(widget.inObjectId),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -221,6 +231,7 @@ class _BoatImagesState extends State<BoatImages> {
                 child: ListView.builder(
                     itemCount: snapshot.data.documents.length,
                     itemBuilder: (BuildContext context, int index) {
+                      //Translates database documents to a BoatImageModel object.
                       BoatImageModel image = BoatImageModel.fromDoc(
                           snapshot.data.documents[index]);
                       return _buildImageTile(image);

@@ -23,6 +23,7 @@ class _ObjectsListState extends State<ObjectsList> {
     _setupObjects();
   }
 
+  //Used to fetch objects from database
   _setupObjects() async {
     Future<QuerySnapshot> objects = DatabaseService.getStoredObjectsFuture();
     setState(() {
@@ -32,14 +33,14 @@ class _ObjectsListState extends State<ObjectsList> {
 
   _buildObjectTile(StoredObject storedObject) {
     return GestureDetector(
-      onTap:
-      () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => ObjectScreen(
-                    object: storedObject,
-                  ))),
-      
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ObjectScreen(
+            object: storedObject,
+          ),
+        ),
+      ),
       child: Container(
           margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
           height: 100.0,
@@ -51,13 +52,16 @@ class _ObjectsListState extends State<ObjectsList> {
                 width: double.infinity,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: storedObject.imageUrl == null ? Image.asset(
-                      'assets/images/placeholder_boat.jpg',
-                      fit: BoxFit.cover,
-                    )
-                    :
-                    Image(image: CachedNetworkImageProvider(storedObject.imageUrl), fit: BoxFit.cover,)
-                    ),
+                    child: storedObject.imageUrl == null
+                        ? Image.asset(
+                            'assets/images/placeholder_boat.jpg',
+                            fit: BoxFit.cover,
+                          )
+                        : Image(
+                            image: CachedNetworkImageProvider(
+                                storedObject.imageUrl),
+                            fit: BoxFit.cover,
+                          )),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -80,7 +84,6 @@ class _ObjectsListState extends State<ObjectsList> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   )),
-                  
             ],
           )),
     );
@@ -93,6 +96,7 @@ class _ObjectsListState extends State<ObjectsList> {
       children: <Widget>[
         Expanded(
           child: RefreshIndicator(
+            //Pull down to refresh calls method _setupObjects
             onRefresh: () => _setupObjects(),
             child: FutureBuilder(
               future: _objects,

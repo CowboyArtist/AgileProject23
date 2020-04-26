@@ -10,6 +10,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
 
+//The screen for checklist of work orders
 class WorkPage extends StatefulWidget {
   final String inObjectId;
 
@@ -23,10 +24,12 @@ class WorkPage extends StatefulWidget {
 
 class _WorkPageState extends State<WorkPage> {
   
-
+  //ValueNotifier is used to be able to change the value from another widget in the widget-tree.
+  //Passed as an argument when creating WorkListTile.
   final ValueNotifier<int> _counterDone = ValueNotifier<int>(0);
   final ValueNotifier<int> _counterTotal = ValueNotifier<int>(0);
 
+  //Boolean to determine when to turn the bottom button to green
   bool _allDone = false;
 
   
@@ -35,7 +38,6 @@ class _WorkPageState extends State<WorkPage> {
     int totalOrders = await DatabaseService.getTotalOrders(widget.inObjectId);
     
     setState(() {
-      
       _counterTotal.value = totalOrders;
     });
   }
@@ -44,7 +46,6 @@ class _WorkPageState extends State<WorkPage> {
     int doneOrders = await DatabaseService.getDoneOrders(widget.inObjectId);
     
     setState(() {
-      
       _counterDone.value = doneOrders;
     });
   }
@@ -54,7 +55,8 @@ class _WorkPageState extends State<WorkPage> {
     _setupDoneOrders();
   }
 
-  _createAlertDialog(BuildContext context) {
+
+  _createWorkOrderDialog(BuildContext context) {
     TextEditingController workController = TextEditingController();
     TextEditingController priceController = TextEditingController();
 
@@ -89,6 +91,7 @@ class _WorkPageState extends State<WorkPage> {
               MaterialButton(
                 elevation: 5.0,
                 child: Text('Lägg till'),
+                //Adds the object to the database and update the total amount of workorders.
                 onPressed: () {
                   Navigator.of(context).pop(workController.text.toString());
 
@@ -143,7 +146,7 @@ class _WorkPageState extends State<WorkPage> {
                       iconSize: 30.0,
                       color: MyColors.primary,
                       icon: Icon(Icons.add),
-                      onPressed: () => _createAlertDialog(context),
+                      onPressed: () => _createWorkOrderDialog(context),
                     ),
                   ),
                   SizedBox(
@@ -152,8 +155,10 @@ class _WorkPageState extends State<WorkPage> {
                   Text('Ny'),
                 ],
               ),
+              //Listens to changes of _counterTotal and rebuilds child widget
               ValueListenableBuilder(
                 builder: (BuildContext context, int total, Widget child) {
+              //Listens to changes of _counterDone and rebuilds child widget
                   return ValueListenableBuilder(
                   builder: (BuildContext context, int value, Widget child) {
                  
@@ -232,7 +237,9 @@ class _WorkPageState extends State<WorkPage> {
             height: 10.0,
           ),
           Expanded(
-            child: StreamBuilder(
+            child: 
+            //Stream that updates the UI when values in database changes.
+            StreamBuilder(
                 stream: DatabaseService.getWorkOrders(widget.inObjectId),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
@@ -280,8 +287,11 @@ class _WorkPageState extends State<WorkPage> {
               ],
             ),
           ),
+          //Listens to changes of _counterDone and rebuilds child widget
           ValueListenableBuilder(
                     builder: (BuildContext context, int done, Widget child) {
+
+            //Listens to changes of _counterTotal and rebuilds child widget
               return ValueListenableBuilder(
                     builder: (BuildContext context, int total, Widget child) {
                   return FlatButton(

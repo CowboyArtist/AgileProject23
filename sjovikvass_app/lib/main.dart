@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sjovikvass_app/screens/boatImages/boatImages.dart';
 import 'package:sjovikvass_app/screens/homescreen/home_screen.dart';
-import 'package:sjovikvass_app/screens/workPage/work_page.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
 void main() {

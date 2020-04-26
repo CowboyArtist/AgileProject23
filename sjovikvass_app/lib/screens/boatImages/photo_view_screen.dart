@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:sjovikvass_app/models/boatImage_model.dart';
 
+//Screen for viewing images in fullscreen 
 class MyPhotoViewer extends StatelessWidget {
   final BoatImageModel image;
   MyPhotoViewer({

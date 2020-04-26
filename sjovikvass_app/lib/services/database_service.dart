@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
@@ -8,8 +7,10 @@ import 'package:sjovikvass_app/models/boatImage_model.dart';
 
 
 class DatabaseService {
-  // Methods for work orders
 
+  // Methods for work orders ---------------------------------
+
+  
   static Future<int> getTotalOrders(String inObjectId) async {
     QuerySnapshot snapshot = await workOrderRef
         .document(inObjectId)
@@ -56,12 +57,11 @@ class DatabaseService {
     });
   }
 
-  // Methods for an object
+  // Methods for an object ---------------------------------------
 
   static Future<DocumentSnapshot> getObjectById(String objectId) {
     Future<DocumentSnapshot> objectSnapshot =
         objectsRef.document(objectId).get();
-
     return objectSnapshot;
   }
 
@@ -104,15 +104,6 @@ class DatabaseService {
       'serialnumber': storedObject.serialnumber,
       'billingSum': 0.0,
     });
-    print('Runs addObjectToDB with' + storedObject.title);
-  }
-
-  static Future<List<StoredObject>> getStoredObjects() async {
-    QuerySnapshot objectsSnapshot = await objectsRef.getDocuments();
-    List<StoredObject> objects = objectsSnapshot.documents
-        .map((doc) => StoredObject.fromDoc(doc))
-        .toList();
-    return objects;
   }
 
   static Future<QuerySnapshot> getStoredObjectsFuture() {
@@ -122,7 +113,8 @@ class DatabaseService {
 
     return objects;
   }
-  //Methods for image uploads
+
+  //Methods for image uploads --------------------------------------------
   static void uploadImage(BoatImageModel boatImageModel, String inObjectId) {
     imageRef.document(inObjectId).collection('hasImages').add({
       'imageUrl': boatImageModel.imageUrl,

@@ -14,11 +14,13 @@ class StorageService {
     File compressedImageFile = await FlutterImageCompress.compressAndGetFile(
       image.absolute.path,
       '$path/img_$photoId.jpg',
-      quality: 70,
+      quality: 80,
     );
     return compressedImageFile;
   }
 
+  
+  //Used by boatImages.dart for adding images to a specific object
   static Future<String> uploadObjectImage(File imageFile) async {
     String photoId = Uuid().v4();
     File image = await compressImage(photoId, imageFile);
@@ -31,6 +33,7 @@ class StorageService {
     return downloadUrl;
   }
 
+  //Used by add_object_screen.dart to upload the image viewed in the landing screen.
    static Future<String> uploadObjectMainImage(File imageFile) async {
     String photoId = Uuid().v4();
     File image = await compressImage(photoId, imageFile);

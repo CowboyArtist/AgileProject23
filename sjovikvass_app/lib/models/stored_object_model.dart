@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//A objects different attributes
 class StoredObject {
   final String id;
   final String title;
@@ -34,6 +35,8 @@ class StoredObject {
     this.outDate,
     this.billingSum,
   });
+
+//Method to create an StoredObject from database document
 
   factory StoredObject.fromDoc(DocumentSnapshot doc) {
     return StoredObject(
