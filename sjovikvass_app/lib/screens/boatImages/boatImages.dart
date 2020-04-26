@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:sjovikvass_app/screens/boatImages/photo_view_screen.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
@@ -25,22 +26,18 @@ class BoatImages extends StatefulWidget {
 
 class _BoatImagesState extends State<BoatImages> {
   File _image;
-  
 
   _buildDarkerImage() {
-    return GestureDetector(
-      onTap: () => print('Metod för att kunna visa upp hela bilden'),
-      child: Container(
-        margin: EdgeInsets.all(10.0),
-        height: 150.0,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          gradient: LinearGradient(
-            colors: [Colors.transparent, Colors.black54],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+    return Container(
+      margin: EdgeInsets.all(10.0),
+      height: 150.0,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        gradient: LinearGradient(
+          colors: [Colors.transparent, Colors.black54],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
       ),
     );
@@ -80,17 +77,26 @@ class _BoatImagesState extends State<BoatImages> {
   }
 
   _buildImageTile(BoatImageModel image) {
-    return Stack(
-      children: <Widget>[
-        _buildSingleImage(image.imageUrl),
-        _buildDarkerImage(),
-        _buildTimeStamp(image.timestamp),
-      ],
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => MyPhotoViewer(
+            image: image,
+          ),
+        ),
+      ),
+      child: Stack(
+        children: <Widget>[
+          _buildSingleImage(image.imageUrl),
+          _buildDarkerImage(),
+          _buildTimeStamp(image.timestamp),
+        ],
+      ),
     );
   }
 
   _handleImage(ImageSource source) async {
-    
     Navigator.pop(context);
     File imageFile = await ImagePicker.pickImage(source: source);
     if (imageFile != null) {
@@ -101,7 +107,6 @@ class _BoatImagesState extends State<BoatImages> {
         );
         DatabaseService.uploadImage(boatImageModel, widget.inObjectId);
       }
-      
     }
   }
 
