@@ -22,9 +22,12 @@ class WorkPage extends StatefulWidget {
 }
 
 class _WorkPageState extends State<WorkPage> {
-  int _totalOrders = 0;
-  int _doneOrders = 0;
+  
 
+  final ValueNotifier<int> _counterDone = ValueNotifier<int>(0);
+  final ValueNotifier<int> _counterTotal = ValueNotifier<int>(0);
+
+  bool _allDone = false;
 
   
 
@@ -32,7 +35,8 @@ class _WorkPageState extends State<WorkPage> {
     int totalOrders = await DatabaseService.getTotalOrders(widget.inObjectId);
     
     setState(() {
-      _totalOrders = totalOrders;
+      
+      _counterTotal.value = totalOrders;
     });
   }
 
@@ -40,7 +44,8 @@ class _WorkPageState extends State<WorkPage> {
     int doneOrders = await DatabaseService.getDoneOrders(widget.inObjectId);
     
     setState(() {
-      _doneOrders = doneOrders;
+      
+      _counterDone.value = doneOrders;
     });
   }
 
@@ -94,7 +99,7 @@ class _WorkPageState extends State<WorkPage> {
                           sum: double.parse(priceController.text)),
                       widget.inObjectId);
                   setState(() {
-                    _totalOrders++;
+                    _counterTotal.value++;
                   });
                 },
               )
@@ -147,34 +152,46 @@ class _WorkPageState extends State<WorkPage> {
                   Text('Ny'),
                 ],
               ),
-              CircularPercentIndicator(
-                radius: 100.0,
-                lineWidth: 8.0,
-                percent: _doneOrders / _totalOrders,
-                animation: true,
-                center: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 18.0,
+              ValueListenableBuilder(
+                builder: (BuildContext context, int total, Widget child) {
+                  return ValueListenableBuilder(
+                  builder: (BuildContext context, int value, Widget child) {
+                 
+                    
+                    return CircularPercentIndicator(
+                    radius: 100.0,
+                    lineWidth: 8.0,
+                    percent: value / total,
+                    animation: true,
+                    center: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 18.0,
+                        ),
+                        Text(
+                          total == 0 ? '0 %' : "${(value/total * 100).round()}%",
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: MyColors.primary),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Text(
+                          'Klart',
+                          style: TextStyle(fontSize: 12.0),
+                        ),
+                      ],
                     ),
-                    Text(
-                      _totalOrders == 0 ? '0 %' : "${(_doneOrders/_totalOrders * 100).round()}%",
-                      style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: MyColors.primary),
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Text(
-                      'Klart',
-                      style: TextStyle(fontSize: 12.0),
-                    ),
-                  ],
-                ),
-                progressColor: MyColors.primary,
+                    progressColor: MyColors.primary,
+                  );
+                  },
+                  valueListenable: _counterDone,
+                );
+                },
+                              valueListenable: _counterTotal,
               ),
               SizedBox(
                 width: 34.0,
@@ -230,6 +247,7 @@ class _WorkPageState extends State<WorkPage> {
                       return WorkListTile(
                         inObjectId: widget.inObjectId,
                         workOrder: workOrder,
+                        valueNotifier: _counterDone,
                       );
                     },
                   );
@@ -262,18 +280,28 @@ class _WorkPageState extends State<WorkPage> {
               ],
             ),
           ),
-          FlatButton(
-            onPressed: () => print('Detta är för framtida utvecklingar'),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text(
-                'Båten är klar',
-                style: TextStyle(fontSize: 20.0, color: Colors.white),
-              ),
-            ),
-            color: _doneOrders == _totalOrders ? Colors.green : Colors.black12,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
+          ValueListenableBuilder(
+                    builder: (BuildContext context, int done, Widget child) {
+              return ValueListenableBuilder(
+                    builder: (BuildContext context, int total, Widget child) {
+                  return FlatButton(
+                    onPressed: () => print('Detta är för framtida utvecklingar'),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text(
+                        'Båten är klar',
+                        style: TextStyle(fontSize: 20.0, color: Colors.white),
+                      ),
+                    ),
+                    color: _counterTotal.value == _counterDone.value && _counterTotal.value != 0 ? Colors.green : Colors.black12,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
+                  );
+                },
+                valueListenable: _counterTotal,
+              );
+            },
+            valueListenable: _counterDone,
           ),
           SizedBox(
             height: 20.0,
