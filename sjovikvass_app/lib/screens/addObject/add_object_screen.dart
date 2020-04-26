@@ -49,7 +49,14 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
       setState(() {
         _isLoading = true;
       });
-      String imageUrl = await StorageService.uploadObjectMainImage(_image);
+      
+      if (_image != null) {
+        _imageUrl = await StorageService.uploadObjectMainImage(_image);
+      }
+      else {
+        _imageUrl = null;
+      }
+      
 
       StoredObject storedObject = StoredObject(
           title: _title,
@@ -60,7 +67,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
           serialnumber: _serialNumber,
           engine: _engine,
           engineSerialnumber: _engineSerialNumber,
-          imageUrl: imageUrl);
+          imageUrl: _imageUrl);
       print(storedObject.title + 'is created');
 
     _titleController.clear();
@@ -88,6 +95,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
         _isLoading = false;
         _image = null;
       });
+      Navigator.of(context).pop();
     }
   }
 
@@ -247,6 +255,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
         onPressed: () {
           _submitStoredObject();
           Navigator.of(context).pop();
+          
         },
       );
 
@@ -260,7 +269,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
       // set up the AlertDialog
       AlertDialog alert = AlertDialog(
         title: Text("Bekräfta objekt"),
-        content: Text("Vill du spara " + _title + '?'),
+        content: Text("Vill du spara ${_title}?"),
         actions: [
           cancelButton,
           okButton,
@@ -297,7 +306,10 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
 
   _buildNewObjectView() {
     return _isLoading
-        ? CircularProgressIndicator()
+        ? Center(child: Container(
+          width: 50.0,
+          height: 50.0,
+          child: CircularProgressIndicator()))
         : SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(16.0),
