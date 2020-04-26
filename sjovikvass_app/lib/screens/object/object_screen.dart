@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/screens/boatImages/boatImages.dart';
 import 'package:sjovikvass_app/screens/workPage/work_page.dart';
+import 'package:sjovikvass_app/screens/addObject/add_object_screen.dart';
+import 'package:sjovikvass_app/styles/my_colors.dart';
 
 //The screen that shows the overview of one specific object.
 class ObjectScreen extends StatefulWidget {

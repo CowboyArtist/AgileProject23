@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/screens/boatImages/boatImages.dart';
+import 'package:sjovikvass_app/screens/addObject/add_object_screen.dart';
 import 'package:sjovikvass_app/screens/object/object_screen.dart';
 import 'package:sjovikvass_app/screens/workPage/work_page.dart';
 import 'package:sjovikvass_app/services/database_service.dart';

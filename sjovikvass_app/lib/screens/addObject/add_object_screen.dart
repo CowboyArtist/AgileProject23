@@ -42,6 +42,8 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
 
   bool _isLoading = false;
 
+  bool _validate = false;
+
   _submitStoredObject() async {
     if (!_isLoading && _title.isNotEmpty) {
       setState(() {
@@ -61,18 +63,18 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
           imageUrl: imageUrl);
       print(storedObject.title + 'is created');
 
-      _titleController.clear();
-      _descriptionController.clear();
-      _engineSerialController.clear();
-      _engineController.clear();
-      _modelController.clear();
-      _serialController.clear();
+    _titleController.clear();
+    _descriptionController.clear();
+    _engineSerialController.clear();
+    _engineController.clear();
+    _modelController.clear();
+    _serialController.clear();
 
-      setState(() {
-        _category = 'Okategoriserad';
-      });
+    setState(() {
+      _category = 'Okategoriserad';
+    });
 
-      DatabaseService.addObjectToDB(storedObject);
+    DatabaseService.addObjectToDB(storedObject);
 
       setState(() {
         _title = '';
@@ -233,6 +235,48 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
     );
   }
 
+  showAlertDialog(BuildContext context) {
+    setState(() {
+      _titleController.text.isEmpty ? _validate = true : _validate = false;
+    });
+
+    if (!_isLoading && _title.isNotEmpty) {
+      // set up the button
+      Widget okButton = FlatButton(
+        child: Text("Spara"),
+        onPressed: () {
+          _submitStoredObject();
+          Navigator.of(context).pop();
+        },
+      );
+
+      Widget cancelButton = FlatButton(
+        child: Text("Avbryt"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text("Bekräfta objekt"),
+        content: Text("Vill du spara " + _title + '?'),
+        actions: [
+          cancelButton,
+          okButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+  }
+
   showPickerNumber(BuildContext context) {
     new Picker(
         confirmText: 'Bekräfta',
@@ -306,6 +350,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
                         decoration: InputDecoration(
                           labelStyle: TextStyle(fontSize: 15.0),
                           labelText: 'Titel på objekt',
+                          errorText: _validate ? 'Titel måste anges' : null,
                         ),
                         onChanged: (input) => _title = input,
                       ),
@@ -452,7 +497,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
           ]),
         ),
         bottomNavigationBar: GestureDetector(
-          onTap: _submitStoredObject,
+          onTap: () => showAlertDialog(context),
           child: Container(
               margin: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 40.0),
               padding: EdgeInsets.symmetric(vertical: 16.0),
