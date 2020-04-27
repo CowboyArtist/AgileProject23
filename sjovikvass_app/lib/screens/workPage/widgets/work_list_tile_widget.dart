@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
+import 'package:sjovikvass_app/screens/workPage/helpers/dialog_helper.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 
 
@@ -44,7 +45,10 @@ class _WorkListTileState extends State<WorkListTile> {
       ),
       child: ListTile(
         leading: GestureDetector(
-          onTap: () => _toggleIsDone(),
+          onTap: () {
+              _toggleIsDone();
+              DialogHelper.exit(context);
+          } ,
           child: AnimatedContainer(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
