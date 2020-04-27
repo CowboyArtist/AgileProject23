@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/screens/boatImages/boatImages.dart';
+import 'package:sjovikvass_app/screens/documents/document_screen.dart';
 import 'package:sjovikvass_app/screens/workPage/work_page.dart';
 
 //The screen that shows the overview of one specific object.
@@ -69,6 +70,32 @@ class _ObjectScreenState extends State<ObjectScreen> {
                       ),
                   icon: Icon(Icons.photo),
                   label: Text('Bilder')),
+              RaisedButton.icon(
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => WorkPage(
+                              inObjectId: widget.object.id,
+                            ))),
+                icon: Icon(Icons.check_box),
+                label: Text('Arbete'),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              RaisedButton.icon(
+                  onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => DocumentScreen(
+                            inObjectId: widget.object.id,
+                          ),
+                        ),
+                      ),
+                  icon: Icon(Icons.archive),
+                  label: Text('Dokument')),
               RaisedButton.icon(
                 onPressed: () => Navigator.push(
                     context,
