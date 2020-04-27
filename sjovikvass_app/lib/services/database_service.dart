@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sjovikvass_app/models/document_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
@@ -130,5 +131,24 @@ class DatabaseService {
         .snapshots();
 
     return imageStream;
+  }
+
+  //Methods for PDF uploads --------------------------------------------
+  static void uploadDocument(DocumentModel documentModel, String inObjectId) {
+    documentsRef.document(inObjectId).collection('hasDocuments').add({
+      'fileUrl': documentModel.fileUrl,
+      'timestamp': Timestamp.fromDate(DateTime.now()),
+      'comment': documentModel.comment,
+    });
+
+  }
+
+  static Stream getObjectDocuments(String inObjectId) {
+    Stream docStream = documentsRef
+        .document(inObjectId)
+        .collection('hasDocuments')
+        .snapshots();
+
+    return docStream;
   }
 }
