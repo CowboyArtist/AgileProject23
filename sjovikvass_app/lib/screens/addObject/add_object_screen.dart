@@ -6,6 +6,7 @@ import 'package:flutter_picker/Picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
+import 'package:sjovikvass_app/services/handle_image_service.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
@@ -105,7 +106,6 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
     }
   }
 
-// REFACTOR FROM HERE -------------
   _handleImage(ImageSource source) async {
     Navigator.pop(context);
     File imageFile = await ImagePicker.pickImage(source: source);
@@ -118,69 +118,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
     }
   }
 
-  _showSelectImageDialog() {
-    return Platform.isIOS ? _iosBottomSheet() : _androidDialog();
-  }
-  //If device is IOS this mehod will run to show design standards for IOS
-  _iosBottomSheet() {
-    showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext context) {
-          return CupertinoActionSheet(
-            title: Text('Lägg till foto'),
-            actions: <Widget>[
-              CupertinoActionSheetAction(
-                child: Text('Ta ett foto'),
-                onPressed: () => print('Kör metod för att ta foto'),
-              ),
-              CupertinoActionSheetAction(
-                child: Text('Från galleriet'),
-                onPressed: () {
-                  _handleImage(ImageSource.gallery);
-                },
-              ),
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              child: Text('Avbryt'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          );
-        });
-  }
-
-  //If device is Android this mehod will run to show design standards for Android
-  _androidDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text('Lägg till foto'),
-          children: <Widget>[
-            SimpleDialogOption(
-              child: Text('Ta ett foto'),
-              onPressed: () {
-                _handleImage(ImageSource.camera);
-              },
-            ),
-            SimpleDialogOption(
-                child: Text('Från kamerarullen'),
-                onPressed: () {
-                  _handleImage(ImageSource.gallery);
-                }),
-            SimpleDialogOption(
-              child: Text(
-                'Avbryt',
-                style: TextStyle(color: Colors.redAccent),
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // REFACTOR TO HERE ----------------------
+  
 
 
   //Shows dynamic fields for categories with engine
@@ -317,7 +255,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
   }
 
   //Builds all fundamental fields for all objects
-  _buildNewObjectView() {
+  _buildNewObjectView(BuildContext context) {
     return _isLoading
         ? Center(child: Container(
           width: 50.0,
@@ -328,7 +266,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
               padding: EdgeInsets.all(16.0),
               child: Column(children: <Widget>[
                 GestureDetector(
-                  onTap: _showSelectImageDialog,
+                  onTap: () => ImageService.showSelectImageDialog(context, _handleImage),
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.black12,
@@ -518,7 +456,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
           onTap: () => FocusScope.of(context).unfocus(),
           child: TabBarView(children: <Widget>[
             //Builds the view for creating new objects
-            _buildNewObjectView(),
+            _buildNewObjectView(context),
 
             //Builds the view for creating new supplier (to be implemented (sprint 2))
             Center(
