@@ -338,15 +338,18 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
                                   'Yta:  ',
                                   style: TextStyle(fontSize: 16.0),
                                 ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 5.0, horizontal: 10.0),
-                                  decoration: BoxDecoration(
-                                      color: Colors.black12,
-                                      borderRadius: BorderRadius.circular(5.0)),
-                                  child: Text(
-                                    '${_space} kvm',
-                                    style: TextStyle(fontSize: 16.0),
+                                GestureDetector(
+                                  onTap: () => showPickerNumber(context),
+                                                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 5.0, horizontal: 10.0),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black12,
+                                        borderRadius: BorderRadius.circular(5.0)),
+                                    child: Text(
+                                      '${_space} kvm',
+                                      style: TextStyle(fontSize: 16.0),
+                                    ),
                                   ),
                                 ),
                               ],
