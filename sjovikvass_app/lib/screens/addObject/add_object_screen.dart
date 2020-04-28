@@ -544,5 +544,100 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
   }
 
   //TODO
-  _buildNewSupplierView() {}
+  _buildNewSupplierView() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: <Widget>[
+            GestureDetector(
+              onTap: _showSelectImageDialog,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(10.0)),
+                height: 150.0,
+                width: double.infinity,
+                child: Center(
+                  child: _image == null
+                      ? Icon(
+                          Icons.add_a_photo,
+                          size: 32.0,
+                          color: Colors.black45,
+                        )
+                      : Container(
+                          width: double.infinity,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: Image(
+                              image: FileImage(_image),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                ),
+              ),
+            ),
+            SizedBox(height: 16.0),
+            Container(
+              padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 32.0),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(3, 3),
+                        blurRadius: 5.0)
+                  ],
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    //controller: _titleController, //TODO New Controller
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(fontSize: 15.0),
+                      labelText: 'Leverantör',
+                      errorText: _validate ? 'Titel måste anges' : null,
+                    ),
+                    onChanged: (input) => _title = input, //TODO New variable for supplierName
+                  ),
+                  TextField(
+                    maxLines: null,
+                    //controller: _descriptionController, //TODO New Controller
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(fontSize: 15.0),
+                      labelText: 'Beskrivning',
+                    ),
+                    onChanged: (input) => _description = input, //TODO New variable for supplierDescription
+                  ),
+                  TextField(
+                    //controller: _titleController, //TODO New Controller
+                    textCapitalization: TextCapitalization.sentences,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(fontSize: 15.0),
+                      labelText: 'Telefon',
+                    ),
+                    onChanged: (input) => _title = input, //TODO New variable for supplierNumber
+                  ),
+                  TextField(
+                    maxLines: null,
+                    //controller: _descriptionController, //TODO New Controller
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(fontSize: 15.0),
+                      labelText: 'Email',
+                    ),
+                    onChanged: (input) => _description = input, //TODO New variable for supplierEmail
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
