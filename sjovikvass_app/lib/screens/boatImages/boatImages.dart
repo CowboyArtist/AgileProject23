@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/screens/boatImages/photo_view_screen.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
+import 'package:sjovikvass_app/services/handle_image_service.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
@@ -118,69 +119,8 @@ class _BoatImagesState extends State<BoatImages> {
     }
   }
 
-  _showSelectImageDialog() {
-    return Platform.isIOS ? _iosBottomSheet() : _androidDialog();
-  }
-
-  _iosBottomSheet() {
-    showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext context) {
-          return CupertinoActionSheet(
-            title: Text('Lägg till foto'),
-            actions: <Widget>[
-              CupertinoActionSheetAction(
-                child: Text('Ta ett foto'),
-                onPressed: () => print('Kör metod för att ta foto'),
-              ),
-              CupertinoActionSheetAction(
-                child: Text('Från galleriet'),
-                onPressed: () {
-                  _handleImage(ImageSource.gallery);
-                },
-              ),
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              child: Text('Avbryt'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          );
-        });
-  }
-
-  _androidDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text('Lägg till foto'),
-          children: <Widget>[
-            SimpleDialogOption(
-              child: Text('Ta ett foto'),
-              onPressed: () {
-                _handleImage(ImageSource.camera);
-              },
-            ),
-            SimpleDialogOption(
-                child: Text('Från kamerarullen'),
-                onPressed: () {
-                  _handleImage(ImageSource.gallery);
-                }),
-            SimpleDialogOption(
-              child: Text(
-                'Avbryt',
-                style: TextStyle(color: Colors.redAccent),
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   //Creates button according to the app style for adding new images
-  _buildNewImageBtn() {
+  _buildNewImageBtn(BuildContext context) {
     return ButtonTheme(
       minWidth: 30.0,
       height: 30.0,
@@ -193,7 +133,7 @@ class _BoatImagesState extends State<BoatImages> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16.0))),
         padding: EdgeInsets.all(10.0),
-        onPressed: () => _showSelectImageDialog(),
+        onPressed: () => ImageService.showSelectImageDialog(context, _handleImage),
       ),
     );
   }
@@ -209,7 +149,7 @@ class _BoatImagesState extends State<BoatImages> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _buildNewImageBtn(),
+              _buildNewImageBtn(context),
             ],
           ),
           Text(

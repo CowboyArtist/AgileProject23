@@ -45,4 +45,16 @@ class StorageService {
     String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;
   }
+
+
+   static Future<String> uploadScannedPdf(File scannedFile) async {
+    String scanId = Uuid().v4();
+    
+    StorageUploadTask uploadTask = storageRef
+        .child('scans/object_$scanId.jpg')
+        .putFile(scannedFile);
+    StorageTaskSnapshot storageSnap = await uploadTask.onComplete;
+    String downloadUrl = await storageSnap.ref.getDownloadURL();
+    return downloadUrl;
+  }
 }
