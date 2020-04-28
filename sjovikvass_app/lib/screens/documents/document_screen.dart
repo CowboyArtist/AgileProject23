@@ -1,11 +1,9 @@
-
 import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_genius_scan/flutter_genius_scan.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
+import 'package:sjovikvass_app/screens/documents/document_full_screen.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/handle_image_service.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
@@ -43,17 +41,6 @@ class _DocumentScreenState extends State<DocumentScreen> {
     );
   }
 
-  _handleImage(ImageSource source) async {
-    Navigator.pop(context);
-    File imageFile = await ImagePicker.pickImage(source: source);
-    if (imageFile != null) {
-      setState(() {
-        //_imageUrl = imageUrl;
-        //_image = imageFile;
-      });
-    }
-  }
-
   _submitFile() async {
     String dbFileUrl = await StorageService.uploadScannedPdf(_scannedFile);
     DocumentModel documentModel = DocumentModel(fileUrl: dbFileUrl);
@@ -61,11 +48,16 @@ class _DocumentScreenState extends State<DocumentScreen> {
   }
 
   _buildDocumentTile(DocumentModel document) {
-    
     return ListTile(
       title: Text(document.timestamp.toDate().toString()),
-      onTap: () => OpenFile.open(document.fileUrl),
-      
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => FullscreenDocument(
+            documentUrl: document.fileUrl,
+          ),
+        ),
+      ),
     );
   }
 
@@ -77,36 +69,26 @@ class _DocumentScreenState extends State<DocumentScreen> {
         children: <Widget>[
           Container(
               height: 140.0,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    _buildBtn(
-                      Icons.scanner,
-                      'Skanna ny',
-                      () {
-                        FlutterGeniusScan.scanWithConfiguration({
-                          'source': 'camera',
-                          'multiPage': true,
-                        }).then((result) {
-                          String pdfUrl = result['pdfUrl'];
-                          setState(() {
-                            _scannedFile = File(pdfUrl.replaceAll("file://", ''));
-                          });
-                          OpenFile.open(pdfUrl.replaceAll("file://", '')).then(
-                              (result) => debugPrint(result),
-                              onError: (error) => print(error));
-                          _submitFile();
-                        }, onError: (error) => print(error));
-                      },
-                    ),
-                    _buildBtn(Icons.file_upload, 'Ladda upp',
-                        () => print('open FilePicker')),
-                    _buildBtn(
-                        Icons.add_a_photo,
-                        'Ta bild',
-                        () => ImageService.showSelectImageDialog(
-                            context, _handleImage))
-                  ])),
+              child: _buildBtn(
+                Icons.scanner,
+                'Skanna ny',
+                () {
+                  FlutterGeniusScan.scanWithConfiguration({
+                    'source': 'camera',
+                    'multiPage': true,
+                  }).then((result) {
+                    String pdfUrl = result['pdfUrl'];
+                    setState(() {
+                      _scannedFile =
+                          File(pdfUrl.replaceAll("file://", ''));
+                    });
+                    OpenFile.open(pdfUrl.replaceAll("file://", '')).then(
+                        (result) => debugPrint(result),
+                        onError: (error) => print(error));
+                    _submitFile();
+                  }, onError: (error) => print(error));
+                },
+              )),
           StreamBuilder(
             stream: DatabaseService.getObjectDocuments(widget.inObjectId),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
