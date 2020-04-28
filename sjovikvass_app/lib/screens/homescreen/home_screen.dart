@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/screens/addObject/add_object_screen.dart';
 import 'package:sjovikvass_app/screens/landing/landing_screen.dart';
-
+import 'package:sjovikvass_app/screens/supplierscreen/supplierScreen.dart';
 
 //Used to handle navigation
 class HomeScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         body: TabBarView(children: <Widget>[
           LandingScreen(),
-          Center(child: Text('Leverantörer')),
+          SupplierScreen(),
           Center(child: Text('Statistik')),
         ]),
         floatingActionButton: FloatingActionButton(
