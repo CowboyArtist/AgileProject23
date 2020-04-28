@@ -102,7 +102,7 @@ class _ObjectsListState extends State<ObjectsList> {
               future: _objects,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Text('Ingen data');
+                  return Center(child: Container(height: 80.0, width: 80.0, child: CircularProgressIndicator(),));
                 }
 
                 return ListView.builder(
