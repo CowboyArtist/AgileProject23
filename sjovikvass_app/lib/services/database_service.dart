@@ -2,16 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
+import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
 import 'package:sjovikvass_app/models/boatImage_model.dart';
 
-
-
 class DatabaseService {
-
   // Methods for work orders ---------------------------------
 
-  
   static Future<int> getTotalOrders(String inObjectId) async {
     QuerySnapshot snapshot = await workOrderRef
         .document(inObjectId)
@@ -23,11 +20,11 @@ class DatabaseService {
   static Future<int> getDoneOrders(String inObjectId) async {
     QuerySnapshot snapshot = await workOrderRef
         .document(inObjectId)
-        .collection('hasWorkOrders').where('isDone', isEqualTo: true)
+        .collection('hasWorkOrders')
+        .where('isDone', isEqualTo: true)
         .getDocuments();
     return snapshot.documents.length;
   }
-
 
   static void updateWorkOrder(String inObjectId, WorkOrder workOrder) {
     workOrderRef
@@ -122,13 +119,11 @@ class DatabaseService {
       'timestamp': Timestamp.fromDate(DateTime.now()),
       'comment': boatImageModel.comment,
     });
-
   }
-    static Stream getObjectImages(String inObjectId) {
-    Stream imageStream = imageRef
-        .document(inObjectId)
-        .collection('hasImages')
-        .snapshots();
+
+  static Stream getObjectImages(String inObjectId) {
+    Stream imageStream =
+        imageRef.document(inObjectId).collection('hasImages').snapshots();
 
     return imageStream;
   }
@@ -140,7 +135,6 @@ class DatabaseService {
       'timestamp': Timestamp.fromDate(DateTime.now()),
       'comment': documentModel.comment,
     });
-
   }
 
   static Stream getObjectDocuments(String inObjectId) {
@@ -150,5 +144,18 @@ class DatabaseService {
         .snapshots();
 
     return docStream;
+  }
+
+  static void deleteDocument(String inObjectId, DocumentModel documentModel) {
+    documentsRef
+        .document(inObjectId)
+        .collection('hasDocuments')
+        .document(documentModel.id)
+        .get()
+        .then((doc) => {
+              if (doc.exists) {
+                StorageService.deleteDocument(documentModel.fileUrl),
+                doc.reference.delete()}
+            });
   }
 }

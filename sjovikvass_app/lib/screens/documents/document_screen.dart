@@ -1,6 +1,8 @@
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_genius_scan/flutter_genius_scan.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
 import 'package:sjovikvass_app/screens/documents/document_full_screen.dart';
@@ -48,13 +50,30 @@ class _DocumentScreenState extends State<DocumentScreen> {
   }
 
   _buildDocumentTile(DocumentModel document) {
-    return ListTile(
-      title: Text(document.timestamp.toDate().toString()),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => FullscreenDocument(
-            documentUrl: document.fileUrl,
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      secondaryActions: <Widget>[
+        IconSlideAction(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            foregroundColor: Colors.red,
+            caption: 'Ta bort',
+            icon: Icons.delete,
+            onTap: () => DatabaseService.deleteDocument(widget.inObjectId, document)),
+      ],
+      child: Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.white, boxShadow: [BoxShadow(color: Colors.black12, offset: Offset(3,3), blurRadius: 5.0)]),
+        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+        child: ListTile(
+          
+          title: Text(document.timestamp.toDate().toString()),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => FullscreenDocument(
+                documentUrl: document.fileUrl,
+              ),
+            ),
           ),
         ),
       ),
@@ -79,8 +98,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                   }).then((result) {
                     String pdfUrl = result['pdfUrl'];
                     setState(() {
-                      _scannedFile =
-                          File(pdfUrl.replaceAll("file://", ''));
+                      _scannedFile = File(pdfUrl.replaceAll("file://", ''));
                     });
                     OpenFile.open(pdfUrl.replaceAll("file://", '')).then(
                         (result) => debugPrint(result),
@@ -89,6 +107,8 @@ class _DocumentScreenState extends State<DocumentScreen> {
                   }, onError: (error) => print(error));
                 },
               )),
+         
+          Divider(height: 1.0),
           StreamBuilder(
             stream: DatabaseService.getObjectDocuments(widget.inObjectId),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
