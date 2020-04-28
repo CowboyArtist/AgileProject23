@@ -9,7 +9,6 @@ import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
-
 //Screen for adding objects to the database with corresponding attributes.
 class AddObjectScreen extends StatefulWidget {
   @override
@@ -17,8 +16,6 @@ class AddObjectScreen extends StatefulWidget {
 }
 
 class _AddObjectScreenState extends State<AddObjectScreen> {
-
-
   TextEditingController _titleController = TextEditingController();
   String _title = '';
 
@@ -55,14 +52,12 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
       setState(() {
         _isLoading = true;
       });
-      
+
       if (_image != null) {
         _imageUrl = await StorageService.uploadObjectMainImage(_image);
-      }
-      else {
+      } else {
         _imageUrl = null;
       }
-      
 
       StoredObject storedObject = StoredObject(
           title: _title,
@@ -74,20 +69,19 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
           engine: _engine,
           engineSerialnumber: _engineSerialNumber,
           imageUrl: _imageUrl);
-     
 
-    _titleController.clear();
-    _descriptionController.clear();
-    _engineSerialController.clear();
-    _engineController.clear();
-    _modelController.clear();
-    _serialController.clear();
+      _titleController.clear();
+      _descriptionController.clear();
+      _engineSerialController.clear();
+      _engineController.clear();
+      _modelController.clear();
+      _serialController.clear();
 
-    setState(() {
-      _category = 'Okategoriserad';
-    });
+      setState(() {
+        _category = 'Okategoriserad';
+      });
 
-    DatabaseService.addObjectToDB(storedObject);
+      DatabaseService.addObjectToDB(storedObject);
 
       setState(() {
         _title = '';
@@ -110,7 +104,6 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
     Navigator.pop(context);
     File imageFile = await ImagePicker.pickImage(source: source);
     if (imageFile != null) {
-      
       setState(() {
         //_imageUrl = imageUrl;
         _image = imageFile;
@@ -121,6 +114,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
   _showSelectImageDialog() {
     return Platform.isIOS ? _iosBottomSheet() : _androidDialog();
   }
+
   //If device is IOS this mehod will run to show design standards for IOS
   _iosBottomSheet() {
     showCupertinoModalPopup(
@@ -181,7 +175,6 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
   }
 
   // REFACTOR TO HERE ----------------------
-
 
   //Shows dynamic fields for categories with engine
   _buildFieldsForEngine() {
@@ -266,7 +259,6 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
         onPressed: () {
           _submitStoredObject();
           Navigator.of(context).pop();
-          
         },
       );
 
@@ -319,10 +311,9 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
   //Builds all fundamental fields for all objects
   _buildNewObjectView() {
     return _isLoading
-        ? Center(child: Container(
-          width: 50.0,
-          height: 50.0,
-          child: CircularProgressIndicator()))
+        ? Center(
+            child: Container(
+                width: 50.0, height: 50.0, child: CircularProgressIndicator()))
         : SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(16.0),
@@ -521,9 +512,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
             _buildNewObjectView(),
 
             //Builds the view for creating new supplier (to be implemented (sprint 2))
-            Center(
-              child: Text('Lägg till Leverantör'),
-            ),
+            _buildNewSupplierView(),
           ]),
         ),
         bottomNavigationBar: GestureDetector(
@@ -553,4 +542,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
       ),
     );
   }
+
+  //TODO
+  _buildNewSupplierView() {}
 }
