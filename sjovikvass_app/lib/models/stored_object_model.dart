@@ -12,6 +12,7 @@ class StoredObject {
   final String engineSerialnumber;
   final String imageUrl;
   final double space;
+  final String storageType;
   final Timestamp timestamp;
 
   final double billingSum;
@@ -30,6 +31,7 @@ class StoredObject {
     this.serialnumber,
     this.imageUrl,
     this.space,
+    this.storageType,
     this.timestamp,
     this.inDate,
     this.outDate,
@@ -51,6 +53,7 @@ class StoredObject {
       imageUrl: doc['imageUrl'],
       timestamp: doc['timestamp'],
       space: doc['space'],
+      storageType: doc['storageType'],
       inDate: doc['inDate'],
       outDate: doc['outDate'],
       billingSum: doc['billingSum'],

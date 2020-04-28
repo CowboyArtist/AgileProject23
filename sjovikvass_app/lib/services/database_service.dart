@@ -80,6 +80,7 @@ class DatabaseService {
         'inDate': storedObject.inDate,
         'outDate': storedObject.outDate,
         'space': storedObject.space,
+        'storageType': storedObject.storageType,
         'serialnumber': storedObject.serialnumber,
         'billingSum': storedObject.billingSum + addToBillingSum,
       });
@@ -99,6 +100,7 @@ class DatabaseService {
       'inDate': storedObject.inDate,
       'outDate': storedObject.outDate,
       'space': storedObject.space,
+      'storageType': 'Typ av hall',
       'serialnumber': storedObject.serialnumber,
       'billingSum': 0.0,
     });
