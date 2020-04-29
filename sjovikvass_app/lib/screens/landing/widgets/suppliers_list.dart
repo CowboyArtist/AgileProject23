@@ -31,10 +31,8 @@ class _SuppliersListState extends State<SuppliersList> {
 
   _buildSuppliersTile(Supplier supplier) {
     return GestureDetector(
-
-
       onTap: () => print('Fix Detail view'),
-            /*Navigator.push(
+      /*Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => SupplierScreen(
@@ -43,7 +41,7 @@ class _SuppliersListState extends State<SuppliersList> {
               ),
         ),
       )*/
-      
+
       child: Container(
         margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
         height: 140.0,
@@ -78,7 +76,7 @@ class _SuppliersListState extends State<SuppliersList> {
                   supplier.companyName,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                      fontSize: 24.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.black),
                 ),
