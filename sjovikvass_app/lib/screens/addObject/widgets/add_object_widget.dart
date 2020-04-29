@@ -44,7 +44,6 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
     Navigator.pop(context);
     File imageFile = await ImagePicker.pickImage(source: source);
     if (imageFile != null) {
-
       setState(() {
         _image = imageFile;
       });
@@ -252,7 +251,8 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                 padding: EdgeInsets.all(16.0),
                 child: Column(children: <Widget>[
                   GestureDetector(
-                    onTap: () => ImageService.showSelectImageDialog(context, _handleImage),
+                    onTap: () => ImageService.showSelectImageDialog(
+                        context, _handleImage),
                     child: Container(
                       decoration: BoxDecoration(
                           color: Colors.black12,
@@ -423,25 +423,27 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
         //Need to dynamically change what to upload (object/supplier). Implement in sprint 2
         onTap: () => showAlertDialog(context),
         child: Container(
-            margin: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 40.0),
-            padding: EdgeInsets.symmetric(vertical: 16.0),
-            height: 50.0,
-            width: double.infinity,
-            decoration: BoxDecoration(
-                color: MyColors.primary,
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(3, 3),
-                      blurRadius: 5.0)
-                ],
-                borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-                child: Text(
+          margin: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 40.0),
+          padding: EdgeInsets.symmetric(vertical: 16.0),
+          height: 50.0,
+          width: double.infinity,
+          decoration: BoxDecoration(
+              color: MyColors.primary,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black12,
+                    offset: Offset(3, 3),
+                    blurRadius: 5.0)
+              ],
+              borderRadius: BorderRadius.circular(10.0)),
+          child: Center(
+            child: Text(
               'Skapa objekt',
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ))),
+            ),
+          ),
+        ),
       ),
     );
   }

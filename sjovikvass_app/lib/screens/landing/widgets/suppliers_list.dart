@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/screens/supplierScreen/supplierScreen.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
+import 'package:sjovikvass_app/services/handle_image_service.dart';
+import 'package:sjovikvass_app/styles/my_colors.dart';
 
 class SuppliersList extends StatefulWidget {
   @override
@@ -29,7 +31,10 @@ class _SuppliersListState extends State<SuppliersList> {
 
   _buildSuppliersTile(Supplier supplier) {
     return GestureDetector(
-      onTap: () => Navigator.push(
+
+
+      onTap: () => print('Fix Detail view'),
+            /*Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => SupplierScreen(
@@ -37,46 +42,135 @@ class _SuppliersListState extends State<SuppliersList> {
 
               ),
         ),
-      ),
+      )*/
+      
       child: Container(
-          margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-          height: 100.0,
-          decoration: BoxDecoration(
-              color: Colors.black45, borderRadius: BorderRadius.circular(10.0)),
-          child: Stack(
-            children: <Widget>[
-              Container(
-                width: double.infinity,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: supplier.imageUrl == null
-                        ? Image.asset(
-                            'assets/images/placeholder_boat.jpg',
-                            fit: BoxFit.cover,
-                          )
-                        : Image(
-                            image:
-                                CachedNetworkImageProvider(supplier.imageUrl),
-                            fit: BoxFit.cover,
-                          )),
+        margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+        height: 140.0,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black38,
+              blurRadius: 10.0, // has the effect of softening the shadow
+              spreadRadius: 2.0, // has the effect of extending the shadow
+              offset: Offset(
+                6.0, // horizontal, move right 10
+                6.0, // vertical, move down 10
               ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
+            )
+          ],
+        ),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            Positioned(
+              left: 16.0,
+              top: 16.0,
+              child: Container(
+                width: 350.0,
+                child: Text(
+                  supplier.companyName,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
               ),
-              Positioned(
-                  left: 16.0,
-                  bottom: 16.0,
-                  child: Text(
-                    supplier.companyName,
-                    style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  )),
-            ],
-          )),
+            ),
+            Positioned(
+              right: 0.0,
+              top: 40.0,
+              child: Container(
+                height: 100,
+                width: 250.0,
+                padding: EdgeInsets.all(20.0),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      supplier.description,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 16.0,
+              bottom: 32.0,
+              child: ButtonTheme(
+                minWidth: 30.0,
+                height: 30.0,
+                child: RaisedButton(
+                  color: MyColors.lightBlue,
+                  child: Icon(
+                    Icons.phone,
+                    color: MyColors.primary,
+                  ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                  padding: EdgeInsets.all(10.0),
+                  onPressed: () => print('Phone Button Pressed'),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 80.0,
+              bottom: 32.0,
+              child: ButtonTheme(
+                minWidth: 30.0,
+                height: 30.0,
+                child: RaisedButton(
+                  color: MyColors.lightBlue,
+                  child: Icon(
+                    Icons.mail,
+                    color: MyColors.primary,
+                  ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                  padding: EdgeInsets.all(10.0),
+                  onPressed: () => print('Email Button Pressed'),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 24.0,
+              bottom: 10.0,
+              child: Text(
+                'Ring',
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
+              ),
+            ),
+            Positioned(
+              left: 85.0,
+              bottom: 10.0,
+              child: Text(
+                'Maila',
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
+              ),
+            ),
+            Positioned(
+              right: 30.0,
+              bottom: 10.0,
+              child: Text(
+                'Mer info',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: MyColors.primary,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
