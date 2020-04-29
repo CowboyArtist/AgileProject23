@@ -5,7 +5,7 @@ class WorkOrder {
   final String id;
   final String title;
   bool isDone;
-  final double sum;
+  double sum;
 
   WorkOrder({
     this.id,

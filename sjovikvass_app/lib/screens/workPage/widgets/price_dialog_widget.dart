@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/screens/workPage/design/bottom_wave_clipper.dart';
-import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget.dart';
-import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
 class PriceDialog extends StatefulWidget {
@@ -20,7 +18,20 @@ class PriceDialog extends StatefulWidget {
 }
 
 class _PriceDialogState extends State<PriceDialog> {
-  var value = "";
+  Duration value;
+  double hourlyRate = 120.0;
+  double totalPrice = 0.0;
+
+  _calculateHourlyPrice() {
+    if (value != null) {
+      setState(() {
+        totalPrice = (value.inMinutes / 60) * hourlyRate;
+      });
+      Navigator.of(context).pop(true);
+    }
+
+    print(totalPrice);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +99,7 @@ class _PriceDialogState extends State<PriceDialog> {
                 mode: CupertinoTimerPickerMode.hm,
                 onTimerDurationChanged: (value) {
                   setState(() {
-                    this.value = value.toString();
+                    this.value = value;
                   });
                 }),
           ),
@@ -106,8 +117,7 @@ class _PriceDialogState extends State<PriceDialog> {
                 style:
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
-              onPressed: () =>
-                  Navigator.of(context).pop(true), //pris beroende på timmar?
+              onPressed: () => _calculateHourlyPrice(),
             ),
           ),
         ],

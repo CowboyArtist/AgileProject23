@@ -16,7 +16,11 @@ class WorkListTile extends StatefulWidget {
   _WorkListTileState createState() => _WorkListTileState();
 }
 
-class _WorkListTileState extends State<WorkListTile> {
+class _WorkListTileState extends State<WorkListTile>
+    with TickerProviderStateMixin {
+  bool _resized = false;
+  double _height = 55.0;
+
   //Sets or resets if the work order is done and update the corresponding values in database
   _toggleIsDone() {
     setState(() {
@@ -34,44 +38,64 @@ class _WorkListTileState extends State<WorkListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 10.0),
-      decoration: BoxDecoration(
-        color:
-            widget.workOrder.isDone ? Colors.lightGreen[200] : Colors.black12,
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: ListTile(
-        leading: GestureDetector(
-          onTap: () {
-            widget.workOrder.isDone
-                ? null
-                : showDialog(
-                    context: context,
-                    builder: (context) => PriceDialog(
-                          inObjectId: widget.inObjectId,
-                          workOrder: widget.workOrder,
-                        ));
-            _toggleIsDone();
-          },
-          child: AnimatedContainer(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5.0),
-              color: widget.workOrder.isDone ? Colors.green : Colors.black12,
-            ),
-            height: 20.0,
-            width: 20.0,
-            duration: Duration(milliseconds: 150),
-            curve: Curves.linear,
+    return AnimatedSize(
+      duration: Duration(milliseconds: 600),
+      vsync: this,
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            if (_resized) {
+              _height = 55.0;
+              _resized = false;
+            } else {
+              _height = 115.0;
+              _resized = true;
+            }
+          });
+        },
+        child: Container(
+          height: _height,
+          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 10.0),
+          decoration: BoxDecoration(
+            color: widget.workOrder.isDone
+                ? Colors.lightGreen[200]
+                : Colors.black12,
+            borderRadius: BorderRadius.circular(12.0),
           ),
-        ),
-        title: Text(
-          widget.workOrder.title,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        trailing: Text(
-          widget.workOrder.sum.toString() + ' kr',
-          style: TextStyle(fontSize: 16.0),
+          child: ListTile(
+            leading: GestureDetector(
+              onTap: () {
+                widget.workOrder.isDone
+                    ? null
+                    : showDialog(
+                        context: context,
+                        builder: (context) => PriceDialog(
+                              inObjectId: widget.inObjectId,
+                              workOrder: widget.workOrder,
+                            ));
+                _toggleIsDone();
+              },
+              child: AnimatedContainer(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5.0),
+                  color:
+                      widget.workOrder.isDone ? Colors.green : Colors.black12,
+                ),
+                height: 20.0,
+                width: 20.0,
+                duration: Duration(milliseconds: 150),
+                curve: Curves.linear,
+              ),
+            ),
+            title: Text(
+              widget.workOrder.title,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            trailing: Text(
+              widget.workOrder.sum.toString() + ' kr',
+              style: TextStyle(fontSize: 16.0),
+            ),
+          ),
         ),
       ),
     );
