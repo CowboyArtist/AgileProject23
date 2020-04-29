@@ -130,6 +130,15 @@ class DatabaseService {
     return imageStream;
   }
 
+  static Future<int> getImageCount(String inObjectId) async {
+    QuerySnapshot snapshot = await imageRef
+        .document(inObjectId)
+        .collection('hasImages')
+        .getDocuments();
+
+    return snapshot.documents.length;
+  }
+
   //Methods for PDF uploads --------------------------------------------
   static void uploadDocument(DocumentModel documentModel, String inObjectId) {
     documentsRef.document(inObjectId).collection('hasDocuments').add({
@@ -155,9 +164,20 @@ class DatabaseService {
         .document(documentModel.id)
         .get()
         .then((doc) => {
-              if (doc.exists) {
-                StorageService.deleteDocument(documentModel.fileUrl),
-                doc.reference.delete()}
+              if (doc.exists)
+                {
+                  StorageService.deleteDocument(documentModel.fileUrl),
+                  doc.reference.delete()
+                }
             });
+  }
+
+  static Future<int> getDocumentsCount(String inObjectId) async {
+    QuerySnapshot snapshot = await documentsRef
+        .document(inObjectId)
+        .collection('hasDocuments')
+        .getDocuments();
+
+    return snapshot.documents.length;
   }
 }
