@@ -1,9 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
-import 'package:sjovikvass_app/screens/workPage/helpers/dialog_helper.dart';
+import 'package:sjovikvass_app/screens/workPage/widgets/price_dialog_widget.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
-
 
 //Defines the appearance of the list tile in the list of work_page.dart
 class WorkListTile extends StatefulWidget {
@@ -18,7 +17,6 @@ class WorkListTile extends StatefulWidget {
 }
 
 class _WorkListTileState extends State<WorkListTile> {
-
   //Sets or resets if the work order is done and update the corresponding values in database
   _toggleIsDone() {
     setState(() {
@@ -46,9 +44,16 @@ class _WorkListTileState extends State<WorkListTile> {
       child: ListTile(
         leading: GestureDetector(
           onTap: () {
-              _toggleIsDone();
-              DialogHelper.exit(context);
-          } ,
+            widget.workOrder.isDone
+                ? null
+                : showDialog(
+                    context: context,
+                    builder: (context) => PriceDialog(
+                          inObjectId: widget.inObjectId,
+                          workOrder: widget.workOrder,
+                        ));
+            _toggleIsDone();
+          },
           child: AnimatedContainer(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),

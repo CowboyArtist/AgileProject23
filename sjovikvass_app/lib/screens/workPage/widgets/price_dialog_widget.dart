@@ -1,14 +1,27 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/screens/workPage/design/bottom_wave_clipper.dart';
-
+import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget.dart';
+import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
 class PriceDialog extends StatefulWidget {
+  final WorkOrder workOrder;
+  final String inObjectId;
+
+  PriceDialog({
+    this.inObjectId,
+    this.workOrder,
+  });
+
   @override
   _PriceDialogState createState() => _PriceDialogState();
 }
 
 class _PriceDialogState extends State<PriceDialog> {
+  var value = "";
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -57,7 +70,8 @@ class _PriceDialogState extends State<PriceDialog> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
                     child: Text(
-                      'Hej?',
+                      widget.workOrder.title,
+                      //namnet på jobbet
                       style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
@@ -66,6 +80,34 @@ class _PriceDialogState extends State<PriceDialog> {
                   ),
                 ],
               ),
+            ),
+          ),
+          Container(
+            height: 160.0,
+            child: CupertinoTimerPicker(
+                mode: CupertinoTimerPickerMode.hm,
+                onTimerDurationChanged: (value) {
+                  setState(() {
+                    this.value = value.toString();
+                  });
+                }),
+          ),
+          SizedBox(height: 10.0),
+          Container(
+            height: 40.0,
+            width: 200.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              color: Colors.green,
+            ),
+            child: FlatButton(
+              child: Text(
+                'Markera som klar',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              onPressed: () =>
+                  Navigator.of(context).pop(true), //pris beroende på timmar?
             ),
           ),
         ],

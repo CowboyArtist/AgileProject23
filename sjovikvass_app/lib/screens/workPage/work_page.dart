@@ -23,7 +23,6 @@ class WorkPage extends StatefulWidget {
 }
 
 class _WorkPageState extends State<WorkPage> {
-  
   //ValueNotifier is used to be able to change the value from another widget in the widget-tree.
   //Passed as an argument when creating WorkListTile.
   final ValueNotifier<int> _counterDone = ValueNotifier<int>(0);
@@ -32,11 +31,9 @@ class _WorkPageState extends State<WorkPage> {
   //Boolean to determine when to turn the bottom button to green
   bool _allDone = false;
 
-  
-
   _setupTotalOrders() async {
     int totalOrders = await DatabaseService.getTotalOrders(widget.inObjectId);
-    
+
     setState(() {
       _counterTotal.value = totalOrders;
     });
@@ -44,7 +41,7 @@ class _WorkPageState extends State<WorkPage> {
 
   _setupDoneOrders() async {
     int doneOrders = await DatabaseService.getDoneOrders(widget.inObjectId);
-    
+
     setState(() {
       _counterDone.value = doneOrders;
     });
@@ -54,7 +51,6 @@ class _WorkPageState extends State<WorkPage> {
     _setupTotalOrders();
     _setupDoneOrders();
   }
-
 
   _createWorkOrderDialog(BuildContext context) {
     TextEditingController workController = TextEditingController();
@@ -158,45 +154,45 @@ class _WorkPageState extends State<WorkPage> {
               //Listens to changes of _counterTotal and rebuilds child widget
               ValueListenableBuilder(
                 builder: (BuildContext context, int total, Widget child) {
-              //Listens to changes of _counterDone and rebuilds child widget
+                  //Listens to changes of _counterDone and rebuilds child widget
                   return ValueListenableBuilder(
-                  builder: (BuildContext context, int value, Widget child) {
-                 
-                    
-                    return CircularPercentIndicator(
-                    radius: 100.0,
-                    lineWidth: 8.0,
-                    percent: value / total,
-                    animation: true,
-                    center: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 18.0,
+                    builder: (BuildContext context, int value, Widget child) {
+                      return CircularPercentIndicator(
+                        radius: 100.0,
+                        lineWidth: 8.0,
+                        percent: value / total,
+                        animation: true,
+                        center: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 18.0,
+                            ),
+                            Text(
+                              total == 0
+                                  ? '0 %'
+                                  : "${(value / total * 100).round()}%",
+                              style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: MyColors.primary),
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Text(
+                              'Klart',
+                              style: TextStyle(fontSize: 12.0),
+                            ),
+                          ],
                         ),
-                        Text(
-                          total == 0 ? '0 %' : "${(value/total * 100).round()}%",
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: MyColors.primary),
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Text(
-                          'Klart',
-                          style: TextStyle(fontSize: 12.0),
-                        ),
-                      ],
-                    ),
-                    progressColor: MyColors.primary,
+                        progressColor: MyColors.primary,
+                      );
+                    },
+                    valueListenable: _counterDone,
                   );
-                  },
-                  valueListenable: _counterDone,
-                );
                 },
-                              valueListenable: _counterTotal,
+                valueListenable: _counterTotal,
               ),
               SizedBox(
                 width: 34.0,
@@ -237,28 +233,28 @@ class _WorkPageState extends State<WorkPage> {
             height: 10.0,
           ),
           Expanded(
-            child: 
-            //Stream that updates the UI when values in database changes.
-            StreamBuilder(
-                stream: DatabaseService.getWorkOrders(widget.inObjectId),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Text('Hämtar data');
-                  }
-                  return ListView.builder(
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      WorkOrder workOrder =
-                          WorkOrder.fromDoc(snapshot.data.documents[index]);
+            child:
+                //Stream that updates the UI when values in database changes.
+                StreamBuilder(
+                    stream: DatabaseService.getWorkOrders(widget.inObjectId),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Text('Hämtar data');
+                      }
+                      return ListView.builder(
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          WorkOrder workOrder =
+                              WorkOrder.fromDoc(snapshot.data.documents[index]);
 
-                      return WorkListTile(
-                        inObjectId: widget.inObjectId,
-                        workOrder: workOrder,
-                        valueNotifier: _counterDone,
+                          return WorkListTile(
+                            inObjectId: widget.inObjectId,
+                            workOrder: workOrder,
+                            valueNotifier: _counterDone,
+                          );
+                        },
                       );
-                    },
-                  );
-                }),
+                    }),
           ),
           Container(
             height: 50.0,
@@ -289,13 +285,13 @@ class _WorkPageState extends State<WorkPage> {
           ),
           //Listens to changes of _counterDone and rebuilds child widget
           ValueListenableBuilder(
-                    builder: (BuildContext context, int done, Widget child) {
-
-            //Listens to changes of _counterTotal and rebuilds child widget
+            builder: (BuildContext context, int done, Widget child) {
+              //Listens to changes of _counterTotal and rebuilds child widget
               return ValueListenableBuilder(
-                    builder: (BuildContext context, int total, Widget child) {
+                builder: (BuildContext context, int total, Widget child) {
                   return FlatButton(
-                    onPressed: () => print('Detta är för framtida utvecklingar'),
+                    onPressed: () =>
+                        print('Detta är för framtida utvecklingar'),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
@@ -303,7 +299,10 @@ class _WorkPageState extends State<WorkPage> {
                         style: TextStyle(fontSize: 20.0, color: Colors.white),
                       ),
                     ),
-                    color: _counterTotal.value == _counterDone.value && _counterTotal.value != 0 ? Colors.green : Colors.black12,
+                    color: _counterTotal.value == _counterDone.value &&
+                            _counterTotal.value != 0
+                        ? Colors.green
+                        : Colors.black12,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0)),
                   );
