@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
+import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
@@ -162,6 +163,50 @@ class DatabaseService {
         .getDocuments();
 
     return snapshot.documents.length;
+  static Stream getObjectImages(String inObjectId) {
+    Stream imageStream =
+        imageRef.document(inObjectId).collection('hasImages').snapshots();
+
+    return imageStream;
+  }
+
+  //Methods for supplier -----------------------------------------------
+
+  static Future<DocumentSnapshot> getSupplierById(String supplierId) {
+    Future<DocumentSnapshot> supplierSnapshot =
+        suppliersRef.document(supplierId).get();
+    return supplierSnapshot;
+  }
+
+  static void updateSupplier(String supplierId) {
+    Supplier supplier;
+    getSupplierById(supplierId).then((data) {
+      supplier = Supplier.fromDoc(data);
+
+      suppliersRef.document(supplier.id).updateData({
+        'companyName': supplier.companyName,
+        'description': supplier.description,
+        'phoneNr': supplier.phoneNr,
+        'email': supplier.email,
+        'imageUrl': supplier.imageUrl,
+      });
+    });
+  }
+
+  static void addSupplierToDB(Supplier supplier) {
+    suppliersRef.add({
+      'companyName': supplier.companyName,
+      'description': supplier.description,
+      'phoneNr': supplier.phoneNr,
+      'email': supplier.email,
+      'imageUrl': supplier.imageUrl,
+    });
+  }
+
+  static Future<QuerySnapshot> getSuppliersFuture() {
+    Future<QuerySnapshot> suppliers =
+        suppliersRef.orderBy('companyName').getDocuments();
+    return suppliers;
   }
 
   //Methods for PDF uploads --------------------------------------------
