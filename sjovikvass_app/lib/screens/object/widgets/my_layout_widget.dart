@@ -21,7 +21,26 @@ class MyLayout {
         ),
       ),
     );
+
+    
   }
+  static oneItemNoExpand(Widget child, Function onTap) {
+    return GestureDetector(
+      onTap: onTap,
+            child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 8.0),
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: MyColors.lightBlue,
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: [
+            BoxShadow(
+                color: Color(0x11000000), blurRadius: 5.0, offset: Offset(2, 2))
+          ],
+        ),
+        child: child,
+      ),
+    );}
 
   
 }
