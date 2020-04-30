@@ -9,13 +9,24 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin{
+
+  TabController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TabController(length: 3, vsync: this);
+    
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        body: TabBarView(children: <Widget>[
+        body: TabBarView(
+          controller: _controller,
+          children: <Widget>[
           LandingScreen(),
           SupplierScreen(),
           Center(child: Text('Statistik')),
@@ -25,12 +36,13 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddObjectScreen()),
+                MaterialPageRoute(builder: (context) => AddObjectScreen(initialPage: _controller.index == 1 ? 2 : 1,)),
               );
             }),
         bottomNavigationBar: Container(
           margin: EdgeInsets.only(bottom: 40.0),
           child: TabBar(
+            
               indicatorSize: TabBarIndicatorSize.label,
               labelColor: Colors.black87,
               tabs: [
@@ -43,7 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 Tab(
                   icon: Icon(Icons.multiline_chart),
                 )
-              ]),
+              ],
+              controller: _controller,),
         ),
       ),
     );

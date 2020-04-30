@@ -5,11 +5,23 @@ import 'package:sjovikvass_app/screens/addObject/widgets/add_supplier_widget.dar
 
 //Screen for adding objects to the database with corresponding attributes.
 class AddObjectScreen extends StatefulWidget {
+  
+  final int initialPage;
+  AddObjectScreen({this.initialPage});
   @override
   _AddObjectScreenState createState() => _AddObjectScreenState();
 }
 
-class _AddObjectScreenState extends State<AddObjectScreen> {
+class _AddObjectScreenState extends State<AddObjectScreen> with SingleTickerProviderStateMixin{
+
+   TabController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TabController(length: 2, vsync: this);
+    _controller.animateTo( widget.initialPage - 1);
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -18,6 +30,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
         appBar: AppBar(
           title: Text('Lägg till'),
           bottom: TabBar(
+            controller: _controller,
             indicatorColor: Colors.white,
             tabs: [
               Tab(
@@ -32,6 +45,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> {
         body: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: TabBarView(
+            controller: _controller,
             children: <Widget>[
               //Builds the view for creating new objects
               AddObjectWidget(),

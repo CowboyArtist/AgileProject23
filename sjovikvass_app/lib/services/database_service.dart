@@ -162,14 +162,9 @@ class DatabaseService {
         .collection('hasImages')
         .getDocuments();
 
-    return snapshot.documents.length;
-  static Stream getObjectImages(String inObjectId) {
-    Stream imageStream =
-        imageRef.document(inObjectId).collection('hasImages').snapshots();
+    return snapshot.documents.length;}
 
-    return imageStream;
-  }
-
+  
   //Methods for supplier -----------------------------------------------
 
   static Future<DocumentSnapshot> getSupplierById(String supplierId) {

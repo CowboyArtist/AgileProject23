@@ -1,10 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
-import 'package:sjovikvass_app/screens/supplierScreen/supplierScreen.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
-import 'package:sjovikvass_app/services/handle_image_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
 class SuppliersList extends StatefulWidget {
@@ -32,16 +29,6 @@ class _SuppliersListState extends State<SuppliersList> {
   _buildSuppliersTile(Supplier supplier) {
     return GestureDetector(
       onTap: () => print('Fix Detail view'),
-      /*Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => SupplierScreen(
-              //TODO
-
-              ),
-        ),
-      )*/
-
       child: Container(
         margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
         height: 140.0,
@@ -50,12 +37,12 @@ class _SuppliersListState extends State<SuppliersList> {
           borderRadius: BorderRadius.circular(10.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.black38,
-              blurRadius: 10.0, // has the effect of softening the shadow
+              color: Colors.black12,
+              blurRadius: 6.0, // has the effect of softening the shadow
               spreadRadius: 2.0, // has the effect of extending the shadow
               offset: Offset(
-                6.0, // horizontal, move right 10
-                6.0, // vertical, move down 10
+                3.0, // horizontal, move right 10
+                3.0, // vertical, move down 10
               ),
             )
           ],
@@ -154,18 +141,18 @@ class _SuppliersListState extends State<SuppliersList> {
                 style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
-            Positioned(
-              right: 30.0,
-              bottom: 10.0,
-              child: Text(
-                'Mer info',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: MyColors.primary,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            ),
+            // Positioned(
+            //   right: 30.0,
+            //   bottom: 10.0,
+            //   child: Text(
+            //     'Mer info',
+            //     style: TextStyle(
+            //       fontSize: 16.0,
+            //       color: MyColors.primary,
+            //       decoration: TextDecoration.underline,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
