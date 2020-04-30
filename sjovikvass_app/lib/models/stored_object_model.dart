@@ -12,7 +12,7 @@ class StoredObject {
   final String engineSerialnumber;
   final String imageUrl;
   final double space;
-  final String storageType;
+  String storageType;
   final Timestamp timestamp;
 
   final double billingSum;

@@ -196,7 +196,7 @@ class _WorkPageState extends State<WorkPage> {
                   valueListenable: _counterDone,
                 );
                 },
-                              valueListenable: _counterTotal,
+                valueListenable: _counterTotal,
               ),
               SizedBox(
                 width: 34.0,

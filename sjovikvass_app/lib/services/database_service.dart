@@ -87,6 +87,25 @@ class DatabaseService {
     });
   }
 
+  static void updateObjectTotal(StoredObject storedObject) {
+    objectsRef.document(storedObject.id).updateData({
+      'title': storedObject.title,
+      'description': storedObject.description,
+      'category': storedObject.category,
+      'model': storedObject.model,
+      'engine': storedObject.engine,
+      'engineSerialnumber': storedObject.engineSerialnumber,
+      'imageUrl': storedObject.imageUrl,
+      'timestamp': storedObject.timestamp,
+      'inDate': storedObject.inDate,
+      'outDate': storedObject.outDate,
+      'space': storedObject.space,
+      'storageType': storedObject.storageType,
+      'serialnumber': storedObject.serialnumber,
+      'billingSum': storedObject.billingSum,
+    });
+  }
+
   static void addObjectToDB(StoredObject storedObject) {
     objectsRef.add({
       'title': storedObject.title,
@@ -108,8 +127,7 @@ class DatabaseService {
 
   static Future<QuerySnapshot> getStoredObjectsFuture() {
     Future<QuerySnapshot> objects =
-        objectsRef.orderBy('timestamp', descending: true).getDocuments();
-    //Ändra till "outDate" när den finns.
+        objectsRef.orderBy('outDate', descending: false).getDocuments();
 
     return objects;
   }
