@@ -4,13 +4,9 @@ import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
 import 'package:sjovikvass_app/models/boatImage_model.dart';
 
-
-
 class DatabaseService {
-
   // Methods for work orders ---------------------------------
 
-  
   static Future<int> getTotalOrders(String inObjectId) async {
     QuerySnapshot snapshot = await workOrderRef
         .document(inObjectId)
@@ -22,11 +18,11 @@ class DatabaseService {
   static Future<int> getDoneOrders(String inObjectId) async {
     QuerySnapshot snapshot = await workOrderRef
         .document(inObjectId)
-        .collection('hasWorkOrders').where('isDone', isEqualTo: true)
+        .collection('hasWorkOrders')
+        .where('isDone', isEqualTo: true)
         .getDocuments();
     return snapshot.documents.length;
   }
-
 
   static void updateWorkOrder(String inObjectId, WorkOrder workOrder) {
     workOrderRef
@@ -55,6 +51,25 @@ class DatabaseService {
       'isDone': workOrder.isDone,
       'sum': workOrder.sum,
     });
+  }
+
+  // Methods for WorkOrderMaterials
+
+  static Stream getWorkOrderMaterials(String inWorkOrderId) {
+    Stream workOrderMaterials = workOrderMaterialsRef
+        .document(inWorkOrderId)
+        .collection('hasMaterialItems')
+        .snapshots();
+
+    return workOrderMaterials;
+  }
+
+  static Future<int> getNrMaterials(String inWorkOrderId) async {
+    QuerySnapshot snap = await workOrderMaterialsRef
+        .document(inWorkOrderId)
+        .collection('hasMaterialItems')
+        .getDocuments();
+    return snap.documents.length;
   }
 
   // Methods for an object ---------------------------------------
@@ -121,13 +136,11 @@ class DatabaseService {
       'timestamp': Timestamp.fromDate(DateTime.now()),
       'comment': boatImageModel.comment,
     });
-
   }
-    static Stream getObjectImages(String inObjectId) {
-    Stream imageStream = imageRef
-        .document(inObjectId)
-        .collection('hasImages')
-        .snapshots();
+
+  static Stream getObjectImages(String inObjectId) {
+    Stream imageStream =
+        imageRef.document(inObjectId).collection('hasImages').snapshots();
 
     return imageStream;
   }
