@@ -132,6 +132,13 @@ class DatabaseService {
     return objects;
   }
 
+  static Future<QuerySnapshot> getStoredObjectsSearch(String searchString) {
+    Future<QuerySnapshot> objects =
+        objectsRef.where('title', isGreaterThanOrEqualTo: searchString).getDocuments();
+
+    return objects;
+  }
+
   //Methods for image uploads --------------------------------------------
   static void uploadImage(BoatImageModel boatImageModel, String inObjectId) {
     imageRef.document(inObjectId).collection('hasImages').add({

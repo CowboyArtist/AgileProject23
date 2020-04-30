@@ -56,9 +56,12 @@ class _InOutDialogState extends State<InOutDialog> {
       setState(() {
         _inDate = widget.object.inDate.toDate();
         _outDate = widget.object.outDate.toDate();
-        _storageType = widget.object.storageType;
+        
       });
     }
+    setState(() {
+      _storageType = widget.object.storageType;
+    });
   }
 
 
@@ -79,8 +82,8 @@ class _InOutDialogState extends State<InOutDialog> {
         model: widget.object.model,
         serialnumber: widget.object.serialnumber,
         billingSum: widget.object.billingSum,
-        inDate: Timestamp.fromDate(_inDate),
-        outDate: Timestamp.fromDate(_outDate),
+        inDate: _inDate != null ? Timestamp.fromDate(_inDate) : null,
+        outDate: _outDate != null ? Timestamp.fromDate(_outDate) : null,
         imageUrl: widget.object.imageUrl,
         storageType: _storageType,
         space: widget.object.space,

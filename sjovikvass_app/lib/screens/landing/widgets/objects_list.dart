@@ -2,20 +2,21 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
-import 'package:sjovikvass_app/screens/boatImages/boatImages.dart';
-import 'package:sjovikvass_app/screens/addObject/add_object_screen.dart';
 import 'package:sjovikvass_app/screens/object/object_screen.dart';
-import 'package:sjovikvass_app/screens/workPage/work_page.dart';
-import 'package:sjovikvass_app/services/database_service.dart';
 
 //This Widget will return the list of objects required by the user
 class ObjectsList extends StatefulWidget {
+  Future<QuerySnapshot> objects;
+  Function objectsFutureGetter;
+  String searchString;
+
+  ObjectsList({this.objects, this.objectsFutureGetter, this.searchString});
   @override
   _ObjectsListState createState() => _ObjectsListState();
 }
 
 class _ObjectsListState extends State<ObjectsList> {
-  Future<QuerySnapshot> _objects;
+  
 
   @override
   void initState() {
@@ -25,9 +26,13 @@ class _ObjectsListState extends State<ObjectsList> {
 
   //Used to fetch objects from database
   _setupObjects() async {
-    Future<QuerySnapshot> objects = DatabaseService.getStoredObjectsFuture();
+    Future<QuerySnapshot> objects;
+
+      objects = widget.objectsFutureGetter();
+    
+
     setState(() {
-      _objects = objects;
+      widget.objects = objects;
     });
   }
 
@@ -89,34 +94,44 @@ class _ObjectsListState extends State<ObjectsList> {
     );
   }
 
+  _dummyMethod() async {
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Expanded(
-          child: RefreshIndicator(
-            //Pull down to refresh calls method _setupObjects
-            onRefresh: () => _setupObjects(),
-            child: FutureBuilder(
-              future: _objects,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(child: Container(height: 80.0, width: 80.0, child: CircularProgressIndicator(),));
-                }
+    return Expanded(
+      child: RefreshIndicator(
+        //Pull down to refresh calls method _setupObjects
+        onRefresh: widget.searchString == null ? () => _setupObjects(): () => _dummyMethod(),
+        child: FutureBuilder(
+          future: widget.objects,
+          builder: (context, snapshot) {
+            
+            if (!snapshot.hasData) {
+              return Center(
+                  child: Container(
+                height: 80.0,
+                width: 80.0,
+                child: CircularProgressIndicator(),
+              ));
+            }
+            if (snapshot.data.documents.length == 0) {
+              return Center(
+                child: Text('Inga resultat'),
+              );
+            }
 
-                return ListView.builder(
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      StoredObject storedObject =
-                          StoredObject.fromDoc(snapshot.data.documents[index]);
-                      return _buildObjectTile(storedObject);
-                    });
-              },
-            ),
-          ),
-        )
-      ],
+            return ListView.builder(
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (BuildContext context, int index) {
+                  StoredObject storedObject =
+                      StoredObject.fromDoc(snapshot.data.documents[index]);
+                  return _buildObjectTile(storedObject);
+                });
+          },
+        ),
+      ),
     );
   }
 }
