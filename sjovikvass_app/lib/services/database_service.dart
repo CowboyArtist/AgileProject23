@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
+import 'package:sjovikvass_app/models/work_order_material_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
@@ -9,6 +10,34 @@ import 'package:sjovikvass_app/models/boatImage_model.dart';
 
 class DatabaseService {
   // Methods for work orders ---------------------------------
+class DatabaseService {
+  // Methods for work orders ---------------------------------
+
+  static Future<DocumentSnapshot> getWorkOrderById(
+      String inWorkOrderId, String inObjectId) {
+    Future<DocumentSnapshot> workOrderSnapshot = workOrderRef
+        .document(inObjectId)
+        .collection('hasWorkOrders')
+        .document(inWorkOrderId)
+        .get();
+    return workOrderSnapshot;
+  }
+
+  static void updateWorkOrderSum(
+      String inObjectId, String inWorkOrderId, double amount) {
+    WorkOrder workOrder;
+    getWorkOrderById(inWorkOrderId, inObjectId).then((data) {
+      workOrder = WorkOrder.fromDoc(data);
+
+      workOrderRef
+          .document(inObjectId)
+          .collection('hasWorkOrders')
+          .document(workOrder.id)
+          .updateData({
+        'sum': workOrder.sum + amount,
+      });
+    });
+  }
 
   static Future<int> getTotalOrders(String inObjectId) async {
     QuerySnapshot snapshot = await workOrderRef
@@ -54,6 +83,52 @@ class DatabaseService {
       'isDone': workOrder.isDone,
       'sum': workOrder.sum,
     });
+  }
+
+  // Methods for WorkOrderMaterials
+
+  static void addMaterialToWorkOrder(
+      String inWorkOrderId, WorkOrderMaterial workOrderMaterial) {
+    workOrderMaterialsRef
+        .document(inWorkOrderId)
+        .collection('hasMaterialItems')
+        .add({
+      'title': workOrderMaterial.title,
+      'amount': workOrderMaterial.amount,
+      'cost': workOrderMaterial.cost,
+    });
+  }
+
+  static void removeMaterialToWorkOrder(
+      String inWorkOrderId, WorkOrderMaterial workOrderMaterial) {
+    workOrderMaterialsRef
+        .document(inWorkOrderId)
+        .collection('hasMaterialItems')
+        .document(workOrderMaterial.id)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        value.reference.delete();
+      }
+    });
+  }
+
+  static Stream getWorkOrderMaterials(String inWorkOrderId) {
+    Stream workOrderMaterials = workOrderMaterialsRef
+        .document(inWorkOrderId)
+        .collection('hasMaterialItems')
+        .orderBy('title', descending: false)
+        .snapshots();
+
+    return workOrderMaterials;
+  }
+
+  static Future<int> getNrMaterials(String inWorkOrderId) async {
+    QuerySnapshot snap = await workOrderMaterialsRef
+        .document(inWorkOrderId)
+        .collection('hasMaterialItems')
+        .getDocuments();
+    return snap.documents.length;
   }
 
   // Methods for an object ---------------------------------------

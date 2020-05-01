@@ -10,3 +10,4 @@ final workOrderRef = _firestore.collection('workOrders');
 final imageRef = _firestore.collection('images');
 final documentsRef = _firestore.collection('documents');
 final suppliersRef = _firestore.collection('suppliers');
+final workOrderMaterialsRef = _firestore.collection('workOrderMaterials');
