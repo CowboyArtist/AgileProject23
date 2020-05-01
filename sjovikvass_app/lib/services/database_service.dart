@@ -10,8 +10,6 @@ import 'package:sjovikvass_app/models/boatImage_model.dart';
 
 class DatabaseService {
   // Methods for work orders ---------------------------------
-class DatabaseService {
-  // Methods for work orders ---------------------------------
 
   static Future<DocumentSnapshot> getWorkOrderById(
       String inWorkOrderId, String inObjectId) {

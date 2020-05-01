@@ -58,6 +58,7 @@ class _WorkListTileState extends State<WorkListTile>
   @override
   Widget build(BuildContext context) {
     return AnimatedSize(
+        alignment: Alignment.topCenter,
         duration: Duration(milliseconds: 500),
         vsync: this,
         curve: Curves.fastLinearToSlowEaseIn,
