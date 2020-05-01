@@ -1,16 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sjovikvass_app/models/work_order_material_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/screens/workPage/design/bottom_wave_clipper.dart';
+import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
+
+//The class PriceDialog is the pop-up that comes when the work order's isDone button is set to done.
 
 class PriceDialog extends StatefulWidget {
   final WorkOrder workOrder;
   final String inObjectId;
+  final ValueNotifier<int> valueNotifier;
 
   PriceDialog({
     this.inObjectId,
     this.workOrder,
+    this.valueNotifier,
   });
 
   @override
@@ -21,11 +27,32 @@ class _PriceDialogState extends State<PriceDialog> {
   Duration value;
   double hourlyRate = 120.0;
   double totalPrice = 0.0;
+  double _timeAmount;
 
+//Sets if the work order is done and update the corresponding values in database
+  _toggleIsDone() {
+    setState(() {
+      widget.workOrder.isDone = !widget.workOrder.isDone;
+    });
+    WorkOrderMaterial finishedWork = WorkOrderMaterial(
+        title: 'Arbetad tid', amount: _timeAmount, cost: hourlyRate);
+    DatabaseService.addMaterialToWorkOrder(widget.workOrder.id, finishedWork);
+    DatabaseService.updateWorkOrder(widget.inObjectId, widget.workOrder);
+    if (widget.workOrder.isDone) {
+      DatabaseService.updateObject(
+          widget.inObjectId, widget.workOrder.sum + totalPrice);
+      DatabaseService.updateWorkOrderSum(
+          widget.inObjectId, widget.workOrder.id, totalPrice);
+      widget.valueNotifier.value++;
+    }
+  }
+
+  //Calculates the price for the work order and sets it to hours.
   _calculateHourlyPrice() {
     if (value != null) {
       setState(() {
         totalPrice = (value.inMinutes / 60) * hourlyRate;
+        _timeAmount = value.inMinutes / 60;
       });
       Navigator.of(context).pop(true);
     }
@@ -82,7 +109,6 @@ class _PriceDialogState extends State<PriceDialog> {
                     padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
                     child: Text(
                       widget.workOrder.title,
-                      //namnet på jobbet
                       style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
@@ -93,6 +119,7 @@ class _PriceDialogState extends State<PriceDialog> {
               ),
             ),
           ),
+          // The timer scroll for the pop-up
           Container(
             height: 160.0,
             child: CupertinoTimerPicker(
@@ -112,13 +139,15 @@ class _PriceDialogState extends State<PriceDialog> {
               color: Colors.green,
             ),
             child: FlatButton(
-              child: Text(
-                'Markera som klar',
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-              onPressed: () => _calculateHourlyPrice(),
-            ),
+                child: Text(
+                  'Markera som klar',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                onPressed: () {
+                  _calculateHourlyPrice();
+                  _toggleIsDone();
+                }),
           ),
         ],
       ),
