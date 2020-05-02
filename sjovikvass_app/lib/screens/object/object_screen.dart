@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/screens/boatImages/boatImages.dart';
@@ -12,6 +15,7 @@ import 'package:sjovikvass_app/services/time_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/circular_indicator.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 //The screen that shows the overview of one specific object.
 class ObjectScreen extends StatefulWidget {
@@ -23,6 +27,8 @@ class ObjectScreen extends StatefulWidget {
 }
 
 class _ObjectScreenState extends State<ObjectScreen> {
+  Future<void> _launched;
+
   int _doneOrders = 0;
   int _totalOrders = 0;
   int _imageCount = 0;
@@ -85,6 +91,19 @@ class _ObjectScreenState extends State<ObjectScreen> {
     setState(() {
       _doneOrders = done;
     });
+  }
+
+  Future<void> _launchInBrowser(String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+        headers: <String, String>{'my_header_key': 'my_header_value'},
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -164,8 +183,6 @@ class _ObjectScreenState extends State<ObjectScreen> {
                 child: FutureBuilder(
                     future: _dynamicObject,
                     builder: (context, snapshot) {
-                      
-
                       if (!snapshot.hasData) {
                         return Text(' ');
                       }
@@ -307,8 +324,135 @@ class _ObjectScreenState extends State<ObjectScreen> {
                     ),
                   ),
                 ),
-                MyLayout.oneItem(null, null),
+                MyLayout.oneItem(
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(widget.object.space.toInt().toString(),
+                            style: TextStyle(
+                                color: MyColors.primary,
+                                fontSize: 38.0,
+                                fontWeight: FontWeight.bold)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text('Kvm',
+                                style: TextStyle(
+                                    fontSize: 13.0,
+                                    fontWeight: FontWeight.bold)),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 13.0,
+                              color: MyColors.lightBlue,
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    null),
               ]),
+            ),
+            Container(
+              
+              width: double.infinity,
+              padding: EdgeInsets.all(8.0),
+              child: MyLayout.oneItemNoExpand(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold),
+                          text: 'Modell: ',
+                          children: [
+                            TextSpan(
+                                text: widget.object.model,
+                                recognizer: LongPressGestureRecognizer()
+                                  ..onLongPress = () => _launchInBrowser(
+                                      'https://www.google.se/search?q=${widget.object.model} ${widget.object.year}'),
+                                style: TextStyle(fontWeight: FontWeight.normal))
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold),
+                          text: 'Årsmodell: ',
+                          children: [
+                            TextSpan(
+                                text: widget.object.year.toString(),
+                                style: TextStyle(fontWeight: FontWeight.normal))
+                          ],
+                        ),
+                      ),
+                      widget.object.serialnumber.isEmpty ? SizedBox.shrink():
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold),
+                          text: 'Serienummer: ',
+                          children: [
+                            TextSpan(
+                                text: widget.object.serialnumber,
+                                style: TextStyle(fontWeight: FontWeight.normal))
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 16.0),
+                      Divider(height: 1.0),
+                      SizedBox(height: 16.0),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold),
+                          text: 'Motor: ',
+                          children: [
+                            TextSpan(
+                                text: widget.object.engine,
+                                recognizer: LongPressGestureRecognizer()
+                                  ..onLongPress = () => _launchInBrowser(
+                                      'https://www.google.se/search?q=${widget.object.engine} ${widget.object.engineYear != null ? widget.object.engineYear : ' '}'),
+                                style: TextStyle(fontWeight: FontWeight.normal))
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold),
+                          text: 'Motorns årsmodell: ',
+                          children: [
+                            TextSpan(
+                                text: widget.object.engineYear == null ? 'Okänt' : widget.object.engineYear.toString(),
+                                style: TextStyle(fontWeight: FontWeight.normal))
+                          ],
+                        ),
+                      ),
+                      widget.object.engineSerialnumber.isEmpty ? SizedBox.shrink():
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold),
+                          text: 'Serienummer: ',
+                          children: [
+                            TextSpan(
+                                text: widget.object.engineSerialnumber,
+                                style: TextStyle(fontWeight: FontWeight.normal))
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  null),
             ),
           ],
         ),
