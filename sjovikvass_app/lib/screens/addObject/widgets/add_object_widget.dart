@@ -19,6 +19,7 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
   File _image;
   bool _objectValidate = false;
   int _space = 0;
+
   String _category = 'Okategoriserad';
   String _imageUrl = '';
 
@@ -30,6 +31,9 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
 
   TextEditingController _modelController = TextEditingController();
   String _model = '';
+
+  int _year;
+  int _engineYear;
 
   TextEditingController _serialController = TextEditingController();
   String _serialNumber = '';
@@ -69,9 +73,11 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
           category: _category,
           space: _space.toDouble(),
           model: _model,
+          year: _year,
           serialnumber: _serialNumber,
           engine: _engine,
           engineSerialnumber: _engineSerialNumber,
+          engineYear: _engineYear,
           imageUrl: _imageUrl);
 
       _titleController.clear();
@@ -98,6 +104,8 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
         _space = 0;
         _objectIsLoading = false;
         _image = null;
+        _year = null;
+        _engineYear = null;
       });
       Navigator.of(context).pop();
     }
@@ -133,12 +141,29 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
           ),
           onChanged: (input) => _engineSerialNumber = input,
         ),
+        SizedBox(
+            height: 10.0,
+          ),
+        Row(
+            children: <Widget>[
+              Text('Årsmodell:', style: TextStyle(fontSize: 15.0),),
+              SizedBox(
+                width: 5.0,
+              ),
+              FlatButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  color: Colors.black12,
+                  onPressed: () => _selectYearModel(context, true),
+                  child: Text(_engineYear == null ? 'ej angett' : _engineYear.toString()))
+            ],
+          ),
       ]),
     );
   }
 
   //Shows dynamic fields if category is not 'okategoriserad'
-  _buildDynamicFields() {
+  _buildDynamicFields(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 32.0),
       decoration: BoxDecoration(
@@ -159,6 +184,7 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
             ),
             onChanged: (input) => _model = input,
           ),
+        
           TextField(
             controller: _serialController,
             textCapitalization: TextCapitalization.sentences,
@@ -168,9 +194,42 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
             ),
             onChanged: (input) => _serialNumber = input,
           ),
+            SizedBox(
+            height: 10.0,
+          ),
+          Row(
+            children: <Widget>[
+              Text('Årsmodell:', style: TextStyle(fontSize: 15.0),),
+              SizedBox(
+                width: 5.0,
+              ),
+              FlatButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  color: Colors.black12,
+                  onPressed: () => _selectYearModel(context, false),
+                  child: Text(_year == null ? 'ej angett' : _year.toString()))
+            ],
+          ),
         ],
       ),
     );
+  }
+
+  _selectYearModel(BuildContext context, bool engine) {
+    Picker(
+        confirmText: 'Bekräfta',
+        cancelText: 'Avbryt',
+        adapter: NumberPickerAdapter(data: [
+          NumberPickerColumn(begin: 1919, end: 2025, initValue: 2020),
+        ]),
+        hideHeader: true,
+        title: Text("Objektets årsmodell"),
+        onConfirm: (Picker picker, List value) {
+          setState(() {
+            engine ? _engineYear = picker.getSelectedValues().first : _year = picker.getSelectedValues().first;
+          });
+        }).showDialog(context);
   }
 
   //Dialog to select space that the object takes.
@@ -179,15 +238,25 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
         confirmText: 'Bekräfta',
         cancelText: 'Avbryt',
         adapter: NumberPickerAdapter(data: [
-          NumberPickerColumn(begin: 0, end: 999),
+          NumberPickerColumn(begin: 1, end: 15),
+          NumberPickerColumn(begin: 1, end: 15),
         ]),
+        delimiter: [
+          PickerDelimiter(
+              child: Container(
+            width: 30.0,
+            alignment: Alignment.center,
+            child: Text('X'),
+          ))
+        ],
         hideHeader: true,
-        title: Text("Yta i kvm"),
+        title: Text("Längd X Bredd"),
         onConfirm: (Picker picker, List value) {
           print(value.toString());
           print(picker.getSelectedValues());
           setState(() {
-            _space = picker.getSelectedValues().first;
+            _space = picker.getSelectedValues().first *
+                picker.getSelectedValues()[1];
           });
         }).showDialog(context);
   }
@@ -325,30 +394,21 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                                     'Yta:  ',
                                     style: TextStyle(fontSize: 16.0),
                                   ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 5.0, horizontal: 10.0),
-                                    decoration: BoxDecoration(
-                                        color: Colors.black12,
+                                  FlatButton(
+                                    shape: RoundedRectangleBorder(
                                         borderRadius:
-                                            BorderRadius.circular(5.0)),
+                                            BorderRadius.circular(10.0)),
+                                    color: Colors.black12,
+                                    onPressed: () => showPickerNumber(context),
                                     child: Text(
                                       '${_space} kvm',
-                                      style: TextStyle(fontSize: 16.0),
+                                      
                                     ),
                                   ),
+                                  
                                 ],
                               ),
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: MyColors.lightBlue,
-                                    borderRadius: BorderRadius.circular(10.0)),
-                                child: IconButton(
-                                    highlightColor: MyColors.primary,
-                                    color: MyColors.primary,
-                                    icon: Icon(Icons.edit, size: 18.0),
-                                    onPressed: () => showPickerNumber(context)),
-                              )
+                             
                             ],
                           ),
                         ),
@@ -411,7 +471,7 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                   //Decides which dynamic fileds that will run.
                   _category == 'Okategoriserad'
                       ? SizedBox.shrink()
-                      : _buildDynamicFields(),
+                      : _buildDynamicFields(context),
                   SizedBox(height: 16.0),
                   _category == 'Båt' || _category == 'Vattenskoter'
                       ? _buildFieldsForEngine()

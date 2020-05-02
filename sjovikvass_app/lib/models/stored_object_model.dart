@@ -8,8 +8,10 @@ class StoredObject {
   final String category;
   final String model;
   final String serialnumber;
+  final int year;
   final String engine;
   final String engineSerialnumber;
+  final int engineYear;
   final String imageUrl;
   final double space;
   String storageType;
@@ -25,8 +27,10 @@ class StoredObject {
     this.title,
     this.category,
     this.description,
+    this.year,
     this.engine,
     this.engineSerialnumber,
+    this.engineYear,
     this.model,
     this.serialnumber,
     this.imageUrl,
@@ -46,8 +50,10 @@ class StoredObject {
       title: doc['title'],
       description: doc['description'],
       category: doc['category'],
+      year: doc['year'],
       engine: doc['engine'],
       engineSerialnumber: doc['engineSerialnumber'],
+      engineYear: doc['engineYear'],
       model: doc['model'],
       serialnumber: doc['serialnumber'],
       imageUrl: doc['imageUrl'],
