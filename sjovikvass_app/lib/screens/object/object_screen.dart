@@ -372,7 +372,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
                                 text: widget.object.model,
                                 recognizer: LongPressGestureRecognizer()
                                   ..onLongPress = () => _launchInBrowser(
-                                      'https://www.google.se/search?q=${widget.object.model} ${widget.object.year}'),
+                                      'https://www.google.se/search?q=${widget.object.model} ${widget.object.year != null ? widget.object.year : ''}'),
                                 style: TextStyle(fontWeight: FontWeight.normal))
                           ],
                         ),
@@ -385,7 +385,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
                           text: 'Årsmodell: ',
                           children: [
                             TextSpan(
-                                text: widget.object.year.toString(),
+                                text: widget.object.year == null ? 'Okänt' : widget.object.year.toString(),
                                 style: TextStyle(fontWeight: FontWeight.normal))
                           ],
                         ),
