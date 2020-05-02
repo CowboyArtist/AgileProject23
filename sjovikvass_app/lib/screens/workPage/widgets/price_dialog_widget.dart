@@ -25,7 +25,7 @@ class PriceDialog extends StatefulWidget {
 
 class _PriceDialogState extends State<PriceDialog> {
   Duration value;
-  double hourlyRate = 120.0;
+  double hourlyRate = 500.0;
   double totalPrice = 0.0;
   double _timeAmount;
 

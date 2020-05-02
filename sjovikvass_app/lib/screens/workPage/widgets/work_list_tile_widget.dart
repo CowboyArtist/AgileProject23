@@ -144,7 +144,7 @@ class _WorkListTileState extends State<WorkListTile>
                                       widget.workOrder.id),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData) {
-                                      return Text('Laddar...');
+                                      return Text(' ');
                                     }
 
                                     return ListView.builder(
@@ -225,7 +225,8 @@ class _WorkListTileState extends State<WorkListTile>
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      double _totalMaterialCost = (double.parse(
+                                      double _totalMaterialCost = amountController.text.isEmpty ? double.parse(
+                                              costController.text) : (double.parse(
                                               costController.text) *
                                           double.parse(amountController.text));
                                       DatabaseService.addMaterialToWorkOrder(
