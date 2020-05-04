@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/screens/homescreen/home_screen.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Sjövik Förvaring',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: MyColors.primary,

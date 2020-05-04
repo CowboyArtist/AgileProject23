@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
 import 'package:uuid/uuid.dart';
 
@@ -44,5 +45,25 @@ class StorageService {
     StorageTaskSnapshot storageSnap = await uploadTask.onComplete;
     String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;
+  }
+
+  //Used to add documents to database
+   static Future<String> uploadScannedPdf(File scannedFile) async {
+    String scanId = Uuid().v4();
+    StorageUploadTask uploadTask = storageRef
+        .child('scans/object_$scanId.pdf')
+        .putFile(scannedFile);
+    StorageTaskSnapshot storageSnap = await uploadTask.onComplete;
+    String downloadUrl = await storageSnap.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  static void deleteDocument(String fileUrl) async {
+    
+    String photoId = Uuid().v4();
+    RegExp exp = RegExp(r'object_(.*).pdf');
+      photoId = exp.firstMatch(fileUrl)[1];
+      print(photoId);
+    storageRef.child('scans/object_$photoId.pdf').delete();
   }
 }
