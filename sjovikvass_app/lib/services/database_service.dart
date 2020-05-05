@@ -643,6 +643,7 @@ class DatabaseService {
           'objectTitle': doc['title'],
           'billingSum': doc['billingSum'],
           'ownerId': doc['ownerId'],
+          'isBilled': doc['isBilled'],
         });
       });
       workOrderRef
@@ -662,6 +663,24 @@ class DatabaseService {
           element.reference.delete();
         });
       });
+    });
+  }
+
+  static Stream getArchiveForSeason(String season) {
+    Stream archiveStream =
+        archiveRef.document(season).collection('hasArchive').snapshots();
+
+    return archiveStream;
+  }
+
+  static void updateArchiveIsBilled(
+      String archiveId, String season, bool value) {
+    archiveRef
+        .document(season)
+        .collection('hasArchive')
+        .document(archiveId)
+        .updateData({
+      'isBilled': value,
     });
   }
 }
