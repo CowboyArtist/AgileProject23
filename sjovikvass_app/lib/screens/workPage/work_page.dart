@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
+import 'package:sjovikvass_app/screens/workPage/design/bottom_wave_clipper.dart';
 import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 
@@ -28,8 +29,12 @@ class _WorkPageState extends State<WorkPage> {
   final ValueNotifier<int> _counterDone = ValueNotifier<int>(0);
   final ValueNotifier<int> _counterTotal = ValueNotifier<int>(0);
 
+  final _formKey = GlobalKey<FormState>();
   //Boolean to determine when to turn the bottom button to green
   bool _allDone = false;
+
+  TextEditingController workController = TextEditingController();
+ 
 
   _setupTotalOrders() async {
     int totalOrders = await DatabaseService.getTotalOrders(widget.inObjectId);
@@ -53,58 +58,126 @@ class _WorkPageState extends State<WorkPage> {
   }
 
   _createWorkOrderDialog(BuildContext context) {
-    TextEditingController workController = TextEditingController();
-    TextEditingController priceController = TextEditingController();
-
     return showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: Text('Lägg till arbete'),
+          return Dialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0)),
-            content: Container(
-              height: 200.0,
+                borderRadius: BorderRadius.circular(16.0)),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: _buildChild(context),
+          );
+        });
+  }
+
+  _addWorkOrderToObject() {
+    Navigator.of(context).pop(workController.text.toString());
+    DatabaseService.addWorkOrderToObject(
+        WorkOrder(isDone: false, title: workController.text, sum: 0.0),
+        widget.inObjectId);
+    setState(() {
+      _counterTotal.value++;
+    });
+  }
+
+  _buildChild(BuildContext context) {
+    return Container(
+      height: 320.0,
+      width: 350.0,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30.0),
+        color: MyColors.backgroundLight,
+      ),
+      child: Column(
+        children: <Widget>[
+          ClipPath(
+            clipper: BottomWaveClipper(),
+            child: Container(
+              width: 350.0,
+              height: 140.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+                color: MyColors.primary,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Beskrivning: '),
-                  TextField(
-                    controller: workController,
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Text('Pris:'),
-                  TextField(
-                    controller: priceController,
-                    keyboardType: TextInputType.number,
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(30, 40, 20, 10),
+                    child: Text(
+                      'Lägg till en arbete',
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          color: MyColors.backgroundLight,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
             ),
-            actions: <Widget>[
-              MaterialButton(
-                elevation: 5.0,
-                child: Text('Lägg till'),
-                //Adds the object to the database and update the total amount of workorders.
-                onPressed: () {
-                  Navigator.of(context).pop(workController.text.toString());
-
-                  DatabaseService.addWorkOrderToObject(
-                      WorkOrder(
-                          isDone: false,
-                          title: workController.text,
-                          sum: double.parse(priceController.text)),
-                      widget.inObjectId);
-                  setState(() {
-                    _counterTotal.value++;
-                  });
-                },
-              )
-            ],
-          );
-        });
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Beskrivning',
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                ),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        validator: (text) {
+                          if (text == null || text.isEmpty) {
+                            return 'Ange beskrivning';
+                          }
+                          return null;
+                        },
+                        controller: workController,
+                        maxLines: null,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child: Container(
+                          height: 40.0,
+                          width: 100.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            color: Colors.green,
+                          ),
+                          child: FlatButton(
+                              child: Text(
+                                'Lägg till',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                              onPressed: () {
+                                if (_formKey.currentState.validate()) {
+                                  _addWorkOrderToObject();
+                                  workController.clear();
+                                }
+                              }),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   @override
