@@ -519,8 +519,10 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
                               FlatButton(
-                                  onPressed: () {Navigator.pop(context);
-                                  widget.tabController.animateTo(1);},
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    widget.tabController.animateTo(1);
+                                  },
                                   child: Text('Lägg till ny')),
                               FlatButton(
                                   onPressed: () => Navigator.pop(context),

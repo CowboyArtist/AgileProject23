@@ -17,7 +17,7 @@ class StoredObject {
   String storageType;
   final Timestamp timestamp;
 
-  final String ownerId;
+   String ownerId;
 
   final double billingSum;
 

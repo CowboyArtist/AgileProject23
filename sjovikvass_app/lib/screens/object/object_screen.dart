@@ -36,6 +36,8 @@ class _ObjectScreenState extends State<ObjectScreen> {
   int _imageCount = 0;
   int _documentCount = 0;
 
+  Future<DocumentSnapshot> _dynamicOwner;
+
   BorderRadiusGeometry radius = BorderRadius.only(
     topLeft: Radius.circular(14.0),
     topRight: Radius.circular(14.0),
@@ -53,6 +55,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     _setupImageCount();
     _setupDocumentCount();
     setupDynamicFields();
+    setupOwner();
   }
 
   setupDynamicFields() {
@@ -60,6 +63,14 @@ class _ObjectScreenState extends State<ObjectScreen> {
         DatabaseService.getObjectById(widget.object.id);
     setState(() {
       _dynamicObject = object;
+    });
+  }
+
+  setupOwner() {
+    Future<DocumentSnapshot> owner =
+        DatabaseService.getCustomerById(widget.object.ownerId);
+    setState(() {
+      _dynamicOwner = owner;
     });
   }
 
@@ -133,8 +144,8 @@ class _ObjectScreenState extends State<ObjectScreen> {
         controller: _pcOwner,
         borderRadius: radius,
         minHeight: 0.0,
-        maxHeight: MediaQuery.of(context).size.height * 0.4,
-        panel: OwnerDetails(object: widget.object, pc: _pcOwner),
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        panel: OwnerDetails(object: widget.object, pc: _pcOwner, updateFunction: setupOwner,),
         body: SlidingUpPanel(
           backdropEnabled: true,
           controller: _pc,
@@ -385,8 +396,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
               ),
               widget.object.ownerId != '' && widget.object.ownerId != null
                   ? FutureBuilder(
-                      future: DatabaseService.getCustomerById(
-                          widget.object.ownerId),
+                      future: _dynamicOwner,
                       builder: (BuildContext contex, AsyncSnapshot snapshot) {
                         if (!snapshot.hasData) {
                           return SizedBox.shrink();
