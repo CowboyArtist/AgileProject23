@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sjovikvass_app/models/customer_model.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
@@ -323,5 +324,19 @@ class DatabaseService {
         .getDocuments();
 
     return snapshot.documents.length;
+  }
+
+  //Methods for Customer ---------------------------------
+  static void addCustomer(Customer customer) {
+    customerRef.add({
+      'name': customer.name,
+      'address': customer.address,
+      'postalCode': customer.postalCode,
+      'city': customer.city,
+      'phone': customer.phone,
+      'email': customer.email,
+      'gdpr': customer.gdpr,
+      'timestamp': Timestamp.fromDate(DateTime.now())
+    });
   }
 }
