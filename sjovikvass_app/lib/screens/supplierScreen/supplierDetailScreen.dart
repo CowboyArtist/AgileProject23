@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
+import 'package:sjovikvass_app/services/phoneCall_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
+import 'package:sjovikvass_app/services/email_service.dart';
 
 class SupplierDetailScreen extends StatefulWidget {
   @override
@@ -9,6 +11,9 @@ class SupplierDetailScreen extends StatefulWidget {
 }
 
 class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
+  final Supplier supplier;
+  _SupplierDetailScreenState({this.supplier});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +27,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                 Container(
                   width: 300.0,
                   child: Text(
-                    'Det var en gång en stor kanske ionte ens liote kgyasik sdjkfs dhfgs jkffsjdhjsekfh ksh fh wkfg wekfwhk fhejkfhwekj huwfkhkfwejkfh wefkhwk fjhwefkjhwefuhwfouiwhuoa iufeah flaughurghaeui h fuiwh wuf wuiefh auklfeh aiwulfg aifhkfhaw ekfhaukf h ',
+                    'a',
                     overflow: TextOverflow.ellipsis,
                     maxLines: 10,
                     textAlign: TextAlign.center,
@@ -47,7 +52,8 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16.0))),
                     padding: EdgeInsets.all(10.0),
-                    onPressed: () => print('Phone Button Pressed'),
+                    onPressed: () =>
+                        PhoneCallService.showPhoneCallDialog(context),
                   ),
                 ),
                 ButtonTheme(
@@ -62,7 +68,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16.0))),
                     padding: EdgeInsets.all(10.0),
-                    onPressed: () => print('Email Button Pressed'),
+                    onPressed: () => EmailService.showEmailDialog(context),
                   ),
                 ),
               ],
