@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sjovikvass_app/screens/addObject/widgets/add_customer_widget.dart';
 import 'package:sjovikvass_app/screens/addObject/widgets/add_object_widget.dart';
 import 'package:sjovikvass_app/screens/addObject/widgets/add_supplier_widget.dart';
 
@@ -19,7 +20,7 @@ class _AddObjectScreenState extends State<AddObjectScreen> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _controller = TabController(length: 2, vsync: this);
+    _controller = TabController(length: 3, vsync: this);
     _controller.animateTo( widget.initialPage - 1);
   }
   @override
@@ -36,9 +37,11 @@ class _AddObjectScreenState extends State<AddObjectScreen> with SingleTickerProv
               Tab(
                 text: 'Nytt Objekt',
               ),
+              Tab(text: 'Ny kund',),
               Tab(
                 text: 'Ny Leverantör',
               ),
+              
             ],
           ),
         ),
@@ -48,9 +51,12 @@ class _AddObjectScreenState extends State<AddObjectScreen> with SingleTickerProv
             controller: _controller,
             children: <Widget>[
               //Builds the view for creating new objects
-              AddObjectWidget(),
+              AddObjectWidget(tabController: _controller),
+
+              AddCustomer(),
               //Builds the view for creating new supplier
               AddSupplierWidget(),
+
             ],
           ),
         ),

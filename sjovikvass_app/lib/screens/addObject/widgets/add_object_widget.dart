@@ -2,14 +2,18 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:sjovikvass_app/services/handle_image_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
+import 'package:sjovikvass_app/utils/constants.dart';
 
 class AddObjectWidget extends StatefulWidget {
+  final TabController tabController;
+  AddObjectWidget({this.tabController});
   @override
   _AddObjectWidgetState createState() => _AddObjectWidgetState();
 }
@@ -44,6 +48,31 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
   TextEditingController _engineSerialController = TextEditingController();
   String _engineSerialNumber = '';
 
+  List<DropdownMenuItem<String>> _customers = [];
+
+  var _selectedCustomer;
+  String _selectedCustomerId;
+
+  @override
+  void initState() {
+    super.initState();
+    _setupCustomerList();
+  }
+
+  _setupCustomerList() async {
+    DropdownMenuItem<String> dropdownMenuItem;
+    customerRef.getDocuments().then((value) => {
+          value.documents.forEach((element) {
+            dropdownMenuItem = DropdownMenuItem(
+             
+              child: Text(element['name']),
+              value: '${element['name']}/${element.documentID}',
+            );
+            _customers.add(dropdownMenuItem);
+          })
+        });
+  }
+
   _handleImage(ImageSource source) async {
     Navigator.pop(context);
     File imageFile = await ImagePicker.pickImage(source: source);
@@ -65,6 +94,11 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
         _imageUrl = await StorageService.uploadObjectMainImage(_image);
       } else {
         _imageUrl = null;
+      }
+
+      if(_selectedCustomer.isNotEmpty){
+        List<String> helperList = _selectedCustomer.split('/');
+        _selectedCustomerId = helperList[1];
       }
 
       StoredObject storedObject = StoredObject(
@@ -122,43 +156,54 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                 color: Colors.black12, offset: Offset(3, 3), blurRadius: 5.0)
           ],
           borderRadius: BorderRadius.circular(10.0)),
-      child: Column(children: <Widget>[
-        TextField(
-          controller: _engineController,
-          textCapitalization: TextCapitalization.sentences,
-          decoration: InputDecoration(
-            labelStyle: TextStyle(fontSize: 15.0),
-            labelText: 'Motorns modell',
-          ),
-          onChanged: (input) => _engine = input,
-        ),
-        TextField(
-          controller: _engineSerialController,
-          textCapitalization: TextCapitalization.sentences,
-          decoration: InputDecoration(
-            labelStyle: TextStyle(fontSize: 15.0),
-            labelText: 'Motorns serienummer',
-          ),
-          onChanged: (input) => _engineSerialNumber = input,
-        ),
-        SizedBox(
-            height: 10.0,
-          ),
-        Row(
-            children: <Widget>[
-              Text('Årsmodell:', style: TextStyle(fontSize: 15.0),),
-              SizedBox(
-                width: 5.0,
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Specificera Motor',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            TextField(
+              controller: _engineController,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                labelStyle: TextStyle(fontSize: 15.0),
+                labelText: 'Motorns modell',
               ),
-              FlatButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
-                  color: Colors.black12,
-                  onPressed: () => _selectYearModel(context, true),
-                  child: Text(_engineYear == null ? 'ej angett' : _engineYear.toString()))
-            ],
-          ),
-      ]),
+              onChanged: (input) => _engine = input,
+            ),
+            TextField(
+              controller: _engineSerialController,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                labelStyle: TextStyle(fontSize: 15.0),
+                labelText: 'Motorns serienummer',
+              ),
+              onChanged: (input) => _engineSerialNumber = input,
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              children: <Widget>[
+                Text(
+                  'Årsmodell:',
+                  style: TextStyle(fontSize: 15.0),
+                ),
+                SizedBox(
+                  width: 5.0,
+                ),
+                FlatButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
+                    color: Colors.black12,
+                    onPressed: () => _selectYearModel(context, true),
+                    child: Text(_engineYear == null
+                        ? 'ej angett'
+                        : _engineYear.toString()))
+              ],
+            ),
+          ]),
     );
   }
 
@@ -174,7 +219,12 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
           ],
           borderRadius: BorderRadius.circular(10.0)),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Text(
+            'Specificera modell',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           TextField(
             controller: _modelController,
             textCapitalization: TextCapitalization.sentences,
@@ -184,7 +234,6 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
             ),
             onChanged: (input) => _model = input,
           ),
-        
           TextField(
             controller: _serialController,
             textCapitalization: TextCapitalization.sentences,
@@ -194,12 +243,15 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
             ),
             onChanged: (input) => _serialNumber = input,
           ),
-            SizedBox(
+          SizedBox(
             height: 10.0,
           ),
           Row(
             children: <Widget>[
-              Text('Årsmodell:', style: TextStyle(fontSize: 15.0),),
+              Text(
+                'Årsmodell:',
+                style: TextStyle(fontSize: 15.0),
+              ),
               SizedBox(
                 width: 5.0,
               ),
@@ -227,7 +279,9 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
         title: Text("Objektets årsmodell"),
         onConfirm: (Picker picker, List value) {
           setState(() {
-            engine ? _engineYear = picker.getSelectedValues().first : _year = picker.getSelectedValues().first;
+            engine
+                ? _engineYear = picker.getSelectedValues().first
+                : _year = picker.getSelectedValues().first;
           });
         }).showDialog(context);
   }
@@ -361,7 +415,12 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                         ],
                         borderRadius: BorderRadius.circular(10.0)),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
+                        Text(
+                          'Nytt Objekt',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         TextField(
                           controller: _titleController,
                           textCapitalization: TextCapitalization.sentences,
@@ -402,15 +461,71 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                                     onPressed: () => showPickerNumber(context),
                                     child: Text(
                                       '${_space} kvm',
-                                      
                                     ),
                                   ),
-                                  
                                 ],
                               ),
-                             
                             ],
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 16.0),
+                    padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 20.0),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black12,
+                              offset: Offset(3, 3),
+                              blurRadius: 5.0)
+                        ],
+                        borderRadius: BorderRadius.circular(10.0)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Ägare',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            GestureDetector(
+                              onTap: () => widget.tabController.animateTo(1),
+                              child: Container(
+                                padding: EdgeInsets.all(6.0),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    color: MyColors.lightBlue),
+                                child: Icon(
+                                  Icons.add,
+                                  color: MyColors.primary,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        SearchableDropdown.single(
+                          closeButton: Center(
+                              child: FlatButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text('Stäng'))),
+                          items: _customers,
+                          value: _selectedCustomer,
+                          hint: "Välj kund",
+                          searchHint: null,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedCustomer = value;
+                            });
+                            print(value);
+                            print(_selectedCustomerId);
+                          },
+                          isExpanded: true,
                         ),
                       ],
                     ),
@@ -428,45 +543,55 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                                 blurRadius: 5.0)
                           ],
                           borderRadius: BorderRadius.circular(10.0)),
-                      child: DropdownButton<String>(
-                        value: _category,
-                        icon: Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Icon(
-                                Icons.arrow_downward,
-                              ),
-                            ],
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Objektets Kategori',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        iconSize: 20,
-                        elevation: 16,
-                        style: TextStyle(color: Colors.black),
-                        underline: Container(
-                          height: 2,
-                          color: Colors.black38,
-                        ),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            _category = newValue;
-                          });
-                        },
-                        //Hard coded categories. Add new categories here.
-                        items: <String>[
-                          'Okategoriserad',
-                          'Båt',
-                          'Vattenskoter',
-                          'Vagnar',
-                          'Husvagn',
-                          'Övrigt'
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
+                          DropdownButton<String>(
+                            value: _category,
+                            icon: Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            iconSize: 20,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black),
+                            underline: Container(
+                              height: 2,
+                              color: Colors.black38,
+                            ),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                _category = newValue;
+                              });
+                            },
+                            //Hard coded categories. Add new categories here.
+                            items: <String>[
+                              'Okategoriserad',
+                              'Båt',
+                              'Vattenskoter',
+                              'Vagnar',
+                              'Husvagn',
+                              'Övrigt'
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       )),
+
                   SizedBox(height: 16.0),
                   //Decides which dynamic fileds that will run.
                   _category == 'Okategoriserad'
