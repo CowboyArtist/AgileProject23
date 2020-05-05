@@ -17,6 +17,8 @@ class StoredObject {
   String storageType;
   final Timestamp timestamp;
 
+  final String ownerId;
+
   final double billingSum;
 
   final Timestamp inDate;
@@ -40,6 +42,7 @@ class StoredObject {
     this.inDate,
     this.outDate,
     this.billingSum,
+    this.ownerId,
   });
 
 //Method to create an StoredObject from database document
@@ -63,6 +66,7 @@ class StoredObject {
       inDate: doc['inDate'],
       outDate: doc['outDate'],
       billingSum: doc['billingSum'],
+      ownerId: doc['ownerId'],
     );
   }
 }

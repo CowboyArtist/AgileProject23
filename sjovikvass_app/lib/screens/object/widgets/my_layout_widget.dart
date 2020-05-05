@@ -28,7 +28,8 @@ class MyLayout {
     return GestureDetector(
       onTap: onTap,
             child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
+              width: double.infinity,
+        margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         padding: EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: MyColors.lightBlue,

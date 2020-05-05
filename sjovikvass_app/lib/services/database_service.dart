@@ -160,6 +160,7 @@ class DatabaseService {
         'storageType': storedObject.storageType,
         'serialnumber': storedObject.serialnumber,
         'billingSum': storedObject.billingSum + addToBillingSum,
+        'ownerId': storedObject.ownerId
       });
     });
   }
@@ -182,6 +183,7 @@ class DatabaseService {
       'storageType': storedObject.storageType,
       'serialnumber': storedObject.serialnumber,
       'billingSum': storedObject.billingSum,
+      'ownerId': storedObject.ownerId
     });
   }
 
@@ -203,6 +205,7 @@ class DatabaseService {
       'storageType': 'Hall ej angedd',
       'serialnumber': storedObject.serialnumber,
       'billingSum': 0.0,
+      'ownerId': storedObject.ownerId
     });
   }
 
@@ -338,5 +341,10 @@ class DatabaseService {
       'gdpr': customer.gdpr,
       'timestamp': Timestamp.fromDate(DateTime.now())
     });
+  }
+
+  static Future<DocumentSnapshot> getCustomerById(String customerId) {
+    Future<DocumentSnapshot> customerSnap = customerRef.document(customerId).get();
+    return customerSnap;
   }
 }

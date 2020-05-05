@@ -64,8 +64,10 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
     customerRef.getDocuments().then((value) => {
           value.documents.forEach((element) {
             dropdownMenuItem = DropdownMenuItem(
-             
-              child: Text(element['name']),
+              child: Text(
+                element['name'],
+                style: TextStyle(fontSize: 15.0),
+              ),
               value: '${element['name']}/${element.documentID}',
             );
             _customers.add(dropdownMenuItem);
@@ -96,7 +98,7 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
         _imageUrl = null;
       }
 
-      if(_selectedCustomer.isNotEmpty){
+      if (_selectedCustomer.isNotEmpty) {
         List<String> helperList = _selectedCustomer.split('/');
         _selectedCustomerId = helperList[1];
       }
@@ -112,7 +114,8 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
           engine: _engine,
           engineSerialnumber: _engineSerialNumber,
           engineYear: _engineYear,
-          imageUrl: _imageUrl);
+          imageUrl: _imageUrl,
+          ownerId: _selectedCustomerId);
 
       _titleController.clear();
       _descriptionController.clear();
@@ -475,6 +478,7 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                     margin: EdgeInsets.only(top: 16.0),
                     padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 20.0),
                     width: double.infinity,
+                    height: 140.0,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         boxShadow: [
@@ -485,6 +489,7 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                         ],
                         borderRadius: BorderRadius.circular(10.0)),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Row(
@@ -510,20 +515,29 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                           ],
                         ),
                         SearchableDropdown.single(
-                          closeButton: Center(
-                              child: FlatButton(
+                          closeButton: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              FlatButton(
+                                  onPressed: () {Navigator.pop(context);
+                                  widget.tabController.animateTo(1);},
+                                  child: Text('Lägg till ny')),
+                              FlatButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: Text('Stäng'))),
+                                  child: Text('Stäng')),
+                            ],
+                          ),
                           items: _customers,
                           value: _selectedCustomer,
-                          hint: "Välj kund",
+                          hint: Text(
+                            "Välj kund",
+                            style: TextStyle(fontSize: 14.0),
+                          ),
                           searchHint: null,
                           onChanged: (value) {
                             setState(() {
                               _selectedCustomer = value;
                             });
-                            print(value);
-                            print(_selectedCustomerId);
                           },
                           isExpanded: true,
                         ),
