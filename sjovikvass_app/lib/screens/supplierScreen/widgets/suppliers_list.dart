@@ -4,6 +4,8 @@ import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
+import '../supplierDetailScreen.dart';
+
 class SuppliersList extends StatefulWidget {
   @override
   _SuppliersListState createState() => _SuppliersListState();
@@ -28,7 +30,12 @@ class _SuppliersListState extends State<SuppliersList> {
 
   _buildSuppliersTile(Supplier supplier) {
     return GestureDetector(
-      onTap: () => print('Fix Detail view'),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SupplierDetailScreen()),
+        );
+      },
       child: Container(
         margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
         height: 140.0,

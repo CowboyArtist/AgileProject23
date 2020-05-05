@@ -14,9 +14,7 @@ class FullscreenDocument extends StatelessWidget {
         builder: (_, snapshot) {
           if (snapshot.hasData) {
             // Show document
-            return PDFViewer(
-              showPicker: false,
-              document: snapshot.data);
+            return PDFViewer(showPicker: false, document: snapshot.data);
           }
 
           if (snapshot.hasError) {
