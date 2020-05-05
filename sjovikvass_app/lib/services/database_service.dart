@@ -1,16 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sjovikvass_app/models/object_note_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
 import 'package:sjovikvass_app/models/boatImage_model.dart';
 
-
-
 class DatabaseService {
+  // Methods for object notes --------------------------------
+
+  static Stream getObjectNotes(String inObjectId) {
+    Stream objectNotesStream =
+        objectNotesRef.document(inObjectId).collection('hasNotes').snapshots();
+
+    return objectNotesStream;
+  }
+
+  static void addNoteToObject(ObjectNote objectNote, String inObjectId) {
+    objectNotesRef.document(inObjectId).collection('hasNotes').add({
+      'text': objectNote.text,
+      'timestamp': objectNote.timestamp,
+    });
+  }
+
+  static Future<int> getAllObjectNotes(String inObjectId) async {
+    QuerySnapshot snapshot = await objectNotesRef
+        .document(inObjectId)
+        .collection('hasNotes')
+        .getDocuments();
+    return snapshot.documents.length;
+  }
 
   // Methods for work orders ---------------------------------
 
-  
   static Future<int> getTotalOrders(String inObjectId) async {
     QuerySnapshot snapshot = await workOrderRef
         .document(inObjectId)
@@ -22,11 +43,11 @@ class DatabaseService {
   static Future<int> getDoneOrders(String inObjectId) async {
     QuerySnapshot snapshot = await workOrderRef
         .document(inObjectId)
-        .collection('hasWorkOrders').where('isDone', isEqualTo: true)
+        .collection('hasWorkOrders')
+        .where('isDone', isEqualTo: true)
         .getDocuments();
     return snapshot.documents.length;
   }
-
 
   static void updateWorkOrder(String inObjectId, WorkOrder workOrder) {
     workOrderRef
@@ -121,13 +142,11 @@ class DatabaseService {
       'timestamp': Timestamp.fromDate(DateTime.now()),
       'comment': boatImageModel.comment,
     });
-
   }
-    static Stream getObjectImages(String inObjectId) {
-    Stream imageStream = imageRef
-        .document(inObjectId)
-        .collection('hasImages')
-        .snapshots();
+
+  static Stream getObjectImages(String inObjectId) {
+    Stream imageStream =
+        imageRef.document(inObjectId).collection('hasImages').snapshots();
 
     return imageStream;
   }
