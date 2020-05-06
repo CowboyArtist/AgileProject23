@@ -43,8 +43,8 @@ class _ObjectScreenState extends State<ObjectScreen> {
     topRight: Radius.circular(14.0),
   );
 
-  PanelController _pc = new PanelController();
-  PanelController _pcOwner = new PanelController();
+  PanelController _pc = PanelController();
+  PanelController _pcOwner = PanelController();
 
   Future<DocumentSnapshot> _dynamicObject;
 
@@ -145,7 +145,11 @@ class _ObjectScreenState extends State<ObjectScreen> {
         borderRadius: radius,
         minHeight: 0.0,
         maxHeight: MediaQuery.of(context).size.height * 0.7,
-        panel: OwnerDetails(object: widget.object, pc: _pcOwner, updateFunction: setupOwner,),
+        panel: OwnerDetails(
+          object: widget.object,
+          pc: _pcOwner,
+          updateFunction: setupOwner,
+        ),
         body: SlidingUpPanel(
           backdropEnabled: true,
           controller: _pc,
@@ -378,20 +382,54 @@ class _ObjectScreenState extends State<ObjectScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text('Kvm',
+                              Text('Post-it',
                                   style: TextStyle(
                                       fontSize: 13.0,
                                       fontWeight: FontWeight.bold)),
                               Icon(
                                 Icons.arrow_forward_ios,
                                 size: 13.0,
-                                color: MyColors.lightBlue,
+                                
                               )
                             ],
                           ),
                         ],
                       ),
-                      null),
+                      () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => DocumentScreen(
+                          inObjectId: widget.object.id,
+                        ),
+                      ),
+                    ),),
+                  // MyLayout.oneItem(
+                  //     Column(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //       crossAxisAlignment: CrossAxisAlignment.center,
+                  //       children: <Widget>[
+                  //         Text(widget.object.space.toInt().toString(),
+                  //             style: TextStyle(
+                  //                 color: MyColors.primary,
+                  //                 fontSize: 38.0,
+                  //                 fontWeight: FontWeight.bold)),
+                  //         Row(
+                  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //           children: <Widget>[
+                  //             Text('Kvm',
+                  //                 style: TextStyle(
+                  //                     fontSize: 13.0,
+                  //                     fontWeight: FontWeight.bold)),
+                  //             Icon(
+                  //               Icons.arrow_forward_ios,
+                  //               size: 13.0,
+                  //               color: MyColors.lightBlue,
+                  //             )
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //     null),
                 ]),
               ),
               widget.object.ownerId != '' && widget.object.ownerId != null
@@ -433,23 +471,25 @@ class _ObjectScreenState extends State<ObjectScreen> {
                             () => _pcOwner.open());
                       })
                   : MyLayout.oneItemNoExpand(
-                            Column(children: <Widget>[
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(Icons.person, color: MyColors.primary,),
-                                  SizedBox(width: 10.0,),
-                                  Text(
-                                    'Ingen ägare tilldelad',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  
-                                ],
-                              )
-                            ]),
-                            () => _pcOwner.open()),
+                      Column(children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.person,
+                              color: MyColors.primary,
+                            ),
+                            SizedBox(
+                              width: 10.0,
+                            ),
+                            Text(
+                              'Ingen ägare tilldelad',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        )
+                      ]),
+                      () => _pcOwner.open()),
               MyLayout.oneItemNoExpand(
                   Column(
                     children: <Widget>[
