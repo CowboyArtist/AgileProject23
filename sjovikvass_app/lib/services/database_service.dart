@@ -18,7 +18,7 @@ class DatabaseService {
   static void addNoteToObject(ObjectNote objectNote, String inObjectId) {
     objectNotesRef.document(inObjectId).collection('hasNotes').add({
       'text': objectNote.text,
-      'timestamp': objectNote.timestamp,
+      'timestamp': Timestamp.fromDate(DateTime.now()),
     });
   }
 
