@@ -98,8 +98,13 @@ class _NotePageState extends State<NotePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  TextField(
-                    controller: noteController,
+                  Container(
+                    width: 250.0,
+                    height: 100.0,
+                    child: TextField(
+                      controller: noteController,
+                      maxLines: null,
+                    ),
                   ),
                 ],
               ),
