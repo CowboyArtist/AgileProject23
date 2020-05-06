@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sjovikvass_app/models/customer_model.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
+import 'package:sjovikvass_app/models/object_note_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/models/work_order_material_model.dart';
@@ -21,12 +22,20 @@ class DatabaseService {
         .get();
     return workOrderSnapshot;
   }
+  static Stream getObjectNotes(String inObjectId) {
+    Stream objectNotesStream = objectNotesRef
+        .document(inObjectId)
+        .collection('hasNotes')
+        .orderBy('timestamp', descending: true)
+        .snapshots();
 
   static void updateWorkOrderSum(
       String inObjectId, String inWorkOrderId, double amount) {
     WorkOrder workOrder;
     getWorkOrderById(inWorkOrderId, inObjectId).then((data) {
       workOrder = WorkOrder.fromDoc(data);
+    return objectNotesStream;
+  }
 
       workOrderRef
           .document(inObjectId)
@@ -37,6 +46,22 @@ class DatabaseService {
       });
     });
   }
+  static void addNoteToObject(ObjectNote objectNote, String inObjectId) {
+    objectNotesRef.document(inObjectId).collection('hasNotes').add({
+      'text': objectNote.text,
+      'timestamp': Timestamp.fromDate(DateTime.now()),
+    });
+  }
+
+  static Future<int> getAllObjectNotes(String inObjectId) async {
+    QuerySnapshot snapshot = await objectNotesRef
+        .document(inObjectId)
+        .collection('hasNotes')
+        .getDocuments();
+    return snapshot.documents.length;
+  }
+
+  // Methods for work orders ---------------------------------
 
   static Future<int> getTotalOrders(String inObjectId) async {
     QuerySnapshot snapshot = await workOrderRef
