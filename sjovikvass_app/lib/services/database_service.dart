@@ -34,6 +34,14 @@ static Future<int> countNotesInObject(String inObjectId) async {
   return notesSnapshot.documents.length;
 }
 
+static void removeNote(String inObjectId, String noteId) {
+  objectNotesRef.document(inObjectId).collection('hasNotes').document(noteId).get().then((value) {
+    if (value.exists) {
+      value.reference.delete();
+    }
+  });
+}
+
 
   // Methods for work orders ---------------------------------
 
