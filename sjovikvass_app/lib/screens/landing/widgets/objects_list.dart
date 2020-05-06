@@ -79,8 +79,8 @@ class _ObjectsListState extends State<ObjectsList> {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => NotePage(
-            inObjectId: storedObject.id,
+          builder: (_) => ObjectScreen(
+            object: storedObject,
           ),
         ),
       ),

@@ -11,6 +11,7 @@ import 'package:sjovikvass_app/screens/documents/document_screen.dart';
 import 'package:sjovikvass_app/screens/object/widgets/in_out_dialog.dart';
 import 'package:sjovikvass_app/screens/object/widgets/my_layout_widget.dart';
 import 'package:sjovikvass_app/screens/object/widgets/owner_widget.dart';
+import 'package:sjovikvass_app/screens/objectNotes/object_notes.dart';
 import 'package:sjovikvass_app/screens/workPage/work_page.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/time_service.dart';
@@ -398,7 +399,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
                       () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => DocumentScreen(
+                        builder: (_) => NotePage(
                           inObjectId: widget.object.id,
                         ),
                       ),
