@@ -5,47 +5,54 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EmailService {
-  static showEmailDialog(BuildContext context) {
-    return Platform.isIOS ? iosBottomSheet(context) : androidDialog(context);
+  static showEmailDialog(
+      BuildContext context, String companyName, String email) {
+    return Platform.isIOS
+        ? iosBottomSheet(context, companyName, email)
+        : androidDialog(context, companyName, email);
   }
 
-  static iosBottomSheet(BuildContext context) {
+  static iosBottomSheet(
+      BuildContext context, String companyName, String email) {
     showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext context) {
-          return CupertinoActionSheet(
-            title: Text('Lägg till foto'),
-            actions: <Widget>[
-              CupertinoActionSheetAction(
-                child: Text('Ta ett foto'),
-                onPressed: () => print('Kör metod för att ta foto'),
-              ),
-              CupertinoActionSheetAction(
-                child: Text('Från galleriet'),
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('Vill du maila ' + companyName + '?'),
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+                child: Text(
+                  'Ja',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
                 onPressed: () {
-                  //handling(ImageSource.gallery);
-                },
-              ),
-            ],
-            cancelButton: CupertinoActionSheetAction(
+                  launch("mailto: " + email);
+                  Navigator.pop(context);
+                }),
+            CupertinoActionSheetAction(
               child: Text('Avbryt'),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-          );
-        });
+          ],
+        );
+      },
+    );
   }
 
-  static androidDialog(BuildContext context) {
+  static androidDialog(BuildContext context, String companyName, String email) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: Text('Vill du skapa ett mail till?'),
+          title: Text('Vill du maila ' + companyName + '?'),
           children: <Widget>[
             SimpleDialogOption(
               child: Text('Ja'),
               onPressed: () {
-                launch("mailto: david.arvidsson@gmail.com");
+                launch("mailto: " + email);
+                Navigator.pop(context);
               },
             ),
             SimpleDialogOption(

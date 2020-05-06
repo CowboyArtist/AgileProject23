@@ -5,47 +5,54 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PhoneCallService {
-  static showPhoneCallDialog(BuildContext context) {
-    return Platform.isIOS ? iosBottomSheet(context) : androidDialog(context);
+  static showPhoneCallDialog(
+      BuildContext context, String phoneNumber, String companyName) {
+    return Platform.isIOS
+        ? iosBottomSheet(context, phoneNumber, companyName)
+        : androidDialog(context, phoneNumber, companyName);
   }
 
-  static iosBottomSheet(BuildContext context) {
+  static iosBottomSheet(
+      BuildContext context, String phoneNumber, String companyName) {
     showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext context) {
-          return CupertinoActionSheet(
-            title: Text('Lägg till foto'),
-            actions: <Widget>[
-              CupertinoActionSheetAction(
-                child: Text('Ta ett foto'),
-                onPressed: () => print('Kör metod för att ta foto'),
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('Vill du ringa ' + companyName + '?'),
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: Text(
+                'Ring',
+                style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              CupertinoActionSheetAction(
-                child: Text('Från galleriet'),
-                onPressed: () {
-                  //handling(ImageSource.gallery);
-                },
-              ),
-            ],
-            cancelButton: CupertinoActionSheetAction(
+              onPressed: () {
+                launch("tel: " + phoneNumber);
+                Navigator.pop(context);
+              },
+            ),
+            CupertinoActionSheetAction(
               child: Text('Avbryt'),
               onPressed: () => Navigator.pop(context),
             ),
-          );
-        });
+          ],
+        );
+      },
+    );
   }
 
-  static androidDialog(BuildContext context) {
+  static androidDialog(
+      BuildContext context, String phoneNumber, String companyName) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: Text('Vill du ringa nr?'),
+          title: Text('Vill du ringa ' + companyName + '?'),
           children: <Widget>[
             SimpleDialogOption(
               child: Text('Ring'),
               onPressed: () {
-                launch("tel: +46723038454");
+                launch("tel: " + phoneNumber);
+                Navigator.pop(context);
               },
             ),
             SimpleDialogOption(

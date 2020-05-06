@@ -33,7 +33,9 @@ class _SuppliersListState extends State<SuppliersList> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SupplierDetailScreen()),
+          MaterialPageRoute(
+            builder: (context) => SupplierDetailScreen(supplier: supplier),
+          ),
         );
       },
       child: Container(
