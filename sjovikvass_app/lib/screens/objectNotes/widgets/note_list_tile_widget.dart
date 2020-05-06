@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/object_note_model.dart';
 import 'package:sjovikvass_app/services/time_service.dart';
-import 'package:sjovikvass_app/styles/my_colors.dart';
-
 
 class NoteListTile extends StatefulWidget {
   final String inObjectId;
@@ -16,7 +14,7 @@ class NoteListTile extends StatefulWidget {
 }
 
 class _NoteListTileState extends State<NoteListTile> {
-  //final DateFormat _dateFormatter = new DateFormat.yMMMMd("en_US");
+ 
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,7 +22,8 @@ class _NoteListTileState extends State<NoteListTile> {
       child: Container(
         margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 10.0),
         decoration: BoxDecoration(
-          color: MyColors.lightBlue,
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.black12,

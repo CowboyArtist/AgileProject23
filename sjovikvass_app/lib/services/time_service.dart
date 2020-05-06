@@ -1,5 +1,10 @@
 class TimeService {
 
+  static getFormattedDateWithTime(DateTime date) {
+    String formattedDate = '${getFormattedDate(date)} - ${date.hour}:${date.minute}';
+    return formattedDate;
+  }
+
   static getFormattedDate(DateTime date){
     String formatted = '${date.day} ${getMonthString(date.month)} ${date.year}';
     return formatted;

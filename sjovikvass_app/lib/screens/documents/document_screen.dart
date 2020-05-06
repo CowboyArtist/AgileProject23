@@ -7,6 +7,7 @@ import 'package:sjovikvass_app/models/document_model.dart';
 import 'package:sjovikvass_app/screens/documents/document_full_screen.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
+import 'package:sjovikvass_app/services/time_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:open_file/open_file.dart';
@@ -101,7 +102,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
         child: ListTile(
           
-          title: Text(document.timestamp.toDate().toString()),
+          title: Text(TimeService.getFormattedDateWithTime(document.timestamp.toDate())),
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
