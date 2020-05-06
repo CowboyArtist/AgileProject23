@@ -6,14 +6,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 class PhoneCallService {
   static showPhoneCallDialog(
-      BuildContext context, String phoneNumber, String companyName) {
+      BuildContext context, String companyName, String phoneNumber) {
     return Platform.isIOS
-        ? iosBottomSheet(context, phoneNumber, companyName)
-        : androidDialog(context, phoneNumber, companyName);
+        ? iosBottomSheet(context, companyName, phoneNumber)
+        : androidDialog(context, companyName, phoneNumber);
   }
 
   static iosBottomSheet(
-      BuildContext context, String phoneNumber, String companyName) {
+      BuildContext context, String companyName, String phoneNumber) {
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -41,7 +41,7 @@ class PhoneCallService {
   }
 
   static androidDialog(
-      BuildContext context, String phoneNumber, String companyName) {
+      BuildContext context, String companyName, String phoneNumber) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

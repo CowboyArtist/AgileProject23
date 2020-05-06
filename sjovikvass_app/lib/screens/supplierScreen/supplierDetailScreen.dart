@@ -55,7 +55,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                       borderRadius: BorderRadius.all(Radius.circular(16.0))),
                   padding: EdgeInsets.all(10.0),
                   onPressed: () =>
-                      PhoneCallService.showPhoneCallDialog(context, widget.supplier.phoneNr, widget.supplier.companyName),
+                      PhoneCallService.showPhoneCallDialog(context, widget.supplier.companyName, widget.supplier.phoneNr),
                 ),
               ),
               ButtonTheme(

@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
+import 'package:sjovikvass_app/services/email_service.dart';
+import 'package:sjovikvass_app/services/phoneCall_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
 import '../supplierDetailScreen.dart';
@@ -111,7 +113,7 @@ class _SuppliersListState extends State<SuppliersList> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16.0))),
                   padding: EdgeInsets.all(10.0),
-                  onPressed: () => print('Phone Button Pressed'),
+                  onPressed: () => PhoneCallService.showPhoneCallDialog(context, supplier.companyName, supplier.phoneNr),
                 ),
               ),
             ),
@@ -130,7 +132,7 @@ class _SuppliersListState extends State<SuppliersList> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16.0))),
                   padding: EdgeInsets.all(10.0),
-                  onPressed: () => print('Email Button Pressed'),
+                  onPressed: () => EmailService.showEmailDialog(context, supplier.companyName, supplier.email),
                 ),
               ),
             ),
