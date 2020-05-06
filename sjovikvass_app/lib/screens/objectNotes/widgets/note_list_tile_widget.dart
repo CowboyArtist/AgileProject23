@@ -15,7 +15,7 @@ class NoteListTile extends StatefulWidget {
 }
 
 class _NoteListTileState extends State<NoteListTile> {
-  final DateFormat _dateFormatter = DateFormat('dd MMM');
+  final DateFormat _dateFormatter = new DateFormat.yMMMMd("en_US");
   @override
   Widget build(BuildContext context) {
     return Padding(

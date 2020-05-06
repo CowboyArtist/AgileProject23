@@ -9,8 +9,11 @@ class DatabaseService {
   // Methods for object notes --------------------------------
 
   static Stream getObjectNotes(String inObjectId) {
-    Stream objectNotesStream =
-        objectNotesRef.document(inObjectId).collection('hasNotes').snapshots();
+    Stream objectNotesStream = objectNotesRef
+        .document(inObjectId)
+        .collection('hasNotes')
+        .orderBy('timestamp', descending: true)
+        .snapshots();
 
     return objectNotesStream;
   }
