@@ -2,10 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:sjovikvass_app/models/customer_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/screens/object/object_screen.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
-
+import 'package:sjovikvass_app/styles/commonWidgets/circular_indicator.dart';
 
 //This Widget will return the list of objects required by the user
 class ObjectsList extends StatefulWidget {
@@ -19,10 +20,21 @@ class ObjectsList extends StatefulWidget {
 }
 
 class _ObjectsListState extends State<ObjectsList> {
+
+
   @override
   void initState() {
     super.initState();
     _setupObjects();
+
+  }
+
+  
+
+  Future<double> getPercentForObject(String id) async {
+    int total = await DatabaseService.getTotalOrders(id);
+    int done = await DatabaseService.getDoneOrders(id);
+    return done/total;
   }
 
   //Used to fetch objects from database
@@ -39,39 +51,38 @@ class _ObjectsListState extends State<ObjectsList> {
   _showDeleteAlertDialog(BuildContext context, StoredObject object) {
     Widget okButton = FlatButton(
       color: Colors.redAccent,
-        child: Text("Radera"),
-        onPressed: () {
-          DatabaseService.removeObjectCascade(object.id, object.imageUrl);
-          _setupObjects();
-          Navigator.of(context).pop();
-          
-        },
-      );
+      child: Text("Radera"),
+      onPressed: () {
+        DatabaseService.removeObjectCascade(object.id, object.imageUrl);
+        _setupObjects();
+        Navigator.of(context).pop();
+      },
+    );
 
-      Widget cancelButton = FlatButton(
-        child: Text("Avbryt"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      );
+    Widget cancelButton = FlatButton(
+      child: Text("Avbryt"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
 
-      // set up the AlertDialog
-      AlertDialog alert = AlertDialog(
-        title: Text("Vill du ta bort ${object.title}?"),
-        content: Text("Detta kan inte ångras i efterhand."),
-        actions: [
-          cancelButton,
-          okButton,
-        ],
-      );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Vill du ta bort ${object.title}?"),
+      content: Text("Detta kan inte ångras i efterhand."),
+      actions: [
+        cancelButton,
+        okButton,
+      ],
+    );
 
-      // show the dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   _buildObjectTile(StoredObject storedObject) {
@@ -86,7 +97,7 @@ class _ObjectsListState extends State<ObjectsList> {
       ),
       child: Container(
           margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-          height: 100.0,
+          height: 130.0,
           decoration: BoxDecoration(
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(10.0)),
@@ -132,13 +143,60 @@ class _ObjectsListState extends State<ObjectsList> {
                 Positioned(
                     left: 16.0,
                     bottom: 16.0,
-                    child: Text(
-                      storedObject.title,
-                      style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          storedObject.title,
+                          style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        storedObject.ownerId != null &&
+                                storedObject.ownerId.isNotEmpty
+                            ? FutureBuilder(
+                                future: DatabaseService.getCustomerById(
+                                    storedObject.ownerId),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Text(
+                                      'Laddar in ägare',
+                                      style: TextStyle(
+                                          fontSize: 16.0, color: Colors.white),
+                                    );
+                                  }
+                                  Customer customer =
+                                      Customer.fromDoc(snapshot.data);
+                                  return Text(
+                                    customer.name,
+                                    style: TextStyle(
+                                        fontSize: 16.0, color: Colors.white),
+                                  );
+                                })
+                            : SizedBox.shrink(),
+                      ],
                     )),
+                FutureBuilder(
+                  future: getPercentForObject(storedObject.id),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Positioned(
+                      right: 30.0,
+                      top: 30.0,
+                      child: MyCircularProcentIndicator.buildCustomIndicator(
+                          0, 1, 70.0, Colors.white),
+                    );
+                    }
+                    return Positioned(
+                      right: 30.0,
+                      top: 30.0,
+                      child: MyCircularProcentIndicator.buildCustomIndicatorFromDouble(
+                          snapshot.data, 70.0, Colors.white),
+                    );
+                  }
+                ),
               ],
             ),
           )),
