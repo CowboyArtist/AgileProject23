@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/screens/object/object_screen.dart';
+import 'package:sjovikvass_app/services/database_service.dart';
+
 
 //This Widget will return the list of objects required by the user
 class ObjectsList extends StatefulWidget {
@@ -16,8 +19,6 @@ class ObjectsList extends StatefulWidget {
 }
 
 class _ObjectsListState extends State<ObjectsList> {
-  
-
   @override
   void initState() {
     super.initState();
@@ -28,12 +29,49 @@ class _ObjectsListState extends State<ObjectsList> {
   _setupObjects() async {
     Future<QuerySnapshot> objects;
 
-      objects = widget.objectsFutureGetter();
-    
+    objects = widget.objectsFutureGetter();
 
     setState(() {
       widget.objects = objects;
     });
+  }
+
+  _showDeleteAlertDialog(BuildContext context, StoredObject object) {
+    Widget okButton = FlatButton(
+      color: Colors.redAccent,
+        child: Text("Radera"),
+        onPressed: () {
+          DatabaseService.removeObjectCascade(object.id, object.imageUrl);
+          _setupObjects();
+          Navigator.of(context).pop();
+          
+        },
+      );
+
+      Widget cancelButton = FlatButton(
+        child: Text("Avbryt"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text("Vill du ta bort ${object.title}?"),
+        content: Text("Detta kan inte ångras i efterhand."),
+        actions: [
+          cancelButton,
+          okButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
   }
 
   _buildObjectTile(StoredObject storedObject) {
@@ -50,64 +88,76 @@ class _ObjectsListState extends State<ObjectsList> {
           margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
           height: 100.0,
           decoration: BoxDecoration(
-              color: Colors.black45, borderRadius: BorderRadius.circular(10.0)),
-          child: Stack(
-            children: <Widget>[
-              Container(
-                width: double.infinity,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: storedObject.imageUrl == null
-                        ? Image.asset(
-                            'assets/images/placeholder_boat.jpg',
-                            fit: BoxFit.cover,
-                          )
-                        : Image(
-                            image: CachedNetworkImageProvider(
-                                storedObject.imageUrl),
-                            fit: BoxFit.cover,
-                          )),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.black54,
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter)),
-              ),
-              Positioned(
-                  left: 16.0,
-                  bottom: 16.0,
-                  child: Text(
-                    storedObject.title,
-                    style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  )),
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(10.0)),
+          child: Slidable(
+            actionPane: SlidableDrawerActionPane(),
+            actionExtentRatio: 0.25,
+            secondaryActions: <Widget>[
+              IconSlideAction(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  foregroundColor: Colors.red,
+                  caption: 'Radera Objekt',
+                  icon: Icons.delete,
+                  onTap: () => _showDeleteAlertDialog(context, storedObject)),
             ],
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  width: double.infinity,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: storedObject.imageUrl == null
+                          ? Image.asset(
+                              'assets/images/placeholder_boat.jpg',
+                              fit: BoxFit.cover,
+                            )
+                          : Image(
+                              image: CachedNetworkImageProvider(
+                                  storedObject.imageUrl),
+                              fit: BoxFit.cover,
+                            )),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      gradient: LinearGradient(
+                          colors: [
+                            Colors.transparent,
+                            Colors.black54,
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter)),
+                ),
+                Positioned(
+                    left: 16.0,
+                    bottom: 16.0,
+                    child: Text(
+                      storedObject.title,
+                      style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    )),
+              ],
+            ),
           )),
     );
   }
 
-  _dummyMethod() async {
-
-  }
+  _dummyMethod() async {}
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: RefreshIndicator(
         //Pull down to refresh calls method _setupObjects
-        onRefresh: widget.searchString == null ? () => _setupObjects(): () => _dummyMethod(),
+        onRefresh: widget.searchString == null
+            ? () => _setupObjects()
+            : () => _dummyMethod(),
         child: FutureBuilder(
           future: widget.objects,
           builder: (context, snapshot) {
-            
             if (!snapshot.hasData) {
               return Center(
                   child: Container(

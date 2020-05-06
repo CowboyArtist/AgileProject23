@@ -25,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       length: 3,
       child: Scaffold(
         body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
           controller: _controller,
           children: <Widget>[
           LandingScreen(),

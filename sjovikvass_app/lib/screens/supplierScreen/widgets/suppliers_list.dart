@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
@@ -26,134 +27,171 @@ class _SuppliersListState extends State<SuppliersList> {
     });
   }
 
+  _showDeleteAlertDialog(BuildContext context, Supplier supplier) {
+    Widget okButton = FlatButton(
+      color: Colors.redAccent,
+      child: Text("Radera"),
+      onPressed: () {
+        DatabaseService.removeSupplier(supplier.id);
+        _setupSuppliers();
+        Navigator.of(context).pop();
+      },
+    );
+
+    Widget cancelButton = FlatButton(
+      child: Text("Avbryt"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Vill du ta bort ${supplier.companyName}?"),
+      content: Text("Detta kan inte ångras i efterhand."),
+      actions: [
+        cancelButton,
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   _buildSuppliersTile(Supplier supplier) {
     return GestureDetector(
       onTap: () => print('Fix Detail view'),
-      child: Container(
-        margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-        height: 140.0,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6.0, // has the effect of softening the shadow
-              spreadRadius: 2.0, // has the effect of extending the shadow
-              offset: Offset(
-                3.0, // horizontal, move right 10
-                3.0, // vertical, move down 10
-              ),
-            )
-          ],
-        ),
-        child: Stack(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-            ),
-            Positioned(
-              left: 16.0,
-              top: 16.0,
-              child: Container(
-                width: 350.0,
-                child: Text(
-                  supplier.companyName,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
+      child: Slidable(
+        actionPane: SlidableDrawerActionPane(),
+        actionExtentRatio: 0.25,
+        secondaryActions: <Widget>[
+          IconSlideAction(
+              color: Colors.transparent,
+              foregroundColor: Colors.red,
+              caption: 'Radera',
+              icon: Icons.delete,
+              onTap: () => _showDeleteAlertDialog(context, supplier)),
+        ],
+        child: Container(
+          margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+          height: 140.0,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 6.0, // has the effect of softening the shadow
+                spreadRadius: 2.0, // has the effect of extending the shadow
+                offset: Offset(
+                  3.0, // horizontal, move right 10
+                  3.0, // vertical, move down 10
+                ),
+              )
+            ],
+          ),
+          child: Stack(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
-            ),
-            Positioned(
-              right: 0.0,
-              top: 40.0,
-              child: Container(
-                height: 100,
-                width: 250.0,
-                padding: EdgeInsets.all(20.0),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      supplier.description,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 3,
+              Positioned(
+                left: 16.0,
+                top: 16.0,
+                child: Container(
+                  width: 350.0,
+                  child: Text(
+                    supplier.companyName,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 0.0,
+                top: 40.0,
+                child: Container(
+                  height: 100,
+                  width: 250.0,
+                  padding: EdgeInsets.all(20.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        supplier.description,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 16.0,
+                bottom: 32.0,
+                child: ButtonTheme(
+                  minWidth: 30.0,
+                  height: 30.0,
+                  child: RaisedButton(
+                    color: MyColors.lightBlue,
+                    child: Icon(
+                      Icons.phone,
+                      color: MyColors.primary,
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              left: 16.0,
-              bottom: 32.0,
-              child: ButtonTheme(
-                minWidth: 30.0,
-                height: 30.0,
-                child: RaisedButton(
-                  color: MyColors.lightBlue,
-                  child: Icon(
-                    Icons.phone,
-                    color: MyColors.primary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                    padding: EdgeInsets.all(10.0),
+                    onPressed: () => print('Phone Button Pressed'),
                   ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                  padding: EdgeInsets.all(10.0),
-                  onPressed: () => print('Phone Button Pressed'),
                 ),
               ),
-            ),
-            Positioned(
-              left: 80.0,
-              bottom: 32.0,
-              child: ButtonTheme(
-                minWidth: 30.0,
-                height: 30.0,
-                child: RaisedButton(
-                  color: MyColors.lightBlue,
-                  child: Icon(
-                    Icons.mail,
-                    color: MyColors.primary,
+              Positioned(
+                left: 80.0,
+                bottom: 32.0,
+                child: ButtonTheme(
+                  minWidth: 30.0,
+                  height: 30.0,
+                  child: RaisedButton(
+                    color: MyColors.lightBlue,
+                    child: Icon(
+                      Icons.mail,
+                      color: MyColors.primary,
+                    ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                    padding: EdgeInsets.all(10.0),
+                    onPressed: () => print('Email Button Pressed'),
                   ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                  padding: EdgeInsets.all(10.0),
-                  onPressed: () => print('Email Button Pressed'),
                 ),
               ),
-            ),
-            Positioned(
-              left: 24.0,
-              bottom: 10.0,
-              child: Text(
-                'Ring',
-                style: TextStyle(fontSize: 16.0, color: Colors.black),
+              Positioned(
+                left: 24.0,
+                bottom: 10.0,
+                child: Text(
+                  'Ring',
+                  style: TextStyle(fontSize: 16.0, color: Colors.black),
+                ),
               ),
-            ),
-            Positioned(
-              left: 85.0,
-              bottom: 10.0,
-              child: Text(
-                'Maila',
-                style: TextStyle(fontSize: 16.0, color: Colors.black),
+              Positioned(
+                left: 85.0,
+                bottom: 10.0,
+                child: Text(
+                  'Maila',
+                  style: TextStyle(fontSize: 16.0, color: Colors.black),
+                ),
               ),
-            ),
-            // Positioned(
-            //   right: 30.0,
-            //   bottom: 10.0,
-            //   child: Text(
-            //     'Mer info',
-            //     style: TextStyle(
-            //       fontSize: 16.0,
-            //       color: MyColors.primary,
-            //       decoration: TextDecoration.underline,
-            //     ),
-            //   ),
-            // ),
-          ],
+            ],
+          ),
         ),
       ),
     );

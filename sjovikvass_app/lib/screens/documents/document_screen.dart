@@ -49,6 +49,43 @@ class _DocumentScreenState extends State<DocumentScreen> {
     DatabaseService.uploadDocument(documentModel, widget.inObjectId);
   }
 
+  _showDeleteAlertDialog(BuildContext context, DocumentModel document) {
+    Widget okButton = FlatButton(
+      color: Colors.redAccent,
+      child: Text("Radera"),
+      onPressed: () {
+        DatabaseService.deleteDocument(widget.inObjectId, document);
+        
+        Navigator.of(context).pop();
+      },
+    );
+
+    Widget cancelButton = FlatButton(
+      child: Text("Avbryt"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Vill du ta bort dokumentet?"),
+      content: Text("Detta kan inte ångras i efterhand."),
+      actions: [
+        cancelButton,
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   _buildDocumentTile(DocumentModel document) {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
@@ -59,7 +96,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
             foregroundColor: Colors.red,
             caption: 'Ta bort',
             icon: Icons.delete,
-            onTap: () => DatabaseService.deleteDocument(widget.inObjectId, document)),
+            onTap: () => _showDeleteAlertDialog(context, document)),
       ],
       child: Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.white, boxShadow: [BoxShadow(color: Colors.black12, offset: Offset(3,3), blurRadius: 5.0)]),

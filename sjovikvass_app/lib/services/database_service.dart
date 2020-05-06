@@ -84,6 +84,35 @@ class DatabaseService {
     });
   }
 
+  static void removeAllWorkOrdersForObject(String inObjectId) {
+    workOrderRef
+        .document(inObjectId)
+        .collection('hasWorkOrders')
+        .getDocuments()
+        .then((docs) => {
+              docs.documents.forEach((element) {
+                if (element.exists) {
+                  removeAllMaterialsForWorkOrder(element.documentID);
+                  element.reference.delete();
+                }
+              })
+            });
+  }
+
+  static void removeWorkOrder(String inObjectId, String workOrderId) {
+    workOrderRef
+        .document(inObjectId)
+        .collection('hasWorkOrders')
+        .document(workOrderId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        removeAllMaterialsForWorkOrder(workOrderId);
+        doc.reference.delete();
+      }
+    });
+  }
+
   // Methods for WorkOrderMaterials
 
   static void addMaterialToWorkOrder(
@@ -96,6 +125,20 @@ class DatabaseService {
       'amount': workOrderMaterial.amount,
       'cost': workOrderMaterial.cost,
     });
+  }
+
+  static void removeAllMaterialsForWorkOrder(String inWorkOrderId) {
+    workOrderMaterialsRef
+        .document(inWorkOrderId)
+        .collection('hasMaterialItems')
+        .getDocuments()
+        .then((docs) => {
+              docs.documents.forEach((element) {
+                if (element.exists) {
+                  element.reference.delete();
+                }
+              })
+            });
   }
 
   static void removeMaterialToWorkOrder(
@@ -209,6 +252,17 @@ class DatabaseService {
     });
   }
 
+  static void removeObjectCascade(String objectId, String objectImageUrl) {
+    objectsRef.document(objectId).get().then((value) {
+      if (value.exists) {
+        removeAllWorkOrdersForObject(objectId);
+        removeAllObjectImages(objectId);
+        StorageService.deleteObjectMainImage(objectImageUrl);
+        value.reference.delete();
+      }
+    });
+  }
+
   static Future<QuerySnapshot> getStoredObjectsFuture() {
     Future<QuerySnapshot> objects =
         objectsRef.orderBy('outDate', descending: false).getDocuments();
@@ -217,8 +271,9 @@ class DatabaseService {
   }
 
   static Future<QuerySnapshot> getStoredObjectsSearch(String searchString) {
-    Future<QuerySnapshot> objects =
-        objectsRef.where('title', isGreaterThanOrEqualTo: searchString).getDocuments();
+    Future<QuerySnapshot> objects = objectsRef
+        .where('title', isGreaterThanOrEqualTo: searchString)
+        .getDocuments();
 
     return objects;
   }
@@ -245,9 +300,33 @@ class DatabaseService {
         .collection('hasImages')
         .getDocuments();
 
-    return snapshot.documents.length;}
+    return snapshot.documents.length;
+  }
 
-  
+  static void removeAllObjectImages(String inObjectId) {
+    imageRef
+        .document(inObjectId)
+        .collection('hasImages')
+        .getDocuments()
+        .then((value) {
+      value.documents.forEach((element) {
+        if (element.exists) {
+          StorageService.deleteObjectImage(element['imageUrl']);
+          element.reference.delete();
+        }
+      });
+    });
+  }
+
+  static void removeOneImage(String inObjectId, String imageId) {
+    imageRef.document(inObjectId).collection('hasImages').document(imageId).get().then((value) {
+      if (value.exists) {
+        StorageService.deleteObjectImage(value['imageUrl']);
+        value.reference.delete();
+      }
+    });
+  }
+
   //Methods for supplier -----------------------------------------------
 
   static Future<DocumentSnapshot> getSupplierById(String supplierId) {
@@ -285,6 +364,15 @@ class DatabaseService {
     Future<QuerySnapshot> suppliers =
         suppliersRef.orderBy('companyName').getDocuments();
     return suppliers;
+  }
+
+  static void removeSupplier(String supplierId) {
+    suppliersRef.document(supplierId).get().then((value) {
+      if (value.exists) {
+        value.reference.delete();
+        //TODO Cascade function to remove contactperons aswell.
+      }
+    });
   }
 
   //Methods for PDF uploads --------------------------------------------
@@ -329,6 +417,21 @@ class DatabaseService {
     return snapshot.documents.length;
   }
 
+  static void removeAllObjectDocuments(String inObjectId) {
+    documentsRef
+        .document(inObjectId)
+        .collection('hasDocuments')
+        .getDocuments()
+        .then((value) {
+      value.documents.forEach((element) {
+        if (element.exists) {
+          StorageService.deleteDocument(element['fileUrl']);
+          element.reference.delete();
+        }
+      });
+    });
+  }
+
   //Methods for Customer ---------------------------------
   static void addCustomer(Customer customer) {
     customerRef.add({
@@ -344,7 +447,8 @@ class DatabaseService {
   }
 
   static Future<DocumentSnapshot> getCustomerById(String customerId) {
-    Future<DocumentSnapshot> customerSnap = customerRef.document(customerId).get();
+    Future<DocumentSnapshot> customerSnap =
+        customerRef.document(customerId).get();
     return customerSnap;
   }
 }

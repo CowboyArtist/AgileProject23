@@ -34,6 +34,15 @@ class StorageService {
     return downloadUrl;
   }
 
+  static void deleteObjectImage(String imageUrl) async {
+    
+    String photoId = Uuid().v4();
+    RegExp exp = RegExp(r'object_(.*).jpg');
+      photoId = exp.firstMatch(imageUrl)[1];
+      
+    storageRef.child('images/objects/object_$photoId.jpg').delete();
+  }
+
   //Used by add_object_screen.dart to upload the image viewed in the landing screen.
    static Future<String> uploadObjectMainImage(File imageFile) async {
     String photoId = Uuid().v4();
@@ -45,6 +54,15 @@ class StorageService {
     StorageTaskSnapshot storageSnap = await uploadTask.onComplete;
     String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;
+  }
+
+  static void deleteObjectMainImage(String imageUrl) async {
+    
+    String photoId = Uuid().v4();
+    RegExp exp = RegExp(r'object_(.*).jpg');
+      photoId = exp.firstMatch(imageUrl)[1];
+      
+    storageRef.child('images/objectsMain/object_$photoId.jpg').delete();
   }
 
   //Used to add documents to database
