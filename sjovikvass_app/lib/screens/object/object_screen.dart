@@ -36,6 +36,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
   int _totalOrders = 0;
   int _imageCount = 0;
   int _documentCount = 0;
+  int _notesCount = 0;
 
   Future<DocumentSnapshot> _dynamicOwner;
 
@@ -55,6 +56,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     _setupOrderCounts();
     _setupImageCount();
     _setupDocumentCount();
+    _setupNotesCount();
     setupDynamicFields();
     setupOwner();
   }
@@ -72,6 +74,13 @@ class _ObjectScreenState extends State<ObjectScreen> {
         DatabaseService.getCustomerById(widget.object.ownerId);
     setState(() {
       _dynamicOwner = owner;
+    });
+  }
+
+  _setupNotesCount() async {
+    int notes = await DatabaseService.countNotesInObject(widget.object.id);
+    setState(() {
+      _notesCount = notes;
     });
   }
 
@@ -375,7 +384,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Text(widget.object.space.toInt().toString(),
+                          Text(_notesCount.toString(),
                               style: TextStyle(
                                   color: MyColors.primary,
                                   fontSize: 38.0,

@@ -29,6 +29,11 @@ static Stream getObjectNotes(String inObjectId) {
     });
   }
 
+static Future<int> countNotesInObject(String inObjectId) async {
+  QuerySnapshot notesSnapshot = await objectNotesRef.document(inObjectId).collection('hasNotes').getDocuments();
+  return notesSnapshot.documents.length;
+}
+
 
   // Methods for work orders ---------------------------------
 
