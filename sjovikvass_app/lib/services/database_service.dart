@@ -42,6 +42,16 @@ static void removeNote(String inObjectId, String noteId) {
   });
 }
 
+static void removeAllNotesForObject(String inObjectId) {
+  objectNotesRef.document(inObjectId).collection('hasNotes').getDocuments().then((value) {
+    value.documents.forEach((element) {
+      if (element.exists) {
+        element.reference.delete();
+      }
+    });
+  });
+}
+
 
   // Methods for work orders ---------------------------------
 
@@ -303,6 +313,7 @@ static void removeNote(String inObjectId, String noteId) {
       if (value.exists) {
         removeAllWorkOrdersForObject(objectId);
         removeAllObjectImages(objectId);
+        removeAllNotesForObject(objectId);
         StorageService.deleteObjectMainImage(objectImageUrl);
         value.reference.delete();
       }
