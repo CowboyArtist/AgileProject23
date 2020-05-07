@@ -178,16 +178,13 @@ class _ObjectsListState extends State<ObjectsList> {
                             : SizedBox.shrink(),
                       ],
                     )),
+
                 FutureBuilder(
                   future: getPercentForObject(storedObject.id),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Positioned(
-                      right: 30.0,
-                      top: 30.0,
-                      child: MyCircularProcentIndicator.buildCustomIndicator(
-                          0, 1, 70.0, Colors.white),
-                    );
+                    if (!snapshot.hasData || snapshot.data == 0.0) {
+                      return SizedBox.shrink();
+                    
                     }
                     return Positioned(
                       right: 30.0,

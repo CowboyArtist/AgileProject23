@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:sjovikvass_app/services/handle_image_service.dart';
@@ -289,34 +290,34 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
         }).showDialog(context);
   }
 
-  //Dialog to select space that the object takes.
-  showPickerNumber(BuildContext context) {
-    new Picker(
-        confirmText: 'Bekräfta',
-        cancelText: 'Avbryt',
-        adapter: NumberPickerAdapter(data: [
-          NumberPickerColumn(begin: 1, end: 15),
-          NumberPickerColumn(begin: 1, end: 15),
-        ]),
-        delimiter: [
-          PickerDelimiter(
-              child: Container(
-            width: 30.0,
-            alignment: Alignment.center,
-            child: Text('X'),
-          ))
-        ],
-        hideHeader: true,
-        title: Text("Längd X Bredd"),
-        onConfirm: (Picker picker, List value) {
-          print(value.toString());
-          print(picker.getSelectedValues());
-          setState(() {
-            _space = picker.getSelectedValues().first *
-                picker.getSelectedValues()[1];
-          });
-        }).showDialog(context);
-  }
+  // //Dialog to select space that the object takes.
+  // showPickerNumber(BuildContext context) {
+  //   new Picker(
+  //       confirmText: 'Bekräfta',
+  //       cancelText: 'Avbryt',
+  //       adapter: NumberPickerAdapter(data: [
+  //         NumberPickerColumn(begin: 1, end: 15),
+  //         NumberPickerColumn(begin: 1, end: 15),
+  //       ]),
+  //       delimiter: [
+  //         PickerDelimiter(
+  //             child: Container(
+  //           width: 30.0,
+  //           alignment: Alignment.center,
+  //           child: Text('X'),
+  //         ))
+  //       ],
+  //       hideHeader: true,
+  //       title: Text("Längd X Bredd"),
+  //       onConfirm: (Picker picker, List value) {
+  //         print(value.toString());
+  //         print(picker.getSelectedValues());
+  //         setState(() {
+  //           _space = picker.getSelectedValues().first *
+  //               picker.getSelectedValues()[1];
+  //         });
+  //       }).showDialog(context);
+  // }
 
   //Confirmation dialog before adding object to database
   showAlertDialog(BuildContext context) {
@@ -361,6 +362,62 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
         },
       );
     }
+  }
+
+  _showLengthXWidthDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          double length = 0.0;
+          double width = 0.0;
+          return AlertDialog(
+            title: Text('Ange längd & bredd'),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(
+                  width: 100.0,
+                  child: TextField(
+                    maxLength: 4,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(hintText: 'Längd'),
+                    onChanged: (value) {
+                      length = double.parse(value);
+                    },
+                  ),
+                ),
+                Text('X'),
+                Container(
+                  width: 100.0,
+                  child: TextField(
+                    maxLength: 4,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(hintText: 'Bredd'),
+                    onChanged: (value) {
+                      width = double.parse(value);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Avbryt')),
+              FlatButton(
+                  color: MyColors.primary,
+                  onPressed: () {
+                    setState(() {
+                      _space = (length * width).toInt();
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: Text('Spara')),
+            ],
+          );
+        });
   }
 
   @override
@@ -461,7 +518,8 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                                         borderRadius:
                                             BorderRadius.circular(10.0)),
                                     color: Colors.black12,
-                                    onPressed: () => showPickerNumber(context),
+                                    onPressed: () =>
+                                        _showLengthXWidthDialog(context),
                                     child: Text(
                                       '${_space} kvm',
                                     ),
