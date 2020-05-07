@@ -503,6 +503,27 @@ static void removeAllNotesForObject(String inObjectId) {
     });
   }
 
+  static void updateCustomer(Customer customer) {
+    customerRef.document(customer.id).updateData({
+      'name': customer.name,
+      'address': customer.address,
+      'postalCode': customer.postalCode,
+      'city': customer.city,
+      'phone': customer.phone,
+      'email': customer.email,
+      'gdpr': customer.gdpr,
+      'timestamp': customer.timestamp
+    });
+  }
+
+  static void deleteCustomerById(String customerId) {
+    customerRef.document(customerId).get().then((value) => {
+      if(value.exists) {
+        value.reference.delete()
+      }
+    });
+  }
+
   static Future<DocumentSnapshot> getCustomerById(String customerId) {
     Future<DocumentSnapshot> customerSnap =
         customerRef.document(customerId).get();

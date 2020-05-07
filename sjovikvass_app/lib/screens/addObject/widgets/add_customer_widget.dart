@@ -22,14 +22,12 @@ class _AddCustomerState extends State<AddCustomer> {
   TextEditingController _cityController = TextEditingController();
   String _city = '';
 
-TextEditingController _phoneController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
   String _phone = '';
   TextEditingController _emailController = TextEditingController();
   String _email = '';
 
   bool _gdpr = false;
-
-
 
   _submitCustomer() {
     if (!_isLoading) {
@@ -37,13 +35,14 @@ TextEditingController _phoneController = TextEditingController();
         _isLoading = true;
       });
 
-      Customer customer = Customer(name: _name,
-      address: _address,
-      postalCode: _postalCode,
-      city: _city,
-      phone: _phone,
-      email: _email,
-      gdpr: _gdpr);
+      Customer customer = Customer(
+          name: _name,
+          address: _address,
+          postalCode: _postalCode,
+          city: _city,
+          phone: _phone,
+          email: _email,
+          gdpr: _gdpr);
 
       _nameController.clear();
       _addressController.clear();
@@ -62,11 +61,10 @@ TextEditingController _phoneController = TextEditingController();
       });
       DatabaseService.addCustomer(customer);
       Navigator.of(context).pop();
-
     }
   }
 
-    //Confirmation dialog before adding object to database
+  //Confirmation dialog before adding object to database
   showAlertDialog(BuildContext context) {
     setState(() {
       _nameController.text.isEmpty

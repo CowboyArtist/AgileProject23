@@ -33,6 +33,9 @@ class _ObjectsListState extends State<ObjectsList> {
 
   Future<double> getPercentForObject(String id) async {
     int total = await DatabaseService.getTotalOrders(id);
+    if (total == 0) {
+      return 0.0;
+    }
     int done = await DatabaseService.getDoneOrders(id);
     return done/total;
   }
