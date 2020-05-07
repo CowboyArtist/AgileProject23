@@ -70,11 +70,17 @@ class _ObjectScreenState extends State<ObjectScreen> {
   }
 
   setupOwner() {
-    Future<DocumentSnapshot> owner =
-        DatabaseService.getCustomerById(widget.object.ownerId);
-    setState(() {
-      _dynamicOwner = owner;
-    });
+    if (widget.object.ownerId != null) {
+      Future<DocumentSnapshot> owner =
+          DatabaseService.getCustomerById(widget.object.ownerId);
+      setState(() {
+        _dynamicOwner = owner;
+      });
+    } else {
+      setState(() {
+        _dynamicOwner = null;
+      });
+    }
   }
 
   _setupNotesCount() async {
@@ -380,39 +386,39 @@ class _ObjectScreenState extends State<ObjectScreen> {
                     ),
                   ),
                   MyLayout.oneItem(
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(_notesCount.toString(),
-                              style: TextStyle(
-                                  color: MyColors.primary,
-                                  fontSize: 38.0,
-                                  fontWeight: FontWeight.bold)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text('Post-it',
-                                  style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.bold)),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                size: 13.0,
-                                
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      () => Navigator.push(
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(_notesCount.toString(),
+                            style: TextStyle(
+                                color: MyColors.primary,
+                                fontSize: 38.0,
+                                fontWeight: FontWeight.bold)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text('Post-it',
+                                style: TextStyle(
+                                    fontSize: 13.0,
+                                    fontWeight: FontWeight.bold)),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 13.0,
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => NotePage(
                           inObjectId: widget.object.id,
                         ),
                       ),
-                    ),),
+                    ),
+                  ),
                   // MyLayout.oneItem(
                   //     Column(
                   //       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -442,12 +448,37 @@ class _ObjectScreenState extends State<ObjectScreen> {
                   //     null),
                 ]),
               ),
-              widget.object.ownerId != '' && widget.object.ownerId != null
+              widget.object.ownerId != '' &&
+                      widget.object.ownerId != null &&
+                      _dynamicOwner != null
                   ? FutureBuilder(
                       future: _dynamicOwner,
                       builder: (BuildContext contex, AsyncSnapshot snapshot) {
                         if (!snapshot.hasData) {
                           return SizedBox.shrink();
+                        }
+                        if (!snapshot.data.exists) {
+                          return MyLayout.oneItemNoExpand(
+                              Column(children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.person,
+                                      color: MyColors.primary,
+                                    ),
+                                    SizedBox(
+                                      width: 10.0,
+                                    ),
+                                    Text(
+                                      'Ingen ägare tilldelad',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                )
+                              ]),
+                              () => _pcOwner.open());
                         }
                         Customer customer = Customer.fromDoc(snapshot.data);
                         return MyLayout.oneItemNoExpand(

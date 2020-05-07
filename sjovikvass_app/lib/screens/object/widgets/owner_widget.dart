@@ -34,7 +34,6 @@ class _OwnerDetailsState extends State<OwnerDetails> {
   String _phone = '';
   String _email = '';
   bool _gdpr = false;
-  
 
   @override
   void initState() {
@@ -175,7 +174,8 @@ class _OwnerDetailsState extends State<OwnerDetails> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
             title: Text('Redigera ${_currentCustomer.name}s uppgifter'),
             content: Form(
               key: _formKey,
@@ -300,12 +300,13 @@ class _OwnerDetailsState extends State<OwnerDetails> {
                     FlatButton(
                         textColor: Colors.redAccent,
                         onPressed: () {
-                          
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20.0)),
                                   title: Text(
                                       'Vill du radera ${_currentCustomer.name}?'),
                                   content: Text(
@@ -313,17 +314,22 @@ class _OwnerDetailsState extends State<OwnerDetails> {
                                   actions: <Widget>[
                                     FlatButton(
                                         onPressed: () {
-                                          
                                           Navigator.pop(context);
                                         },
                                         child: Text('Avbryt')),
                                     FlatButton(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                      color: Colors.redAccent,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0)),
+                                        color: Colors.redAccent,
                                         onPressed: () {
                                           DatabaseService.deleteCustomerById(
                                               _currentCustomer.id);
+                                          widget.object.ownerId = null;
                                           Navigator.pop(context);
+                                          Navigator.pop(context);
+                                          widget.pc.close();
+                                          widget.updateFunction();
                                         },
                                         child: Text('Radera'))
                                   ],
@@ -375,6 +381,13 @@ class _OwnerDetailsState extends State<OwnerDetails> {
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (!snapshot.hasData) {
                     return SizedBox.shrink();
+                  }
+                  if (!snapshot.data.exists) {
+                    return Container(
+                        height: 250.0,
+                        child: Center(
+                            child: Text(
+                                'Ingen ägare tilldelad till objektet...')));
                   }
                   Customer customer = Customer.fromDoc(snapshot.data);
                   _currentCustomer = customer;

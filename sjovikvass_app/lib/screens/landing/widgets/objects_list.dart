@@ -170,6 +170,10 @@ class _ObjectsListState extends State<ObjectsList> {
                                           fontSize: 16.0, color: Colors.white),
                                     );
                                   }
+
+                                  if (!snapshot.data.exists) {
+                                    return SizedBox.shrink();
+                                  }
                                   Customer customer =
                                       Customer.fromDoc(snapshot.data);
                                   return Text(
