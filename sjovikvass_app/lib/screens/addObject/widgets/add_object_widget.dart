@@ -346,6 +346,8 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
 
       // set up the AlertDialog
       AlertDialog alert = AlertDialog(
+        shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
         title: Text("Bekräfta objekt"),
         content: Text("Vill du spara ${_title}?"),
         actions: [

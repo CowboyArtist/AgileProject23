@@ -178,6 +178,8 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
 
       // set up the AlertDialog
       AlertDialog alert = AlertDialog(
+        shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
         title: Text("Bekräfta Leverantör"),
         content: Text("Vill du spara ${_supplierName}?"),
         actions: [

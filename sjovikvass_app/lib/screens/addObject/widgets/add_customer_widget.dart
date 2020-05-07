@@ -91,6 +91,8 @@ class _AddCustomerState extends State<AddCustomer> {
 
       // set up the AlertDialog
       AlertDialog alert = AlertDialog(
+        shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
         title: Text("Bekräfta Kund"),
         content: Text("Vill du spara ${_name}?"),
         actions: [

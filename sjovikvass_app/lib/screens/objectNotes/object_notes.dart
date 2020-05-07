@@ -92,6 +92,8 @@ class _NotePageState extends State<NotePage> {
         context: buildContext,
         builder: (buildContext) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
             title: Text("Anteckning"),
             content: Container(
               height: 100.0,
@@ -111,7 +113,10 @@ class _NotePageState extends State<NotePage> {
             ),
             actions: <Widget>[
               MaterialButton(
+                shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0)),
                 elevation: 5.0,
+                color: MyColors.primary,
                 child: Text('Lägg till'),
                 onPressed: () {
                   Navigator.of(context).pop(noteController.text.toString());
