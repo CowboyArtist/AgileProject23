@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sjovikvass_app/models/contact_model.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
@@ -213,8 +214,9 @@ class DatabaseService {
   }
 
   static Future<QuerySnapshot> getStoredObjectsSearch(String searchString) {
-    Future<QuerySnapshot> objects =
-        objectsRef.where('title', isGreaterThanOrEqualTo: searchString).getDocuments();
+    Future<QuerySnapshot> objects = objectsRef
+        .where('title', isGreaterThanOrEqualTo: searchString)
+        .getDocuments();
 
     return objects;
   }
@@ -241,9 +243,9 @@ class DatabaseService {
         .collection('hasImages')
         .getDocuments();
 
-    return snapshot.documents.length;}
+    return snapshot.documents.length;
+  }
 
-  
   //Methods for supplier -----------------------------------------------
 
   static Future<DocumentSnapshot> getSupplierById(String supplierId) {
@@ -323,5 +325,40 @@ class DatabaseService {
         .getDocuments();
 
     return snapshot.documents.length;
+  }
+
+  //Methods for contacts ---------------------------
+
+  static void updateContact(String inSupplierId, ContactModel contactModel) {
+    contactsRef
+        .document(inSupplierId)
+        .collection('hasContacts')
+        .document(contactModel.id)
+        .updateData({
+      'name': contactModel.name,
+      'descripion': contactModel.description,
+      'phoneNumber': contactModel.phoneNumber,
+      'email': contactModel.email,
+      'isMainContact': contactModel.isMainContact,
+    });
+  }
+
+  static Stream getContacts(String inSupplierId) {
+    Stream contactsStream = contactsRef
+        .document(inSupplierId)
+        .collection('hasContacts')
+        .snapshots();
+
+    return contactsStream;
+  }
+
+  static void addContactToSupplier(ContactModel contact, String inSupplierId) {
+    contactsRef.document(inSupplierId).collection('hasContacts').add({
+      'name': contact.name,
+      'description': contact.description,
+      'phoneNumber': contact.phoneNumber,
+      'email': contact.email,
+      'isMainContact': contact.isMainContact,
+    });
   }
 }
