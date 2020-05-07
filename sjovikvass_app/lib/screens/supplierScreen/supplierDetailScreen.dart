@@ -267,6 +267,19 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                   fontSize: 20.0,
                 ),
               ),
+              SizedBox(width: 100.0),
+              RaisedButton.icon(
+                onPressed: () => print('Hej'),
+                icon: Icon(
+                  Icons.add,
+                  color: MyColors.primary,
+                ),
+                label: Text(
+                  'Ny Kontakt',
+                  style: TextStyle(color: MyColors.primary),
+                ),
+                color: MyColors.lightBlue
+              ),
             ],
           ),
           _buildContactTile(),
