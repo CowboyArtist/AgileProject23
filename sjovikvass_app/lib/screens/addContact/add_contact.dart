@@ -39,34 +39,34 @@ class _AddContactState extends State<AddContact> {
   }
 
   _submitStoredContact() async {
-    //if (!_contactIsLoading && _contactName.isNotEmpty) {
-    setState(() {
-      _contactIsLoading = true;
-    });
+    if (!_contactIsLoading && _contactName.isNotEmpty) {
+      setState(() {
+        _contactIsLoading = true;
+      });
 
-    ContactModel storedContact = ContactModel(
-      name: _contactName,
-      description: _contactDescription,
-      phoneNumber: _contactPhone,
-      email: _contactEmail,
-      isMainContact: false,
-    );
+      ContactModel storedContact = ContactModel(
+        name: _contactName,
+        description: _contactDescription,
+        phoneNumber: _contactPhone,
+        email: _contactEmail,
+        isMainContact: false,
+      );
 
-    _contactNameController.clear();
-    _contactDescriptionController.clear();
-    _contactPhoneController.clear();
-    _contactEmailController.clear();
+      _contactNameController.clear();
+      _contactDescriptionController.clear();
+      _contactPhoneController.clear();
+      _contactEmailController.clear();
 
-    DatabaseService.addContactToSupplier(storedContact, widget.inSupplierId);
+      DatabaseService.addContactToSupplier(storedContact, widget.inSupplierId);
 
-    setState(() {
-      _contactName = '';
-      _contactDescription = '';
-      _contactPhone = '';
-      _contactEmail = '';
-    });
-    Navigator.of(context).pop();
-    //}
+      setState(() {
+        _contactName = '';
+        _contactDescription = '';
+        _contactPhone = '';
+        _contactEmail = '';
+      });
+      Navigator.of(context).pop();
+    }
   }
 
   _buildNewSupplierView() {
@@ -123,6 +123,7 @@ class _AddContactState extends State<AddContact> {
                   TextField(
                     maxLines: null,
                     controller: _contactEmailController,
+                    keyboardType: TextInputType.emailAddress,
                     textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
                       labelStyle: TextStyle(fontSize: 15.0),

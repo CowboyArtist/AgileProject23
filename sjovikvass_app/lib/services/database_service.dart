@@ -361,4 +361,17 @@ class DatabaseService {
       'isMainContact': contact.isMainContact,
     });
   }
+
+  static void removeContact(String inSupplierId, String contactId) {
+    contactsRef
+        .document(inSupplierId)
+        .collection('hasContacts')
+        .document(contactId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        value.reference.delete();
+      }
+    });
+  }
 }
