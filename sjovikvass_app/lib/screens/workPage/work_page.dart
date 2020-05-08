@@ -6,10 +6,10 @@ import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget.da
 
 
 import 'package:sjovikvass_app/services/database_service.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/circular_indicator.dart';
 
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
 
@@ -33,7 +33,7 @@ class _WorkPageState extends State<WorkPage> {
 
   final _formKey = GlobalKey<FormState>();
   //Boolean to determine when to turn the bottom button to green
-  bool _allDone = false;
+  
 
   TextEditingController workController = TextEditingController();
 
@@ -143,6 +143,7 @@ class _WorkPageState extends State<WorkPage> {
                         },
                         controller: workController,
                         maxLines: null,
+                        maxLength: 30,
                       ),
                       SizedBox(
                         height: 30,
@@ -232,37 +233,7 @@ class _WorkPageState extends State<WorkPage> {
                   //Listens to changes of _counterDone and rebuilds child widget
                   return ValueListenableBuilder(
                     builder: (BuildContext context, int value, Widget child) {
-                      return CircularPercentIndicator(
-                        radius: 100.0,
-                        lineWidth: 8.0,
-                        percent: value / total,
-                        animation: true,
-                        center: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(
-                              height: 18.0,
-                            ),
-                            Text(
-                              total == 0
-                                  ? '0 %'
-                                  : "${(value / total * 100).round()}%",
-                              style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: MyColors.primary),
-                            ),
-                            SizedBox(
-                              height: 5.0,
-                            ),
-                            Text(
-                              'Klart',
-                              style: TextStyle(fontSize: 12.0),
-                            ),
-                          ],
-                        ),
-                        progressColor: MyColors.primary,
-                      );
+                      return MyCircularProcentIndicator.buildIndicator(_counterDone.value, _counterTotal.value);
                     },
                     valueListenable: _counterDone,
                   );
@@ -348,7 +319,6 @@ class _WorkPageState extends State<WorkPage> {
                       if (!snapshot.hasData) {
                         return Text('Hämtar data');
                       }
-                      print(snapshot.data);
                       StoredObject storedObject =
                           StoredObject.fromDoc(snapshot.data);
                       return Text(storedObject.billingSum.toString() + ' kr');

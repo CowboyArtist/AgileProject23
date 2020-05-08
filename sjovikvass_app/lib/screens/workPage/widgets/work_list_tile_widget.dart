@@ -20,11 +20,13 @@ class WorkListTile extends StatefulWidget {
 
 class _WorkListTileState extends State<WorkListTile>
     with TickerProviderStateMixin {
+
   final ValueNotifier<bool> _resized = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _isDone = ValueNotifier<bool>(true);
   final ValueNotifier<double> _height = ValueNotifier<double>(56.0);
   final ValueNotifier<double> _extraheight = ValueNotifier<double>(0.0);
 
+//Controllers for the textfields
   TextEditingController materialController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController costController = TextEditingController();
@@ -38,12 +40,13 @@ class _WorkListTileState extends State<WorkListTile>
     _isDone.value = widget.workOrder.isDone;
   }
 
+//Counts the materials for the WorkOrder.
   _setupNrMaterials() async {
     int nMaterials = await DatabaseService.getNrMaterials(widget.workOrder.id);
     if (nMaterials != 0) {
       setState(() {
         _extraheight.value = 40.0 * nMaterials;
-        print(' SETUPMATERIALS GER: $nMaterials från nMaterials');
+
       });
     } else {
       _extraheight.value = 0.0;
@@ -84,7 +87,7 @@ class _WorkListTileState extends State<WorkListTile>
                   valueListenable: _extraheight,
                   builder:
                       (BuildContext context, double extraheight, Widget child) {
-                    print(resized.toString() + 'detta är resized value');
+                    
                     return Container(
                       height:
                           resized ? _height.value + extraheight + 90.0 : _height.value,
@@ -116,6 +119,7 @@ class _WorkListTileState extends State<WorkListTile>
                                             widget.workOrder);
                                           _setupNrMaterials();
                                       })
+                                      //Makes the pop-up PriceDialog appear.
                                     : showDialog(
                                         context: context,
                                         builder: (context) => PriceDialog(
@@ -174,7 +178,7 @@ class _WorkListTileState extends State<WorkListTile>
                                                     snapshot
                                                         .data.documents[index]);
                                                         _extraheight.value = (snapshot.data.documents.length * 40.0);
-                                                          print('Extraheight räknas ut');
+                                                           
                                             return MaterialListTile(
                                               workOrderMaterial:
                                                   workOrderMaterial,
@@ -182,7 +186,7 @@ class _WorkListTileState extends State<WorkListTile>
                                                   widget.workOrder.id,
                                               inObjectId: widget.inObjectId,
                                               parentIsDone: _isDone,
-                                              //  height: _height,
+                                              
                                             );
                                           },
                                         );
@@ -190,6 +194,8 @@ class _WorkListTileState extends State<WorkListTile>
                                       }),
                                 )
                               : SizedBox.shrink(),
+                              /*The boxes for the "Nytt material" section which will only pop up when the
+                              workorder is not done */
                               (_resized.value && !widget.workOrder.isDone)
                                     ? Padding(
                                         padding:
@@ -299,10 +305,11 @@ class _WorkListTileState extends State<WorkListTile>
                                                           _totalMaterialCost),
                                                 );
                                                 setState(() {
-                                                  _height.value += 40.0;
+                                        
                                                   widget.workOrder.sum +=
                                                       _totalMaterialCost;
                                                 });
+                                                _setupNrMaterials();
                                                 materialController.clear();
                                                 amountController.clear();
                                                 costController.clear();

@@ -82,7 +82,7 @@ class _PriceDialogState extends State<PriceDialog> {
 
   _buildChild(BuildContext context) {
     return Container(
-      height: 450.0,
+      height: 430.0,
       width: 350.0,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30.0),
@@ -94,7 +94,7 @@ class _PriceDialogState extends State<PriceDialog> {
             clipper: BottomWaveClipper(),
             child: Container(
               width: 350.0,
-              height: 150.0,
+              height: 140.0,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
@@ -106,7 +106,7 @@ class _PriceDialogState extends State<PriceDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.fromLTRB(30, 40, 20, 10),
+                    padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
                     child: Text(
                       'Är du klar med',
                       style: TextStyle(
@@ -116,7 +116,7 @@ class _PriceDialogState extends State<PriceDialog> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
+                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                     child: Text(
                       widget.workOrder.title + '?',
                       style: TextStyle(
@@ -129,9 +129,7 @@ class _PriceDialogState extends State<PriceDialog> {
               ),
             ),
           ),
-          SizedBox(
-            height: 10,
-          ),
+         
           Padding(
             padding: const EdgeInsets.only(left: 30),
             child: Row(
@@ -167,7 +165,7 @@ class _PriceDialogState extends State<PriceDialog> {
                   ),
                 ),
                 SizedBox(
-                  width: 150,
+                  width: 90,
                 )
               ],
             ),
