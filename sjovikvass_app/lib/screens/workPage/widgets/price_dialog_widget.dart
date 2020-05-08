@@ -12,11 +12,15 @@ class PriceDialog extends StatefulWidget {
   final WorkOrder workOrder;
   final String inObjectId;
   final ValueNotifier<int> valueNotifier;
+  final ValueNotifier<bool> isDone;
+  final ValueNotifier<double> height;
 
   PriceDialog({
     this.inObjectId,
     this.workOrder,
     this.valueNotifier,
+    this.isDone,
+    this.height,
   });
 
   @override
@@ -25,36 +29,42 @@ class PriceDialog extends StatefulWidget {
 
 class _PriceDialogState extends State<PriceDialog> {
   Duration value;
-  double hourlyRate = 500.0;
+  double hourlyRate = 0.0;
   double totalPrice = 0.0;
   double _timeAmount;
 
+  TextEditingController hoursField = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 //Sets if the work order is done and update the corresponding values in database
   _toggleIsDone() {
     setState(() {
       widget.workOrder.isDone = !widget.workOrder.isDone;
+      widget.isDone.value = !widget.isDone.value;
     });
     WorkOrderMaterial finishedWork = WorkOrderMaterial(
-        title: 'Arbetad tid', amount: _timeAmount, cost: hourlyRate);
+        title: 'Arbetad tid',
+        amount: _timeAmount,
+        cost: double.parse(hoursField.text));
     DatabaseService.addMaterialToWorkOrder(widget.workOrder.id, finishedWork);
     DatabaseService.updateWorkOrder(widget.inObjectId, widget.workOrder);
+
     if (widget.workOrder.isDone) {
       DatabaseService.updateObject(
           widget.inObjectId, widget.workOrder.sum + totalPrice);
-      DatabaseService.updateWorkOrderSum(
-          widget.inObjectId, widget.workOrder.id, totalPrice);
       widget.valueNotifier.value++;
+         DatabaseService.updateWorkOrderSum(
+      widget.inObjectId, widget.workOrder.id, totalPrice);
     }
+  
   }
 
   //Calculates the price for the work order and sets it to hours.
   _calculateHourlyPrice() {
     if (value != null) {
       setState(() {
-        totalPrice = (value.inMinutes / 60) * hourlyRate;
+        totalPrice = (value.inMinutes / 60) * double.parse(hoursField.text);
         _timeAmount = value.inMinutes / 60;
       });
-      Navigator.of(context).pop(true);
     }
 
     print(totalPrice);
@@ -72,11 +82,11 @@ class _PriceDialogState extends State<PriceDialog> {
 
   _buildChild(BuildContext context) {
     return Container(
-      height: 400.0,
+      height: 450.0,
       width: 350.0,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30.0),
-        color: MyColors.backgroundLight,
+        color: Colors.white,
       ),
       child: Column(
         children: <Widget>[
@@ -84,7 +94,7 @@ class _PriceDialogState extends State<PriceDialog> {
             clipper: BottomWaveClipper(),
             child: Container(
               width: 350.0,
-              height: 170.0,
+              height: 150.0,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
@@ -101,14 +111,14 @@ class _PriceDialogState extends State<PriceDialog> {
                       'Är du klar med',
                       style: TextStyle(
                           fontSize: 20.0,
-                          color: MyColors.backgroundLight,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
                     child: Text(
-                      widget.workOrder.title,
+                      widget.workOrder.title + '?',
                       style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
@@ -119,36 +129,96 @@ class _PriceDialogState extends State<PriceDialog> {
               ),
             ),
           ),
-          // The timer scroll for the pop-up
-          Container(
-            height: 160.0,
-            child: CupertinoTimerPicker(
-                mode: CupertinoTimerPickerMode.hm,
-                onTimerDurationChanged: (value) {
-                  setState(() {
-                    this.value = value;
-                  });
-                }),
+          SizedBox(
+            height: 10,
           ),
-          SizedBox(height: 10.0),
-          Container(
-            height: 40.0,
-            width: 200.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-              color: Colors.green,
-            ),
-            child: FlatButton(
-                child: Text(
-                  'Markera som klar',
+          Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: Row(
+              children: <Widget>[
+                Text(
+                  'Timpris: ',
                   style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.white),
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
                 ),
-                onPressed: () {
-                  _calculateHourlyPrice();
-                  _toggleIsDone();
-                }),
+                Form(
+                  key: _formKey,
+                  child: Expanded(
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 40,
+                      child: TextFormField(
+                        validator: (text) {
+                          if (text == null || text.isEmpty) {
+                            return 'Ange timpris';
+                          }
+                          return null;
+                        },
+                        controller: hoursField,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            hintText: 'kr',
+                            contentPadding: EdgeInsets.fromLTRB(3, 0, 0, 0),
+                            isDense: true),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 150,
+                )
+              ],
+            ),
           ),
+
+          // The timer scroll for the pop-up
+          Padding(
+            padding: EdgeInsets.only(top: 20.0),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: 160.0,
+                  child: CupertinoTimerPicker(
+                      mode: CupertinoTimerPickerMode.hm,
+                      onTimerDurationChanged: (value) {
+                        setState(() {
+                          this.value = value;
+                        });
+                      }),
+                ),
+                SizedBox(height: 10.0),
+                Container(
+                  height: 40.0,
+                  width: 200.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: Colors.green,
+                  ),
+                  child: FlatButton(
+                    child: Text(
+                      'Markera som klar',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                    onPressed: () {
+                      if (value == null) {
+                        Navigator.pop(context);
+                      } else {
+                        if (_formKey.currentState.validate()) {
+                          _calculateHourlyPrice();
+                          _toggleIsDone();
+                          Navigator.pop(context);
+                        //  widget.height.value -= 90;
+                        }
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );

@@ -3,6 +3,8 @@ import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/screens/workPage/design/bottom_wave_clipper.dart';
 import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget.dart';
+import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget2.dart';
+
 import 'package:sjovikvass_app/services/database_service.dart';
 
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
@@ -34,7 +36,6 @@ class _WorkPageState extends State<WorkPage> {
   bool _allDone = false;
 
   TextEditingController workController = TextEditingController();
- 
 
   _setupTotalOrders() async {
     int totalOrders = await DatabaseService.getTotalOrders(widget.inObjectId);
@@ -112,7 +113,7 @@ class _WorkPageState extends State<WorkPage> {
                       'Lägg till en arbete',
                       style: TextStyle(
                           fontSize: 20.0,
-                          color: MyColors.backgroundLight,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -144,7 +145,7 @@ class _WorkPageState extends State<WorkPage> {
                         maxLines: null,
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 30,
                       ),
                       Center(
                         child: Container(
@@ -190,6 +191,7 @@ class _WorkPageState extends State<WorkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: DetailAppBar.buildAppBar('Arbete', context),
       body: Column(
         children: <Widget>[
