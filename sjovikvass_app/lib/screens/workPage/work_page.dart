@@ -3,7 +3,7 @@ import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/screens/workPage/design/bottom_wave_clipper.dart';
 import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget.dart';
-import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget2.dart';
+
 
 import 'package:sjovikvass_app/services/database_service.dart';
 
