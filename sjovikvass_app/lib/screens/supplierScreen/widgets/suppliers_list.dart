@@ -113,7 +113,12 @@ class _SuppliersListState extends State<SuppliersList> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16.0))),
                   padding: EdgeInsets.all(10.0),
-                  onPressed: () => PhoneCallService.showPhoneCallDialog(context, supplier.companyName, supplier.phoneNr),
+                  onPressed: () => PhoneCallService.showPhoneCallDialog(
+                      context,
+                      supplier.companyName +
+                          "'s kontaktperson " +
+                          supplier.mainContact,
+                      supplier.mainContact),
                 ),
               ),
             ),
@@ -132,7 +137,12 @@ class _SuppliersListState extends State<SuppliersList> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16.0))),
                   padding: EdgeInsets.all(10.0),
-                  onPressed: () => EmailService.showEmailDialog(context, supplier.companyName, supplier.email),
+                  onPressed: () => EmailService.showEmailDialog(
+                      context,
+                      supplier.companyName +
+                          "'s kontaktperson " +
+                          supplier.mainContact,
+                      supplier.mainContact),
                 ),
               ),
             ),

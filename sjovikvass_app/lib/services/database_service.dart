@@ -265,6 +265,24 @@ class DatabaseService {
         'phoneNr': supplier.phoneNr,
         'email': supplier.email,
         'imageUrl': supplier.imageUrl,
+        'mainContact': supplier.mainContact,
+      });
+    });
+  }
+
+  static void updateSupplierMainContact(
+      String supplierId, String contactModelId) {
+    Supplier supplier;
+    getSupplierById(supplierId).then((data) {
+      supplier = Supplier.fromDoc(data);
+
+      suppliersRef.document(supplier.id).updateData({
+        'companyName': supplier.companyName,
+        'description': supplier.description,
+        'phoneNr': supplier.phoneNr,
+        'email': supplier.email,
+        'imageUrl': supplier.imageUrl,
+        'mainContact': contactModelId,
       });
     });
   }
@@ -340,6 +358,21 @@ class DatabaseService {
       'phoneNumber': contactModel.phoneNumber,
       'email': contactModel.email,
       'isMainContact': contactModel.isMainContact,
+    });
+  }
+
+  static void updateContactIsMainContact(
+      String inSupplierId, ContactModel contactModel, bool value) {
+    contactsRef
+        .document(inSupplierId)
+        .collection('hasContacts')
+        .document(contactModel.id)
+        .updateData({
+      'name': contactModel.name,
+      'descripion': contactModel.description,
+      'phoneNumber': contactModel.phoneNumber,
+      'email': contactModel.email,
+      'isMainContact': value,
     });
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sjovikvass_app/models/contact_model.dart';
+import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/email_service.dart';
 import 'package:sjovikvass_app/services/phoneCall_service.dart';
@@ -155,7 +156,13 @@ class _ContactTileState extends State<ContactTile> {
                 onChanged: (bool value) {
                   setState(
                     () {
-                      widget.contact.isMainContact = value;
+                      DatabaseService.updateContactIsMainContact(
+                          widget.inSupplierId, widget.contact, value);
+                      value
+                          ? DatabaseService.updateSupplierMainContact(
+                              widget.inSupplierId, widget.contact.id)
+                          : DatabaseService.updateSupplierMainContact(
+                              widget.inSupplierId, null);
                     },
                   );
                 },
