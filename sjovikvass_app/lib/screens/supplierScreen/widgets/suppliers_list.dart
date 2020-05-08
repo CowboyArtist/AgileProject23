@@ -115,9 +115,11 @@ class _SuppliersListState extends State<SuppliersList> {
                   padding: EdgeInsets.all(10.0),
                   onPressed: () => PhoneCallService.showPhoneCallDialog(
                       context,
-                      supplier.companyName +
-                          "'s kontaktperson " +
-                          supplier.mainContact,
+                      supplier.mainContact != null
+                          ? supplier.companyName +
+                              "'s kontaktperson " +
+                              supplier.mainContact
+                          : _showErrorMessage(),
                       supplier.mainContact),
                 ),
               ),
@@ -139,9 +141,11 @@ class _SuppliersListState extends State<SuppliersList> {
                   padding: EdgeInsets.all(10.0),
                   onPressed: () => EmailService.showEmailDialog(
                       context,
-                      supplier.companyName +
-                          "'s kontaktperson " +
-                          supplier.mainContact,
+                      supplier.mainContact != null
+                          ? supplier.companyName +
+                              "'s kontaktperson " +
+                              supplier.mainContact
+                          : _showErrorMessage(),
                       supplier.mainContact),
                 ),
               ),
@@ -208,6 +212,28 @@ class _SuppliersListState extends State<SuppliersList> {
           ),
         )
       ],
+    );
+  }
+
+  _showErrorMessage() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Något gick snett :-("),
+          content: new Text("Du måste ange en huvudkontakt till leverantören!"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Stäng"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

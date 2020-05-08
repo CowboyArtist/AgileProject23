@@ -362,17 +362,23 @@ class DatabaseService {
   }
 
   static void updateContactIsMainContact(
-      String inSupplierId, ContactModel contactModel, bool value) {
+      String inSupplierId, String contactId) {
     contactsRef
         .document(inSupplierId)
         .collection('hasContacts')
-        .document(contactModel.id)
-        .updateData({
-      'name': contactModel.name,
-      'descripion': contactModel.description,
-      'phoneNumber': contactModel.phoneNumber,
-      'email': contactModel.email,
-      'isMainContact': value,
+        .getDocuments()
+        .then((value) {
+      value.documents.forEach((element) {
+        if (element.exists && element.documentID != contactId) {
+          element.reference.updateData({
+            'isMainContact': false,
+          });
+        } else {
+          element.reference.updateData({
+            'isMainContact': true,
+          });
+        }
+      });
     });
   }
 

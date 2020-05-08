@@ -19,8 +19,6 @@ class SupplierDetailScreen extends StatefulWidget {
 }
 
 class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
-  bool _selectedContact = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,6 +158,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                           return ContactTile(
                             inSupplierId: widget.supplier.id,
                             contact: contactModel,
+                            supplierMainContact: widget.supplier.mainContact,
                           );
                         },
                       );

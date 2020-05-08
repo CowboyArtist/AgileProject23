@@ -10,10 +10,12 @@ import 'package:sjovikvass_app/styles/my_colors.dart';
 class ContactTile extends StatefulWidget {
   final ContactModel contact;
   final String inSupplierId;
+  final String supplierMainContact;
 
   ContactTile({
     this.contact,
     this.inSupplierId,
+    this.supplierMainContact,
   });
   @override
   _ContactTileState createState() => _ContactTileState();
@@ -156,13 +158,14 @@ class _ContactTileState extends State<ContactTile> {
                 onChanged: (bool value) {
                   setState(
                     () {
-                      DatabaseService.updateContactIsMainContact(
-                          widget.inSupplierId, widget.contact, value);
-                      value
-                          ? DatabaseService.updateSupplierMainContact(
-                              widget.inSupplierId, widget.contact.id)
-                          : DatabaseService.updateSupplierMainContact(
-                              widget.inSupplierId, null);
+                      if (widget.supplierMainContact != widget.contact.id) {
+                        DatabaseService.updateContactIsMainContact(
+                            widget.inSupplierId, widget.contact.id);
+                        if (value == true) {
+                          DatabaseService.updateSupplierMainContact(
+                              widget.inSupplierId, widget.contact.id);
+                        }
+                      }
                     },
                   );
                 },
