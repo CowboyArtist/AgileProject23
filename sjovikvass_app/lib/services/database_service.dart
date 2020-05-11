@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sjovikvass_app/models/archive_model.dart';
 import 'package:sjovikvass_app/models/contact_model.dart';
 import 'package:sjovikvass_app/models/customer_model.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
@@ -12,47 +13,57 @@ import 'package:sjovikvass_app/utils/constants.dart';
 import 'package:sjovikvass_app/models/boatImage_model.dart';
 
 class DatabaseService {
-
 //Methods for Notes ---------------------------------------
-static Stream getObjectNotes(String inObjectId) {
+  static Stream getObjectNotes(String inObjectId) {
     Stream objectNotesStream = objectNotesRef
         .document(inObjectId)
         .collection('hasNotes')
         .orderBy('timestamp', descending: true)
         .snapshots();
-         return objectNotesStream;
+    return objectNotesStream;
   }
 
-    static void addNoteToObject(ObjectNote objectNote, String inObjectId) {
+  static void addNoteToObject(ObjectNote objectNote, String inObjectId) {
     objectNotesRef.document(inObjectId).collection('hasNotes').add({
       'text': objectNote.text,
       'timestamp': Timestamp.fromDate(DateTime.now()),
     });
   }
 
-static Future<int> countNotesInObject(String inObjectId) async {
-  QuerySnapshot notesSnapshot = await objectNotesRef.document(inObjectId).collection('hasNotes').getDocuments();
-  return notesSnapshot.documents.length;
-}
+  static Future<int> countNotesInObject(String inObjectId) async {
+    QuerySnapshot notesSnapshot = await objectNotesRef
+        .document(inObjectId)
+        .collection('hasNotes')
+        .getDocuments();
+    return notesSnapshot.documents.length;
+  }
 
-static void removeNote(String inObjectId, String noteId) {
-  objectNotesRef.document(inObjectId).collection('hasNotes').document(noteId).get().then((value) {
-    if (value.exists) {
-      value.reference.delete();
-    }
-  });
-}
-
-static void removeAllNotesForObject(String inObjectId) {
-  objectNotesRef.document(inObjectId).collection('hasNotes').getDocuments().then((value) {
-    value.documents.forEach((element) {
-      if (element.exists) {
-        element.reference.delete();
+  static void removeNote(String inObjectId, String noteId) {
+    objectNotesRef
+        .document(inObjectId)
+        .collection('hasNotes')
+        .document(noteId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        value.reference.delete();
       }
     });
-  });
-}
+  }
 
+  static void removeAllNotesForObject(String inObjectId) {
+    objectNotesRef
+        .document(inObjectId)
+        .collection('hasNotes')
+        .getDocuments()
+        .then((value) {
+      value.documents.forEach((element) {
+        if (element.exists) {
+          element.reference.delete();
+        }
+      });
+    });
+  }
 
   // Methods for work orders ---------------------------------
 
@@ -65,14 +76,12 @@ static void removeAllNotesForObject(String inObjectId) {
         .get();
     return workOrderSnapshot;
   }
-  
-  
+
   static void updateWorkOrderSum(
       String inObjectId, String inWorkOrderId, double amount) {
     WorkOrder workOrder;
     getWorkOrderById(inWorkOrderId, inObjectId).then((data) {
       workOrder = WorkOrder.fromDoc(data);
-   
 
       workOrderRef
           .document(inObjectId)
@@ -83,7 +92,6 @@ static void removeAllNotesForObject(String inObjectId) {
       });
     });
   }
-
 
   static Future<int> getAllObjectNotes(String inObjectId) async {
     QuerySnapshot snapshot = await objectNotesRef
@@ -377,7 +385,12 @@ static void removeAllNotesForObject(String inObjectId) {
   }
 
   static void removeOneImage(String inObjectId, String imageId) {
-    imageRef.document(inObjectId).collection('hasImages').document(imageId).get().then((value) {
+    imageRef
+        .document(inObjectId)
+        .collection('hasImages')
+        .document(imageId)
+        .get()
+        .then((value) {
       if (value.exists) {
         StorageService.deleteObjectImage(value['imageUrl']);
         value.reference.delete();
@@ -537,10 +550,8 @@ static void removeAllNotesForObject(String inObjectId) {
 
   static void deleteCustomerById(String customerId) {
     customerRef.document(customerId).get().then((value) => {
-      if(value.exists) {
-        value.reference.delete()
-      }
-    });
+          if (value.exists) {value.reference.delete()}
+        });
   }
 
   static Future<DocumentSnapshot> getCustomerById(String customerId) {
@@ -615,6 +626,42 @@ static void removeAllNotesForObject(String inObjectId) {
       if (value.exists) {
         value.reference.delete();
       }
+    });
+  }
+
+  //METHODS FOR ARCHIVE ----------------------------
+
+  static void addArchiveObject(String season, String inObjectId) {
+    archiveRef.document(season).collection('hasArchive').add({}).then((value) {
+      getObjectById(inObjectId).then((doc) {
+        archiveRef
+            .document(season)
+            .collection('hasArchive')
+            .document(value.documentID)
+            .updateData({
+          'season': season,
+          'objectTitle': doc['title'],
+          'billingSum': doc['billingSum'],
+          'ownerId': doc['ownerId'],
+        });
+      });
+      workOrderRef
+          .document(inObjectId)
+          .collection('hasWorkOrders')
+          .getDocuments()
+          .then((docs) {
+        docs.documents.forEach((element) {
+          workOrderRef
+              .document(value.documentID)
+              .collection('hasWorkOrders')
+              .add({
+            'title': element['title'],
+            'isDone': element['isDone'],
+            'sum': element['sum']
+          });
+          element.reference.delete();
+        });
+      });
     });
   }
 }

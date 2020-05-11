@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_picker/flutter_picker.dart';
+import 'package:sjovikvass_app/models/archive_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/screens/workPage/design/bottom_wave_clipper.dart';
@@ -182,6 +184,34 @@ class _WorkPageState extends State<WorkPage> {
     );
   }
 
+  //The dialog after the "Arkivera" button is pressed.
+  _selectSeason(BuildContext context) {
+    Picker(
+        confirmText: 'Bekräfta',
+        cancelText: 'Avbryt',
+        adapter:PickerDataAdapter(data: [
+          PickerItem(text: Text('Vintern'),  children: [PickerItem(text: Text((DateTime.now().year - 1).toString() + '-'+ (DateTime.now().year ).toString())),]),
+          PickerItem(text: Text('Sommaren'),  children: [PickerItem(text: Text(DateTime.now().year.toString())),]),
+          
+        ]),
+        hideHeader: true,
+        title: Text("Välj säsong"),
+        onConfirm: (Picker picker, List value) {
+          String season;
+          if (value[0] != 1) { //Because it works
+            season = 'Vintern ${(DateTime.now().year - 1).toString()}-${(DateTime.now().year ).toString()}';
+          } else {
+            season = 'Sommaren ${(DateTime.now().year ).toString()}';
+          }
+          print(season);
+          DatabaseService.addArchiveObject(season, widget.inObjectId);
+          setState(() {
+            _counterDone.value = 0;
+            _counterTotal.value = 0;
+          });
+        }).showDialog(context);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -335,12 +365,14 @@ class _WorkPageState extends State<WorkPage> {
               return ValueListenableBuilder(
                 builder: (BuildContext context, int total, Widget child) {
                   return FlatButton(
-                    onPressed: () =>
-                        print('Detta är för framtida utvecklingar'),
+                    onPressed: _counterTotal.value == _counterDone.value &&
+                            _counterTotal.value != 0
+                        ? () =>
+                        _selectSeason(context) : null,
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
-                        'Båten är klar',
+                        'Arkivera',
                         style: TextStyle(fontSize: 20.0, color: Colors.white),
                       ),
                     ),
