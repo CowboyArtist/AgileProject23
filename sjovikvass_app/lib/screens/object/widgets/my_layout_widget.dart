@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
+//Custom containers for object_screen.dart
 class MyLayout {
   static oneItem(Widget child, Function onTap) {
     return Expanded(

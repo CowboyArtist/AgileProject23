@@ -12,6 +12,8 @@ import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:open_file/open_file.dart';
 
+
+//Screen to view all ddocuments added to an object
 class DocumentScreen extends StatefulWidget {
   final String inObjectId;
   DocumentScreen({this.inObjectId});
@@ -22,6 +24,7 @@ class DocumentScreen extends StatefulWidget {
 class _DocumentScreenState extends State<DocumentScreen> {
   File _scannedFile;
 
+  //Builds the button for adding a new document
   _buildBtn(IconData icon, String label, Function onPressed) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

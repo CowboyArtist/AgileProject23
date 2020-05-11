@@ -30,7 +30,7 @@ class ObjectScreen extends StatefulWidget {
 }
 
 class _ObjectScreenState extends State<ObjectScreen> {
-  Future<void> _launched;
+
 
   int _doneOrders = 0;
   int _totalOrders = 0;
@@ -38,21 +38,27 @@ class _ObjectScreenState extends State<ObjectScreen> {
   int _documentCount = 0;
   int _notesCount = 0;
 
+  //_dynamicOwner is used to always show up-to-date in UI during runtime
   Future<DocumentSnapshot> _dynamicOwner;
 
+  //_dynamicObject is used to always show up-to-date in UI during runtime
+  Future<DocumentSnapshot> _dynamicObject;
+
+  //Top radius for sliding panel
   BorderRadiusGeometry radius = BorderRadius.only(
     topLeft: Radius.circular(14.0),
     topRight: Radius.circular(14.0),
   );
 
-  PanelController _pc = PanelController();
-  PanelController _pcOwner = PanelController();
+  PanelController _pc = PanelController(); //Controlls the panel for in and out date
+  PanelController _pcOwner = PanelController(); //Controlls the panel for owner details
 
-  Future<DocumentSnapshot> _dynamicObject;
+  
 
   @override
   void initState() {
     super.initState();
+    //Setup all attributes needed from database
     _setupOrderCounts();
     _setupImageCount();
     _setupDocumentCount();
@@ -123,6 +129,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     });
   }
 
+  //Builds secondary button on Owner widget
   Widget _buildActionButton(IconData icon, Function onTap) {
     return GestureDetector(
       onTap: onTap,
@@ -139,6 +146,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     );
   }
 
+  //Opens model in browser with a google search
   Future<void> _launchInBrowser(String url) async {
     if (await canLaunch(url)) {
       await launch(
@@ -155,7 +163,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SlidingUpPanel(
+      body: SlidingUpPanel( //Sliding panel with owner details
         backdropEnabled: true,
         controller: _pcOwner,
         borderRadius: radius,
@@ -164,9 +172,9 @@ class _ObjectScreenState extends State<ObjectScreen> {
         panel: OwnerDetails(
           object: widget.object,
           pc: _pcOwner,
-          updateFunction: setupOwner,
+          updateFunction: setupOwner, 
         ),
-        body: SlidingUpPanel(
+        body: SlidingUpPanel( //Sliding panel with in- and outdate updates
           backdropEnabled: true,
           controller: _pc,
           borderRadius: radius,
@@ -323,6 +331,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
                 height: 100.0,
                 width: MediaQuery.of(context).size.width,
                 child: Row(children: <Widget>[
+                  
                   MyLayout.oneItem(
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -419,35 +428,9 @@ class _ObjectScreenState extends State<ObjectScreen> {
                       ),
                     ),
                   ),
-                  // MyLayout.oneItem(
-                  //     Column(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //       crossAxisAlignment: CrossAxisAlignment.center,
-                  //       children: <Widget>[
-                  //         Text(widget.object.space.toInt().toString(),
-                  //             style: TextStyle(
-                  //                 color: MyColors.primary,
-                  //                 fontSize: 38.0,
-                  //                 fontWeight: FontWeight.bold)),
-                  //         Row(
-                  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //           children: <Widget>[
-                  //             Text('Kvm',
-                  //                 style: TextStyle(
-                  //                     fontSize: 13.0,
-                  //                     fontWeight: FontWeight.bold)),
-                  //             Icon(
-                  //               Icons.arrow_forward_ios,
-                  //               size: 13.0,
-                  //               color: MyColors.lightBlue,
-                  //             )
-                  //           ],
-                  //         ),
-                  //       ],
-                  //     ),
-                  //     null),
                 ]),
               ),
+              //Build owner widget if object has owner
               widget.object.ownerId != '' &&
                       widget.object.ownerId != null &&
                       _dynamicOwner != null

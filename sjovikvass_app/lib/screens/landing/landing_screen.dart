@@ -15,6 +15,7 @@ class _LandingScreenState extends State<LandingScreen> {
   bool _isSearching = false;
   bool _openSearch = false;
 
+  //Searchbar to filter the objects in the landing screen
   _buildSearchBar() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.0),

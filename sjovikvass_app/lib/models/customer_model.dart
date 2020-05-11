@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+//All attributes for Customer
 class Customer {
   final String id;
   final String name;
@@ -13,6 +15,7 @@ class Customer {
 
   Customer({this.id, this.name, this.phone, this.email, this.address, this.postalCode, this.city, this.gdpr, this.timestamp});
 
+  //Builds Customer object from Database document
   factory Customer.fromDoc(DocumentSnapshot doc) {
     return Customer(
         id: doc.documentID,

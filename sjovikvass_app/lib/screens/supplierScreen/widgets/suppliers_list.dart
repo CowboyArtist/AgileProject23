@@ -157,7 +157,6 @@ class _SuppliersListState extends State<SuppliersList> {
                   ),
                 ),
               ),
-            
             Positioned(
               left: 80.0,
               bottom: 32.0,

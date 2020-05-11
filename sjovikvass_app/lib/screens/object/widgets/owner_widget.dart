@@ -8,10 +8,12 @@ import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+//Builds the view in Sliding up panel in objects_screen.dart
+//Shows details of the owner of the object
 class OwnerDetails extends StatefulWidget {
-  final PanelController pc;
-  final StoredObject object;
-  final Function updateFunction;
+  final PanelController pc; //Used to open and close panel in parent widget
+  final StoredObject object; //Selected object
+  final Function updateFunction; //Calls a function in parent widget to rebuild owner of object
   OwnerDetails({this.pc, this.object, this.updateFunction});
   @override
   _OwnerDetailsState createState() => _OwnerDetailsState();
@@ -43,17 +45,17 @@ class _OwnerDetailsState extends State<OwnerDetails> {
       _hasOwner = widget.object.ownerId != null;
     });
   }
-
+  //Populate the list of customer with name+id as value
   _setupCustomerList() {
     DropdownMenuItem<String> dropdownMenuItem;
     customerRef.getDocuments().then((value) => {
           value.documents.forEach((element) {
             dropdownMenuItem = DropdownMenuItem(
               child: Text(
-                element['name'],
+                element['name'], //Displays the name in the UI
                 style: TextStyle(fontSize: 15.0),
               ),
-              value: '${element['name']}/${element.documentID}',
+              value: '${element['name']}/${element.documentID}',//Name is used to make the customer searchable
             );
             _customers.add(dropdownMenuItem);
           })
@@ -62,18 +64,19 @@ class _OwnerDetailsState extends State<OwnerDetails> {
 
   _submitUpdatedOwner() {
     if (_selectedCustomer.isNotEmpty) {
-      List<String> helperList = _selectedCustomer.split('/');
-      _selectedCustomerId = helperList[1];
+      List<String> helperList = _selectedCustomer.split('/'); //Helper list used to divide the selected string
+      _selectedCustomerId = helperList[1]; //Selects the second part of String, which is the id of the customer
       setState(() {
-        widget.object.ownerId = _selectedCustomerId;
+        widget.object.ownerId = _selectedCustomerId; //Sets the ownerId value in the storedObject to the new selected value.
       });
 
       DatabaseService.updateObjectTotal(widget.object);
-      widget.pc.close();
-      widget.updateFunction();
+      widget.pc.close(); //Close the panel
+      widget.updateFunction(); //update parent widget
     }
   }
 
+  //Builds buttons for actions with customer data
   _buildCustomerAction(String label, IconData icon, Function onTap) {
     return GestureDetector(
       onTap: onTap,
@@ -105,6 +108,7 @@ class _OwnerDetailsState extends State<OwnerDetails> {
     );
   }
 
+  //Builds every attribute that exsist from customer in the UI
   _buildOwnerInfo(Customer customer) {
     return Column(
       children: <Widget>[
@@ -169,6 +173,7 @@ class _OwnerDetailsState extends State<OwnerDetails> {
     }
   }
 
+  //Dialog to update attributes of a customer (Does not have GDPR checkbox)
   _showEditDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -265,24 +270,6 @@ class _OwnerDetailsState extends State<OwnerDetails> {
                       onSaved: (input) => _email = input,
                     ),
                     SizedBox(height: 30.0),
-                    // Row(
-                    //   children: <Widget>[
-                    //     Checkbox(
-                    //         value: _gdpr,
-                    //         onChanged: (value) {
-                    //           print(value);
-                    //           setState(() {
-                    //             _gdpr = value;
-                    //           });
-                    //         }),
-                    //     Flexible(
-                    //         child: Text(
-                    //       'Jag har meddelat kunden att jag sparar dennes uppgifter.',
-                    //       style: TextStyle(fontSize: 14.0),
-                    //       overflow: TextOverflow.fade,
-                    //     ))
-                    //   ],
-                    // ),
                     SizedBox(height: 30.0),
                     FlatButton(
                         shape: RoundedRectangleBorder(
@@ -325,11 +312,11 @@ class _OwnerDetailsState extends State<OwnerDetails> {
                                         onPressed: () {
                                           DatabaseService.deleteCustomerById(
                                               _currentCustomer.id);
-                                          widget.object.ownerId = null;
+                                          widget.object.ownerId = null; //Tells object it doesn't have a owner
                                           Navigator.pop(context);
                                           Navigator.pop(context);
-                                          widget.pc.close();
-                                          widget.updateFunction();
+                                          widget.pc.close(); //Close panel
+                                          widget.updateFunction(); //updates info in parent widget
                                         },
                                         child: Text('Radera'))
                                   ],

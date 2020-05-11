@@ -4,12 +4,15 @@ import 'package:sjovikvass_app/models/customer_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
+
+//Screen for creating new Customers
 class AddCustomer extends StatefulWidget {
   @override
   _AddCustomerState createState() => _AddCustomerState();
 }
 
 class _AddCustomerState extends State<AddCustomer> {
+
   bool _nameValidate = false;
   bool _isLoading = false;
 
@@ -59,8 +62,8 @@ class _AddCustomerState extends State<AddCustomer> {
         _email = '';
         _gdpr = false;
       });
-      DatabaseService.addCustomer(customer);
-      Navigator.of(context).pop();
+      DatabaseService.addCustomer(customer); //Add to database
+      Navigator.of(context).pop(); //Pop context and go to homepage
     }
   }
 
