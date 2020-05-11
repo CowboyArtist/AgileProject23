@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sjovikvass_app/models/contact_model.dart';
 import 'package:sjovikvass_app/models/customer_model.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
 import 'package:sjovikvass_app/models/object_note_model.dart';
@@ -403,6 +404,24 @@ static void removeAllNotesForObject(String inObjectId) {
         'phoneNr': supplier.phoneNr,
         'email': supplier.email,
         'imageUrl': supplier.imageUrl,
+        'mainContact': supplier.mainContact,
+      });
+    });
+  }
+
+  static void updateSupplierMainContact(
+      String supplierId, String contactModelId) {
+    Supplier supplier;
+    getSupplierById(supplierId).then((data) {
+      supplier = Supplier.fromDoc(data);
+
+      suppliersRef.document(supplier.id).updateData({
+        'companyName': supplier.companyName,
+        'description': supplier.description,
+        'phoneNr': supplier.phoneNr,
+        'email': supplier.email,
+        'imageUrl': supplier.imageUrl,
+        'mainContact': contactModelId,
       });
     });
   }
@@ -528,5 +547,74 @@ static void removeAllNotesForObject(String inObjectId) {
     Future<DocumentSnapshot> customerSnap =
         customerRef.document(customerId).get();
     return customerSnap;
+  }
+
+  //Methods for contacts ---------------------------
+
+  static void updateContact(String inSupplierId, ContactModel contactModel) {
+    contactsRef
+        .document(inSupplierId)
+        .collection('hasContacts')
+        .document(contactModel.id)
+        .updateData({
+      'name': contactModel.name,
+      'descripion': contactModel.description,
+      'phoneNumber': contactModel.phoneNumber,
+      'email': contactModel.email,
+      'isMainContact': contactModel.isMainContact,
+    });
+  }
+
+  static void updateContactIsMainContact(
+      String inSupplierId, String contactId) {
+    contactsRef
+        .document(inSupplierId)
+        .collection('hasContacts')
+        .getDocuments()
+        .then((value) {
+      value.documents.forEach((element) {
+        if (element.exists && element.documentID != contactId) {
+          element.reference.updateData({
+            'isMainContact': false,
+          });
+        } else {
+          element.reference.updateData({
+            'isMainContact': true,
+          });
+        }
+      });
+    });
+  }
+
+  static Stream getContacts(String inSupplierId) {
+    Stream contactsStream = contactsRef
+        .document(inSupplierId)
+        .collection('hasContacts')
+        .snapshots();
+
+    return contactsStream;
+  }
+
+  static void addContactToSupplier(ContactModel contact, String inSupplierId) {
+    contactsRef.document(inSupplierId).collection('hasContacts').add({
+      'name': contact.name,
+      'description': contact.description,
+      'phoneNumber': contact.phoneNumber,
+      'email': contact.email,
+      'isMainContact': contact.isMainContact,
+    });
+  }
+
+  static void removeContact(String inSupplierId, String contactId) {
+    contactsRef
+        .document(inSupplierId)
+        .collection('hasContacts')
+        .document(contactId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        value.reference.delete();
+      }
+    });
   }
 }

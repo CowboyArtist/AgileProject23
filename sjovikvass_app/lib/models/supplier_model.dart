@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sjovikvass_app/models/contact_model.dart';
 
 class Supplier {
   final String id;
@@ -7,15 +8,16 @@ class Supplier {
   final String phoneNr;
   final String email;
   final String imageUrl;
+  String mainContact;
 
-  Supplier({
-    this.id,
-    this.companyName,
-    this.description,
-    this.phoneNr,
-    this.email,
-    this.imageUrl,
-  });
+  Supplier(
+      {this.id,
+      this.companyName,
+      this.description,
+      this.phoneNr,
+      this.email,
+      this.imageUrl,
+      this.mainContact});
 
   //Method to create a Supplier from database document
 
@@ -27,6 +29,7 @@ class Supplier {
       phoneNr: doc['phoneNr'],
       email: doc['email'],
       imageUrl: doc['imageUrl'],
+      mainContact: doc['mainContact'],
     );
   }
 }

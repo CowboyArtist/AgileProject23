@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
+import 'package:sjovikvass_app/services/email_service.dart';
+import 'package:sjovikvass_app/services/phoneCall_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
+
+import '../supplierDetailScreen.dart';
 
 class SuppliersList extends StatefulWidget {
   @override
@@ -66,42 +70,28 @@ class _SuppliersListState extends State<SuppliersList> {
 
   _buildSuppliersTile(Supplier supplier) {
     return GestureDetector(
-      onTap: () => print('Fix Detail view'),
-      child: Slidable(
-        actionPane: SlidableDrawerActionPane(),
-        actionExtentRatio: 0.25,
-        secondaryActions: <Widget>[
-          IconSlideAction(
-              color: Colors.transparent,
-              foregroundColor: Colors.red,
-              caption: 'Radera',
-              icon: Icons.delete,
-              onTap: () => _showDeleteAlertDialog(context, supplier)),
-        ],
-        child: Container(
-          margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-          height: 140.0,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 6.0, // has the effect of softening the shadow
-                spreadRadius: 2.0, // has the effect of extending the shadow
-                offset: Offset(
-                  3.0, // horizontal, move right 10
-                  3.0, // vertical, move down 10
-                ),
-              )
-            ],
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SupplierDetailScreen(supplier: supplier),
           ),
-          child: Stack(
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+        height: 140.0,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6.0, // has the effect of softening the shadow
+              spreadRadius: 2.0, // has the effect of extending the shadow
+              offset: Offset(
+                3.0, // horizontal, move right 10
+                3.0, // vertical, move down 10
               ),
               Positioned(
                 left: 16.0,
@@ -172,14 +162,43 @@ class _SuppliersListState extends State<SuppliersList> {
                     padding: EdgeInsets.all(10.0),
                     onPressed: () => print('Email Button Pressed'),
                   ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                  padding: EdgeInsets.all(10.0),
+                  onPressed: () => PhoneCallService.showPhoneCallDialog(
+                      context,
+                      supplier.mainContact != null
+                          ? supplier.companyName +
+                              "'s kontaktperson " +
+                              supplier.mainContact
+                          : _showErrorMessage(),
+                      supplier.mainContact),
                 ),
               ),
-              Positioned(
-                left: 24.0,
-                bottom: 10.0,
-                child: Text(
-                  'Ring',
-                  style: TextStyle(fontSize: 16.0, color: Colors.black),
+            ),
+            Positioned(
+              left: 80.0,
+              bottom: 32.0,
+              child: ButtonTheme(
+                minWidth: 30.0,
+                height: 30.0,
+                child: RaisedButton(
+                  color: MyColors.lightBlue,
+                  child: Icon(
+                    Icons.mail,
+                    color: MyColors.primary,
+                  ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                  padding: EdgeInsets.all(10.0),
+                  onPressed: () => EmailService.showEmailDialog(
+                      context,
+                      supplier.mainContact != null
+                          ? supplier.companyName +
+                              "'s kontaktperson " +
+                              supplier.mainContact
+                          : _showErrorMessage(),
+                      supplier.mainContact),
                 ),
               ),
               Positioned(
@@ -225,6 +244,28 @@ class _SuppliersListState extends State<SuppliersList> {
           ),
         )
       ],
+    );
+  }
+
+  _showErrorMessage() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Något gick snett :-("),
+          content: new Text("Du måste ange en huvudkontakt till leverantören!"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Stäng"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

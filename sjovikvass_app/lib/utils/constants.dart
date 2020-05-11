@@ -13,3 +13,4 @@ final documentsRef = _firestore.collection('documents');
 final suppliersRef = _firestore.collection('suppliers');
 final workOrderMaterialsRef = _firestore.collection('workOrderMaterials');
 final customerRef = _firestore.collection('customers');
+final contactsRef = _firestore.collection('contacts');
