@@ -59,6 +59,8 @@ class _NotePageState extends State<NotePage> {
           ),
         ],
       ),
+
+      //Button that opens a note dialog
       bottomNavigationBar: GestureDetector(
         onTap: () => _createNoteDialog(context),
         child: Container(
@@ -85,6 +87,7 @@ class _NotePageState extends State<NotePage> {
     );
   }
 
+// This method opens a dialog which gives the user possibility to write and add a note to an object.
   _createNoteDialog(BuildContext buildContext) {
     TextEditingController noteController = TextEditingController();
 
@@ -114,7 +117,7 @@ class _NotePageState extends State<NotePage> {
             actions: <Widget>[
               MaterialButton(
                 shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0)),
+                    borderRadius: BorderRadius.circular(5.0)),
                 elevation: 5.0,
                 color: MyColors.primary,
                 child: Text('Lägg till'),
@@ -126,7 +129,6 @@ class _NotePageState extends State<NotePage> {
                     ),
                     widget.inObjectId,
                   );
-                  print('tillagd');
                 },
               )
             ],

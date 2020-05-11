@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/contact_model.dart';
-import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
+
+//The screen that appears when creating a contact.
 
 class AddContact extends StatefulWidget {
   final String inSupplierId;
@@ -15,10 +16,13 @@ class AddContact extends StatefulWidget {
 }
 
 class _AddContactState extends State<AddContact> {
+  //to avoid program crashing
   bool _contactIsLoading = false;
 
   //Boolean validates if the user has completed reguired input
   bool _contactValidate = false;
+
+  //Text controllers for input
 
   TextEditingController _contactNameController = TextEditingController();
   String _contactName = '';
@@ -35,8 +39,9 @@ class _AddContactState extends State<AddContact> {
   @override
   void initState() {
     super.initState();
-    // _setupObjectNotes();
   }
+
+  //Method for saving contact to the database with the correct values.
 
   _submitStoredContact() async {
     if (!_contactIsLoading && _contactName.isNotEmpty) {

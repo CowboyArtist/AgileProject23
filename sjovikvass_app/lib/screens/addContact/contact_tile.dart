@@ -6,6 +6,8 @@ import 'package:sjovikvass_app/services/email_service.dart';
 import 'package:sjovikvass_app/services/phoneCall_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
+//List tile that displays a contact.
+
 class ContactTile extends StatefulWidget {
   final ContactModel contact;
   final String inSupplierId;
@@ -23,6 +25,7 @@ class ContactTile extends StatefulWidget {
 class _ContactTileState extends State<ContactTile> {
   @override
   Widget build(BuildContext context) {
+    //Slidable that makes it possible to delete a contact
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
@@ -35,6 +38,8 @@ class _ContactTileState extends State<ContactTile> {
             onTap: () => DatabaseService.removeContact(
                 widget.inSupplierId, widget.contact.id)),
       ],
+
+      //The container that shows the contact information
       child: Container(
         margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
         height: 140.0,
@@ -60,6 +65,8 @@ class _ContactTileState extends State<ContactTile> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
+
+            //Couple of Positioned for designing the tile
             Positioned(
               left: 16.0,
               top: 16.0,
@@ -152,14 +159,20 @@ class _ContactTileState extends State<ContactTile> {
             Positioned(
               top: 4.0,
               right: 16.0,
+
+              //The main contact checkbox
               child: Checkbox(
                 value: widget.contact.isMainContact,
                 onChanged: (bool value) {
                   setState(
                     () {
+                      // check if the contact isnt already the main contact.
+                      // if it isnt already then we update it
                       if (widget.supplierMainContact != widget.contact.id) {
                         DatabaseService.updateContactIsMainContact(
                             widget.inSupplierId, widget.contact.id);
+
+                        //update the main contact variable in the supplier
                         if (value == true) {
                           DatabaseService.updateSupplierMainContact(
                               widget.inSupplierId, widget.contact.id);
