@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/work_order_material_model.dart';
+
 import 'package:sjovikvass_app/services/database_service.dart';
 
 //This is the class that builds the tiles for the ListView in a WorkOrder.
@@ -7,13 +8,14 @@ class MaterialListTile extends StatelessWidget {
   final WorkOrderMaterial workOrderMaterial;
   final String inWorkOrderId;
   final String inObjectId;
-  final ValueNotifier<double> height;
+
+  final ValueNotifier<bool> parentIsDone;
 
   MaterialListTile(
       {this.workOrderMaterial,
       this.inWorkOrderId,
-      this.height,
-      this.inObjectId});
+      this.inObjectId,
+      this.parentIsDone});
 
   @override
   Widget build(BuildContext context) {
@@ -25,34 +27,41 @@ class MaterialListTile extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              IconButton(
-                onPressed: () {
-                  /*The total price for the cost of the material calculating the amount 
-                  of objects times the price for one*/
-                  double _totalMaterialCost =
-                      (workOrderMaterial.amount * workOrderMaterial.cost);
-                  DatabaseService.removeMaterialToWorkOrder(
-                      inWorkOrderId, workOrderMaterial);
-                  height.value -= 40.0;
-                  DatabaseService.updateWorkOrderSum(
-                      inObjectId, inWorkOrderId, -_totalMaterialCost);
-                },
-                icon: Icon(
-                  Icons.remove_circle_outline,
-                  size: 20.0,
-                ),
-              ),
+              ValueListenableBuilder<bool>(
+                  valueListenable: parentIsDone,
+                  builder:
+                      (BuildContext context, bool disableButton, Widget child) {
+                    return disableButton
+                        ? SizedBox.shrink()
+                        : IconButton(
+                            onPressed: () {
+                              /*The total price for the cost of the material calculating the amount 
+                    of objects times the price for one*/
+                              double _totalMaterialCost =
+                                  (workOrderMaterial.amount *
+                                      workOrderMaterial.cost);
+                              DatabaseService.removeMaterialToWorkOrder(
+                                  inWorkOrderId, workOrderMaterial);
+                              DatabaseService.updateWorkOrderSum(inObjectId,
+                                  inWorkOrderId, -_totalMaterialCost);
+                            },
+                            icon: Icon(
+                              Icons.remove_circle_outline,
+                              size: 20.0,
+                            ),
+                          );
+                  }),
               Text(
                 workOrderMaterial.title,
                 style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          Text(workOrderMaterial.amount.toString()),
+          Text(workOrderMaterial.amount.toStringAsFixed(1)),
           Row(
             children: <Widget>[
               Text((workOrderMaterial.cost * workOrderMaterial.amount)
-                      .toString() +
+                      .toStringAsFixed(1) +
                   ' kr'),
               SizedBox(width: 16.0),
             ],
