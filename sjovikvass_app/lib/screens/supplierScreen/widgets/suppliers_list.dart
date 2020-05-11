@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/email_service.dart';
@@ -92,7 +91,13 @@ class _SuppliersListState extends State<SuppliersList> {
               offset: Offset(
                 3.0, // horizontal, move right 10
                 3.0, // vertical, move down 10
-              ),
+              ),)],
+              
+        ),
+        child: Stack(
+          children: <Widget>[
+
+                       
               Positioned(
                 left: 16.0,
                 top: 16.0,
@@ -141,31 +146,7 @@ class _SuppliersListState extends State<SuppliersList> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16.0))),
                     padding: EdgeInsets.all(10.0),
-                    onPressed: () => print('Phone Button Pressed'),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 80.0,
-                bottom: 32.0,
-                child: ButtonTheme(
-                  minWidth: 30.0,
-                  height: 30.0,
-                  child: RaisedButton(
-                    color: MyColors.lightBlue,
-                    child: Icon(
-                      Icons.mail,
-                      color: MyColors.primary,
-                    ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                    padding: EdgeInsets.all(10.0),
-                    onPressed: () => print('Email Button Pressed'),
-                  ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                  padding: EdgeInsets.all(10.0),
-                  onPressed: () => PhoneCallService.showPhoneCallDialog(
+                   onPressed: () => PhoneCallService.showPhoneCallDialog(
                       context,
                       supplier.mainContact != null
                           ? supplier.companyName +
@@ -173,9 +154,10 @@ class _SuppliersListState extends State<SuppliersList> {
                               supplier.mainContact
                           : _showErrorMessage(),
                       supplier.mainContact),
+                  ),
                 ),
               ),
-            ),
+            
             Positioned(
               left: 80.0,
               bottom: 32.0,
@@ -200,7 +182,7 @@ class _SuppliersListState extends State<SuppliersList> {
                           : _showErrorMessage(),
                       supplier.mainContact),
                 ),
-              ),
+              ),),
               Positioned(
                 left: 85.0,
                 bottom: 10.0,
@@ -209,9 +191,10 @@ class _SuppliersListState extends State<SuppliersList> {
                   style: TextStyle(fontSize: 16.0, color: Colors.black),
                 ),
               ),
-            ],
-          ),
-        ),
+              ],
+        ) 
+            
+        
       ),
     );
   }

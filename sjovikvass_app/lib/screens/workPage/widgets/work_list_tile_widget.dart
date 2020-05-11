@@ -83,7 +83,7 @@ class _WorkListTileState extends State<WorkListTile>
     AlertDialog alert = AlertDialog(
       title: Text("Vill du ta bort ${widget.workOrder.title}?"),
       content: Text(
-          "Tänk på att $_nMaterials material går förlorade. Du kan inte ångra detta i efterhand."),
+          "Tänk på att material kan gå förlorade. Du kan inte ångra detta i efterhand."),
       actions: [
         cancelButton,
         okButton,
