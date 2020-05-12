@@ -5,6 +5,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sjovikvass_app/models/customer_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/screens/object/object_screen.dart';
+import 'package:sjovikvass_app/screens/objectNotes/object_notes.dart';
+import 'package:sjovikvass_app/screens/workPage/work_page.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/circular_indicator.dart';
 
@@ -91,8 +93,8 @@ class _ObjectsListState extends State<ObjectsList> {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => ObjectScreen(
-            object: storedObject,
+          builder: (_) => NotePage(
+            inObjectId: storedObject.id,
           ),
         ),
       ),
