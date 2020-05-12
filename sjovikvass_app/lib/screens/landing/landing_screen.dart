@@ -15,6 +15,7 @@ class _LandingScreenState extends State<LandingScreen> {
   bool _isSearching = false;
   bool _openSearch = false;
 
+  //Searchbar to filter the objects in the landing screen
   _buildSearchBar() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.0),
@@ -69,9 +70,9 @@ class _LandingScreenState extends State<LandingScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  '   Sjövik Vass & Entreprenad',
+                  '   Sjövik Förvaring',
                   style: TextStyle(
-                      fontSize: 22.0,
+                      fontSize: 27.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87),
                 ),

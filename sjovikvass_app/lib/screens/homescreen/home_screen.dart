@@ -25,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       length: 3,
       child: Scaffold(
         body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
           controller: _controller,
           children: <Widget>[
           LandingScreen(),
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddObjectScreen(initialPage: _controller.index == 1 ? 2 : 1,)),
+                MaterialPageRoute(builder: (context) => AddObjectScreen(initialPage: _controller.index == 1 ? 3 : 1,)),
               );
             }),
         bottomNavigationBar: Container(

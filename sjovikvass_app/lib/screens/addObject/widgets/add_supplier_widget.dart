@@ -63,7 +63,6 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
-            SizedBox(height: 16.0),
             Container(
               padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 32.0),
               decoration: BoxDecoration(
@@ -76,7 +75,12 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
                   ],
                   borderRadius: BorderRadius.circular(10.0)),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  Text(
+                    'Ny Leverantör',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   TextField(
                     controller: _supplierNameController,
                     textCapitalization: TextCapitalization.sentences,
@@ -98,29 +102,49 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
                     ),
                     onChanged: (input) => _supplierDescription = input,
                   ),
-                  TextField(
-                    controller: _supplierPhoneController,
-                    textCapitalization: TextCapitalization.sentences,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelStyle: TextStyle(fontSize: 15.0),
-                      labelText: 'Telefon',
-                    ),
-                    onChanged: (input) => _supplierPhone = input,
-                  ),
-                  TextField(
-                    maxLines: null,
-                    controller: _supplierEmailController,
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                      labelStyle: TextStyle(fontSize: 15.0),
-                      labelText: 'Email',
-                    ),
-                    onChanged: (input) => _supplierEmail = input,
-                  ),
                 ],
               ),
             ),
+            SizedBox(height: 16.0),
+            Container(
+                padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 32.0),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(3, 3),
+                          blurRadius: 5.0)
+                    ],
+                    borderRadius: BorderRadius.circular(10.0)),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Primär Kontakt',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      TextField(
+                        controller: _supplierPhoneController,
+                        textCapitalization: TextCapitalization.sentences,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelStyle: TextStyle(fontSize: 15.0),
+                          labelText: 'Telefon',
+                        ),
+                        onChanged: (input) => _supplierPhone = input,
+                      ),
+                      TextField(
+                        maxLines: null,
+                        controller: _supplierEmailController,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: InputDecoration(
+                          labelStyle: TextStyle(fontSize: 15.0),
+                          labelText: 'Email',
+                        ),
+                        onChanged: (input) => _supplierEmail = input,
+                      ),
+                    ])),
           ],
         ),
       ),
@@ -154,6 +178,8 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
 
       // set up the AlertDialog
       AlertDialog alert = AlertDialog(
+        shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
         title: Text("Bekräfta Leverantör"),
         content: Text("Vill du spara ${_supplierName}?"),
         actions: [

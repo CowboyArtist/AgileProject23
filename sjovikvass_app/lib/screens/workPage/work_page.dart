@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_picker/flutter_picker.dart';
+import 'package:sjovikvass_app/models/archive_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
+import 'package:sjovikvass_app/screens/workPage/design/bottom_wave_clipper.dart';
 import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget.dart';
+
+
 import 'package:sjovikvass_app/services/database_service.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/circular_indicator.dart';
 
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
 
@@ -28,8 +33,11 @@ class _WorkPageState extends State<WorkPage> {
   final ValueNotifier<int> _counterDone = ValueNotifier<int>(0);
   final ValueNotifier<int> _counterTotal = ValueNotifier<int>(0);
 
+  final _formKey = GlobalKey<FormState>();
   //Boolean to determine when to turn the bottom button to green
-  bool _allDone = false;
+  
+
+  TextEditingController workController = TextEditingController();
 
   _setupTotalOrders() async {
     int totalOrders = await DatabaseService.getTotalOrders(widget.inObjectId);
@@ -53,58 +61,155 @@ class _WorkPageState extends State<WorkPage> {
   }
 
   _createWorkOrderDialog(BuildContext context) {
-    TextEditingController workController = TextEditingController();
-    TextEditingController priceController = TextEditingController();
-
     return showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: Text('Lägg till arbete'),
+          return Dialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0)),
-            content: Container(
-              height: 200.0,
+                borderRadius: BorderRadius.circular(16.0)),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: _buildChild(context),
+          );
+        });
+  }
+
+  _addWorkOrderToObject() {
+    Navigator.of(context).pop(workController.text.toString());
+    DatabaseService.addWorkOrderToObject(
+        WorkOrder(isDone: false, title: workController.text, sum: 0.0),
+        widget.inObjectId);
+    setState(() {
+      _counterTotal.value++;
+    });
+  }
+
+  _buildChild(BuildContext context) {
+    return Container(
+      height: 320.0,
+      width: 350.0,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30.0),
+        color: MyColors.backgroundLight,
+      ),
+      child: Column(
+        children: <Widget>[
+          ClipPath(
+            clipper: BottomWaveClipper(),
+            child: Container(
+              width: 350.0,
+              height: 140.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+                color: MyColors.primary,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Beskrivning: '),
-                  TextField(
-                    controller: workController,
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Text('Pris:'),
-                  TextField(
-                    controller: priceController,
-                    keyboardType: TextInputType.number,
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(30, 40, 20, 10),
+                    child: Text(
+                      'Lägg till en arbete',
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
             ),
-            actions: <Widget>[
-              MaterialButton(
-                elevation: 5.0,
-                child: Text('Lägg till'),
-                //Adds the object to the database and update the total amount of workorders.
-                onPressed: () {
-                  Navigator.of(context).pop(workController.text.toString());
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Beskrivning',
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                ),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        validator: (text) {
+                          if (text == null || text.isEmpty) {
+                            return 'Ange beskrivning';
+                          }
+                          return null;
+                        },
+                        controller: workController,
+                        maxLines: null,
+                        maxLength: 30,
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Center(
+                        child: Container(
+                          height: 40.0,
+                          width: 100.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            color: Colors.green,
+                          ),
+                          child: FlatButton(
+                              child: Text(
+                                'Lägg till',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                              onPressed: () {
+                                if (_formKey.currentState.validate()) {
+                                  _addWorkOrderToObject();
+                                  workController.clear();
+                                }
+                              }),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
 
-                  DatabaseService.addWorkOrderToObject(
-                      WorkOrder(
-                          isDone: false,
-                          title: workController.text,
-                          sum: double.parse(priceController.text)),
-                      widget.inObjectId);
-                  setState(() {
-                    _counterTotal.value++;
-                  });
-                },
-              )
-            ],
-          );
-        });
+  //The dialog after the "Arkivera" button is pressed.
+  _selectSeason(BuildContext context) {
+    Picker(
+        confirmText: 'Bekräfta',
+        cancelText: 'Avbryt',
+        adapter:PickerDataAdapter(data: [
+          PickerItem(text: Text('Vintern'),  children: [PickerItem(text: Text((DateTime.now().year - 1).toString() + '-'+ (DateTime.now().year ).toString())),]),
+          PickerItem(text: Text('Sommaren'),  children: [PickerItem(text: Text(DateTime.now().year.toString())),]),
+          
+        ]),
+        hideHeader: true,
+        title: Text("Välj säsong"),
+        onConfirm: (Picker picker, List value) {
+          String season;
+          if (value[0] != 1) { //Because it works
+            season = 'Vintern ${(DateTime.now().year - 1).toString()}-${(DateTime.now().year ).toString()}';
+          } else {
+            season = 'Sommaren ${(DateTime.now().year ).toString()}';
+          }
+          print(season);
+          DatabaseService.addArchiveObject(season, widget.inObjectId);
+          setState(() {
+            _counterDone.value = 0;
+            _counterTotal.value = 0;
+          });
+        }).showDialog(context);
   }
 
   @override
@@ -117,6 +222,7 @@ class _WorkPageState extends State<WorkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: DetailAppBar.buildAppBar('Arbete', context),
       body: Column(
         children: <Widget>[
@@ -157,37 +263,7 @@ class _WorkPageState extends State<WorkPage> {
                   //Listens to changes of _counterDone and rebuilds child widget
                   return ValueListenableBuilder(
                     builder: (BuildContext context, int value, Widget child) {
-                      return CircularPercentIndicator(
-                        radius: 100.0,
-                        lineWidth: 8.0,
-                        percent: value / total,
-                        animation: true,
-                        center: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(
-                              height: 18.0,
-                            ),
-                            Text(
-                              total == 0
-                                  ? '0 %'
-                                  : "${(value / total * 100).round()}%",
-                              style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: MyColors.primary),
-                            ),
-                            SizedBox(
-                              height: 5.0,
-                            ),
-                            Text(
-                              'Klart',
-                              style: TextStyle(fontSize: 12.0),
-                            ),
-                          ],
-                        ),
-                        progressColor: MyColors.primary,
-                      );
+                      return MyCircularProcentIndicator.buildIndicator(_counterDone.value, _counterTotal.value);
                     },
                     valueListenable: _counterDone,
                   );
@@ -273,7 +349,6 @@ class _WorkPageState extends State<WorkPage> {
                       if (!snapshot.hasData) {
                         return Text('Hämtar data');
                       }
-                      print(snapshot.data);
                       StoredObject storedObject =
                           StoredObject.fromDoc(snapshot.data);
                       return Text(storedObject.billingSum.toString() + ' kr');
@@ -290,12 +365,14 @@ class _WorkPageState extends State<WorkPage> {
               return ValueListenableBuilder(
                 builder: (BuildContext context, int total, Widget child) {
                   return FlatButton(
-                    onPressed: () =>
-                        print('Detta är för framtida utvecklingar'),
+                    onPressed: _counterTotal.value == _counterDone.value &&
+                            _counterTotal.value != 0
+                        ? () =>
+                        _selectSeason(context) : null,
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
-                        'Båten är klar',
+                        'Arkivera',
                         style: TextStyle(fontSize: 20.0, color: Colors.white),
                       ),
                     ),

@@ -37,4 +37,40 @@ class MyCircularProcentIndicator {
       animation: true,
     );
   }
+  static buildCustomIndicator(int doneOrders, int totalOrders, double radius, Color color) {
+    return CircularPercentIndicator(
+      radius: radius,
+      progressColor: color.withAlpha(230),
+      center: Text(
+        totalOrders == 0
+            ? '0 %'
+            : "${(doneOrders / totalOrders * 100).round()}%",
+        style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            color: color.withAlpha(190)),
+      ),
+      lineWidth: 4.0,
+      percent: doneOrders / totalOrders,
+      animation: true,
+    );
+  }
+  static buildCustomIndicatorFromDouble(double percent, double radius, Color color) {
+    return CircularPercentIndicator(
+      radius: radius,
+      progressColor: color.withAlpha(230),
+      center: Text(
+        percent == 0
+            ? '0 %'
+            : "${(percent * 100).round()}%",
+        style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            color: color.withAlpha(190)),
+      ),
+      lineWidth: 4.0,
+      percent: percent,
+      animation: true,
+    );
+  }
 }

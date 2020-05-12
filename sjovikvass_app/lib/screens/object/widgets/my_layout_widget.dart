@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
+//Custom containers for object_screen.dart
 class MyLayout {
   static oneItem(Widget child, Function onTap) {
     return Expanded(
@@ -28,7 +29,8 @@ class MyLayout {
     return GestureDetector(
       onTap: onTap,
             child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
+              width: double.infinity,
+        margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         padding: EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: MyColors.lightBlue,

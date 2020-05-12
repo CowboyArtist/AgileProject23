@@ -4,17 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sjovikvass_app/screens/boatImages/photo_view_screen.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/handle_image_service.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
+import 'package:sjovikvass_app/services/time_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 
 import 'package:image_picker/image_picker.dart';
 
 import 'package:sjovikvass_app/models/boatImage_model.dart';
-
 
 //The screen for adding images to an object for determine the physical state of the object
 class BoatImages extends StatefulWidget {
@@ -51,7 +52,7 @@ class _BoatImagesState extends State<BoatImages> {
   _buildTimeStamp(Timestamp timestamp) {
     return Positioned(
       child: Text(
-        timestamp.toDate().toString(),
+        TimeService.getFormattedDateWithTime(timestamp.toDate()),
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w600,
@@ -82,6 +83,43 @@ class _BoatImagesState extends State<BoatImages> {
     );
   }
 
+  _showDeleteAlertDialog(BuildContext context, BoatImageModel image) {
+    Widget okButton = FlatButton(
+      color: Colors.redAccent,
+      child: Text("Radera"),
+      onPressed: () {
+        DatabaseService.removeOneImage(widget.inObjectId, image.id);
+
+        Navigator.of(context).pop();
+      },
+    );
+
+    Widget cancelButton = FlatButton(
+      child: Text("Avbryt"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Vill du ta bort bilden?"),
+      content: Text("Detta kan inte ångras i efterhand."),
+      actions: [
+        cancelButton,
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   //The core of the list tile that shows the image
   _buildImageTile(BoatImageModel image) {
     return GestureDetector(
@@ -93,12 +131,24 @@ class _BoatImagesState extends State<BoatImages> {
           ),
         ),
       ),
-      child: Stack(
-        children: <Widget>[
-          _buildSingleImage(image.imageUrl),
-          _buildOverlay(),
-          _buildTimeStamp(image.timestamp),
+      child: Slidable(
+        actionPane: SlidableDrawerActionPane(),
+        actionExtentRatio: 0.25,
+        secondaryActions: <Widget>[
+          IconSlideAction(
+              color: Colors.transparent,
+              foregroundColor: Colors.red,
+              caption: 'Radera',
+              icon: Icons.delete,
+              onTap: () => _showDeleteAlertDialog(context, image)),
         ],
+        child: Stack(
+          children: <Widget>[
+            _buildSingleImage(image.imageUrl),
+            _buildOverlay(),
+            _buildTimeStamp(image.timestamp),
+          ],
+        ),
       ),
     );
   }
@@ -133,7 +183,8 @@ class _BoatImagesState extends State<BoatImages> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16.0))),
         padding: EdgeInsets.all(10.0),
-        onPressed: () => ImageService.showSelectImageDialog(context, _handleImage),
+        onPressed: () =>
+            ImageService.showSelectImageDialog(context, _handleImage),
       ),
     );
   }

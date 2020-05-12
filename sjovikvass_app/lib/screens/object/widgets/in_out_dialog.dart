@@ -7,10 +7,12 @@ import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/time_service.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+
+//Builds the view shown in panel for object_screen.dart
 class InOutDialog extends StatefulWidget {
-  final StoredObject object;
-  PanelController pc;
-  Function updateFunction;
+  final StoredObject object; //current object
+  final PanelController pc; //controller to open and close the panel in parent class
+  final Function updateFunction; //Used to update the UI in parent widget when new changes occur
   InOutDialog({this.object, this.pc, this.updateFunction});
 
   @override
@@ -20,11 +22,10 @@ class InOutDialog extends StatefulWidget {
 class _InOutDialogState extends State<InOutDialog> {
   DateTime _inDate;
   DateTime _outDate;
-
   String _storageType = 'Hall ej angedd';
-
   bool _isLoading = false;
 
+  //Picker for selecting the date for arrival
   Future _selectDate() async {
     DateTime picked = await showDatePicker(
         context: context,
@@ -37,6 +38,7 @@ class _InOutDialogState extends State<InOutDialog> {
       );
   }
 
+  //Picker for selecting out date
   Future _selectOutDate() async {
     DateTime picked = await showDatePicker(
         context: context,
@@ -52,6 +54,8 @@ class _InOutDialogState extends State<InOutDialog> {
   @override
   void initState() {
     super.initState();
+
+    //If the object already has assigned dates it's given to the attributes shown in UI
     if (widget.object.inDate != null && widget.object.outDate != null) {
       setState(() {
         _inDate = widget.object.inDate.toDate();
@@ -97,10 +101,9 @@ class _InOutDialogState extends State<InOutDialog> {
         _isLoading = false;
       });
 
-      widget.pc.close();
-      widget.updateFunction();
+      widget.pc.close(); //Close the panel
+      widget.updateFunction(); //updates the UI
 
-      
     }
   }
 

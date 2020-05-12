@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
+//Builds screen for being able to go thru pages in pdf.
 class FullscreenDocument extends StatelessWidget {
   final String documentUrl;
   FullscreenDocument({this.documentUrl});
@@ -14,9 +15,7 @@ class FullscreenDocument extends StatelessWidget {
         builder: (_, snapshot) {
           if (snapshot.hasData) {
             // Show document
-            return PDFViewer(
-              showPicker: false,
-              document: snapshot.data);
+            return PDFViewer(showPicker: false, document: snapshot.data);
           }
 
           if (snapshot.hasError) {
