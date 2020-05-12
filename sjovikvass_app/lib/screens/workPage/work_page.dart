@@ -4,13 +4,11 @@ import 'package:sjovikvass_app/models/archive_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/screens/workPage/design/bottom_wave_clipper.dart';
+import 'package:sjovikvass_app/screens/workPage/widgets/workOrderAppBar.dart';
 import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget.dart';
-
 
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/circular_indicator.dart';
-
-import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
@@ -35,7 +33,6 @@ class _WorkPageState extends State<WorkPage> {
 
   final _formKey = GlobalKey<FormState>();
   //Boolean to determine when to turn the bottom button to green
-  
 
   TextEditingController workController = TextEditingController();
 
@@ -189,19 +186,27 @@ class _WorkPageState extends State<WorkPage> {
     Picker(
         confirmText: 'Bekräfta',
         cancelText: 'Avbryt',
-        adapter:PickerDataAdapter(data: [
-          PickerItem(text: Text('Vintern'),  children: [PickerItem(text: Text((DateTime.now().year - 1).toString() + '-'+ (DateTime.now().year ).toString())),]),
-          PickerItem(text: Text('Sommaren'),  children: [PickerItem(text: Text(DateTime.now().year.toString())),]),
-          
+        adapter: PickerDataAdapter(data: [
+          PickerItem(text: Text('Vintern'), children: [
+            PickerItem(
+                text: Text((DateTime.now().year - 1).toString() +
+                    '-' +
+                    (DateTime.now().year).toString())),
+          ]),
+          PickerItem(text: Text('Sommaren'), children: [
+            PickerItem(text: Text(DateTime.now().year.toString())),
+          ]),
         ]),
         hideHeader: true,
         title: Text("Välj säsong"),
         onConfirm: (Picker picker, List value) {
           String season;
-          if (value[0] != 1) { //Because it works
-            season = 'Vintern ${(DateTime.now().year - 1).toString()}-${(DateTime.now().year ).toString()}';
+          if (value[0] != 1) {
+            //Because it works
+            season =
+                'Vintern ${(DateTime.now().year - 1).toString()}-${(DateTime.now().year).toString()}';
           } else {
-            season = 'Sommaren ${(DateTime.now().year ).toString()}';
+            season = 'Sommaren ${(DateTime.now().year).toString()}';
           }
           print(season);
           DatabaseService.addArchiveObject(season, widget.inObjectId);
@@ -223,7 +228,7 @@ class _WorkPageState extends State<WorkPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: DetailAppBar.buildAppBar('Arbete', context),
+      appBar: WorkOrderAppBar.buildAppBar('Arbete', context),
       body: Column(
         children: <Widget>[
           SizedBox(height: 15.0),
@@ -263,7 +268,8 @@ class _WorkPageState extends State<WorkPage> {
                   //Listens to changes of _counterDone and rebuilds child widget
                   return ValueListenableBuilder(
                     builder: (BuildContext context, int value, Widget child) {
-                      return MyCircularProcentIndicator.buildIndicator(_counterDone.value, _counterTotal.value);
+                      return MyCircularProcentIndicator.buildIndicator(
+                          _counterDone.value, _counterTotal.value);
                     },
                     valueListenable: _counterDone,
                   );
@@ -367,8 +373,8 @@ class _WorkPageState extends State<WorkPage> {
                   return FlatButton(
                     onPressed: _counterTotal.value == _counterDone.value &&
                             _counterTotal.value != 0
-                        ? () =>
-                        _selectSeason(context) : null,
+                        ? () => _selectSeason(context)
+                        : null,
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
