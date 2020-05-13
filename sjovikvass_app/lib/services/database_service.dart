@@ -656,7 +656,8 @@ class DatabaseService {
           workOrderRef
               .document(value.documentID)
               .collection('hasWorkOrders')
-              .add({
+              .document(element.documentID)
+              .setData({
             'title': element['title'],
             'isDone': element['isDone'],
             'sum': element['sum']
