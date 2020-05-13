@@ -7,6 +7,7 @@ class Archive {
   final String ownerId;
   final double billingSum;
   final String objectTitle;
+  final String objectId;
   bool isBilled;
 
   Archive(
@@ -16,6 +17,7 @@ class Archive {
       this.ownerName,
       this.billingSum,
       this.objectTitle,
+      this.objectId,
       this.isBilled});
 
   factory Archive.fromdoc(DocumentSnapshot doc) {
@@ -26,6 +28,7 @@ class Archive {
         ownerId: doc['ownerId'],
         billingSum: doc['billingSum'],
         objectTitle: doc['objectTitle'],
+        objectId: doc['objectId'],
         isBilled: doc['isBilled']);
   }
 }

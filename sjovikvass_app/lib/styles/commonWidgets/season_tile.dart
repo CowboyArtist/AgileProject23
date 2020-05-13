@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SeasonTile extends StatelessWidget {
+  String season;
+
+  SeasonTile({
+    this.season,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,7 +17,7 @@ class SeasonTile extends StatelessWidget {
       ),
       child: ListTile(
         title: Text(
-          'Hej',
+          season,
           style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
         ),
       ),

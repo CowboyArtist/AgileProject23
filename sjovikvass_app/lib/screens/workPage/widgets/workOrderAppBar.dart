@@ -6,7 +6,8 @@ import 'package:sjovikvass_app/styles/my_colors.dart';
 //Custom AppBar for the entire app.
 
 class WorkOrderAppBar {
-  static AppBar buildAppBar(String title, BuildContext context) {
+  static AppBar buildAppBar(
+      String title, BuildContext context, String objectId) {
     List<DropdownMenuItem<String>> listDropItems = [];
     listDropItems.add(DropdownMenuItem(
       child: Text('Arkiv'),
@@ -36,7 +37,11 @@ class WorkOrderAppBar {
           child: InkResponse(
             onTap: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => ArchivePage()));
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => ArchivePage(
+                            objectId: objectId,
+                          )));
             },
             child: Icon(
               Icons.folder,

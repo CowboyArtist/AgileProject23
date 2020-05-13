@@ -22,13 +22,10 @@ class ObjectsList extends StatefulWidget {
 }
 
 class _ObjectsListState extends State<ObjectsList> {
-
-
   @override
   void initState() {
     super.initState();
     _setupObjects();
-
   }
 
   Future<double> getPercentForObject(String id) async {
@@ -37,7 +34,7 @@ class _ObjectsListState extends State<ObjectsList> {
       return 0.0;
     }
     int done = await DatabaseService.getDoneOrders(id);
-    return done/total;
+    return done / total;
   }
 
   //Used to fetch objects from database
@@ -93,9 +90,7 @@ class _ObjectsListState extends State<ObjectsList> {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => NotePage(
-            inObjectId: storedObject.id,
-          ),
+          builder: (_) => ObjectScreen(object: storedObject),
         ),
       ),
       child: Container(
@@ -185,22 +180,20 @@ class _ObjectsListState extends State<ObjectsList> {
                             : SizedBox.shrink(),
                       ],
                     )),
-
                 FutureBuilder(
-                  future: getPercentForObject(storedObject.id),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData || snapshot.data == 0.0) {
-                      return SizedBox.shrink();
-                    
-                    }
-                    return Positioned(
-                      right: 30.0,
-                      top: 30.0,
-                      child: MyCircularProcentIndicator.buildCustomIndicatorFromDouble(
-                          snapshot.data, 70.0, Colors.white),
-                    );
-                  }
-                ),
+                    future: getPercentForObject(storedObject.id),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData || snapshot.data == 0.0) {
+                        return SizedBox.shrink();
+                      }
+                      return Positioned(
+                        right: 30.0,
+                        top: 30.0,
+                        child: MyCircularProcentIndicator
+                            .buildCustomIndicatorFromDouble(
+                                snapshot.data, 70.0, Colors.white),
+                      );
+                    }),
               ],
             ),
           )),

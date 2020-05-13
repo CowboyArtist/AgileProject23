@@ -17,9 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: MyColors.primary,
       ),
-      home: ArchiveForSeason(
-        season: 'Vintern 2019-2020',
-      ),
+      home: HomeScreen(),
     );
   }
 }

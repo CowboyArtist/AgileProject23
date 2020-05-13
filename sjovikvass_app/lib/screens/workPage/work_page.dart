@@ -4,6 +4,7 @@ import 'package:sjovikvass_app/models/archive_model.dart';
 import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/screens/workPage/design/bottom_wave_clipper.dart';
+import 'package:sjovikvass_app/screens/workPage/widgets/archive_page_widget.dart';
 import 'package:sjovikvass_app/screens/workPage/widgets/workOrderAppBar.dart';
 import 'package:sjovikvass_app/screens/workPage/widgets/work_list_tile_widget.dart';
 
@@ -210,6 +211,7 @@ class _WorkPageState extends State<WorkPage> {
           }
           print(season);
           DatabaseService.addArchiveObject(season, widget.inObjectId);
+
           setState(() {
             _counterDone.value = 0;
             _counterTotal.value = 0;
@@ -228,7 +230,7 @@ class _WorkPageState extends State<WorkPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: WorkOrderAppBar.buildAppBar('Arbete', context),
+      appBar: WorkOrderAppBar.buildAppBar('Arbete', context, widget.inObjectId),
       body: Column(
         children: <Widget>[
           SizedBox(height: 15.0),

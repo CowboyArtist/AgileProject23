@@ -641,6 +641,7 @@ class DatabaseService {
             .updateData({
           'season': season,
           'objectTitle': doc['title'],
+          'objectId': inObjectId,
           'billingSum': doc['billingSum'],
           'ownerId': doc['ownerId'],
           'isBilled': doc['isBilled'],
@@ -671,6 +672,36 @@ class DatabaseService {
         archiveRef.document(season).collection('hasArchive').snapshots();
 
     return archiveStream;
+  }
+
+  static Stream getArchiveForObject(String objectId, String season) {
+    Stream objectArchiveStream = archiveRef
+        .document(season)
+        .collection('hasArchive')
+        .where('objectId', isEqualTo: objectId)
+        .snapshots();
+    return objectArchiveStream;
+  }
+
+  static Future<List<String>> getSeasonsForObjectArchive(
+      String objectId) async {
+    List<String> seasons = [];
+    archiveRef.getDocuments().then((value) {
+      value.documents.forEach((element) {
+        archiveRef
+            .document(element.documentID)
+            .collection('hasArchive')
+            .where('objectId', isEqualTo: objectId)
+            .getDocuments()
+            .then((data) {
+          if (data.documents.length > 0) {
+            seasons.add(element.documentID);
+          }
+        });
+      });
+    });
+    print('This is seasons length' + seasons.length.toString());
+    return seasons;
   }
 
   static void updateArchiveIsBilled(
