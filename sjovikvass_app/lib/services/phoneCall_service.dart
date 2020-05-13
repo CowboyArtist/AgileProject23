@@ -6,19 +6,19 @@ import 'package:url_launcher/url_launcher.dart';
 
 class PhoneCallService {
   static showPhoneCallDialog(
-      BuildContext context, String companyName, String phoneNumber) {
+      BuildContext context, String contactName, String phoneNumber) {
     return Platform.isIOS
-        ? iosBottomSheet(context, companyName, phoneNumber)
-        : androidDialog(context, companyName, phoneNumber);
+        ? iosBottomSheet(context, contactName, phoneNumber)
+        : androidDialog(context, contactName, phoneNumber);
   }
 
   static iosBottomSheet(
-      BuildContext context, String companyName, String phoneNumber) {
+      BuildContext context, String contactName, String phoneNumber) {
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text('Vill du ringa ' + companyName + '?'),
+          title: Text('Vill du ringa ' + contactName + '?'),
           actions: <Widget>[
             CupertinoActionSheetAction(
               child: Text(
@@ -26,8 +26,13 @@ class PhoneCallService {
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               onPressed: () {
-                launch("tel: " + phoneNumber);
-                Navigator.pop(context);
+                if (phoneNumber != '') {
+                  launch("tel: " + phoneNumber);
+                  Navigator.pop(context);
+                } else {
+                  Navigator.pop(context);
+                  _errorMsg(context, contactName, phoneNumber);
+                }
               },
             ),
             CupertinoActionSheetAction(
@@ -40,19 +45,46 @@ class PhoneCallService {
     );
   }
 
+  static _errorMsg(
+      BuildContext context, String contactName, String phoneNumber) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Något gick snett :-("),
+          content: new Text(contactName + " har inget angivet telefonnummer!"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Stäng"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   static androidDialog(
-      BuildContext context, String companyName, String phoneNumber) {
+      BuildContext context, String contactName, String phoneNumber) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: Text('Vill du ringa ' + companyName + '?'),
+          title: Text('Vill du ringa ' + contactName + '?'),
           children: <Widget>[
             SimpleDialogOption(
               child: Text('Ring'),
               onPressed: () {
-                launch("tel: " + phoneNumber);
-                Navigator.pop(context);
+                if (phoneNumber != '') {
+                  launch("tel: " + phoneNumber);
+                  Navigator.pop(context);
+                } else {
+                  Navigator.pop(context);
+                  _errorMsg(context, contactName, phoneNumber);
+                }
               },
             ),
             SimpleDialogOption(

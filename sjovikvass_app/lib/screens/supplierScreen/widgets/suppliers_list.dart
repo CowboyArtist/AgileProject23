@@ -122,13 +122,15 @@ class _SuppliersListState extends State<SuppliersList> {
                       ),
                     ),
                     Positioned(
-                      right: 0.0,
+                      left: 130.0,
                       top: 40.0,
                       child: Container(
                         height: 100,
                         width: 250.0,
+                        color: Colors.white,
                         padding: EdgeInsets.all(20.0),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
                               supplier.description,
@@ -162,7 +164,7 @@ class _SuppliersListState extends State<SuppliersList> {
                                     "'s kontaktperson " +
                                     contact.name
                                 : _showErrorMessage(),
-                            supplier.mainContact,
+                            contact.phoneNumber,
                           ),
                         ),
                       ),
@@ -234,16 +236,17 @@ class _SuppliersListState extends State<SuppliersList> {
                 }
 
                 return ListView.builder(
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      Supplier supplier =
-                          Supplier.fromDoc(snapshot.data.documents[index]);
-                      return _buildSuppliersTile(supplier);
-                    });
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Supplier supplier =
+                        Supplier.fromDoc(snapshot.data.documents[index]);
+                    return _buildSuppliersTile(supplier);
+                  },
+                );
               },
             ),
           ),
-        )
+        ),
       ],
     );
   }
