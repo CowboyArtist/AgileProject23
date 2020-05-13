@@ -7,7 +7,7 @@ import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 
 class ArchiveForSeason extends StatelessWidget {
-  String season;
+  final String season;
   ArchiveForSeason({this.season});
 
   @override
@@ -33,7 +33,9 @@ class ArchiveForSeason extends StatelessWidget {
                       Column(
                         children: <Widget>[
                           Checkbox(
-                              value: archive.isBilled,
+                              value: archive.isBilled == null
+                                  ? false
+                                  : archive.isBilled,
                               onChanged: (value) =>
                                   DatabaseService.updateArchiveIsBilled(
                                       archive.id, season, value)),
