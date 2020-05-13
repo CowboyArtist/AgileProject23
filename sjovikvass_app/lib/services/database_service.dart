@@ -414,8 +414,6 @@ class DatabaseService {
       suppliersRef.document(supplier.id).updateData({
         'companyName': supplier.companyName,
         'description': supplier.description,
-        'phoneNr': supplier.phoneNr,
-        'email': supplier.email,
         'imageUrl': supplier.imageUrl,
         'mainContact': supplier.mainContact,
       });
@@ -431,8 +429,6 @@ class DatabaseService {
       suppliersRef.document(supplier.id).updateData({
         'companyName': supplier.companyName,
         'description': supplier.description,
-        'phoneNr': supplier.phoneNr,
-        'email': supplier.email,
         'imageUrl': supplier.imageUrl,
         'mainContact': contactModelId,
       });
@@ -443,8 +439,6 @@ class DatabaseService {
     suppliersRef.add({
       'companyName': supplier.companyName,
       'description': supplier.description,
-      'phoneNr': supplier.phoneNr,
-      'email': supplier.email,
       'imageUrl': supplier.imageUrl,
     });
   }
@@ -629,10 +623,15 @@ class DatabaseService {
     });
   }
 
-  static Future<DocumentSnapshot> getContactById(String contactId, String supplierId) {
+  static Future<DocumentSnapshot> getContactById(
+      String contactId, String supplierId) {
     Future<DocumentSnapshot> contactSnap;
-    if(contactId != null){
-        contactSnap = contactsRef.document(supplierId).collection('hasContacts').document(contactId).get();
+    if (contactId != null) {
+      contactSnap = contactsRef
+          .document(supplierId)
+          .collection('hasContacts')
+          .document(contactId)
+          .get();
     }
     return contactSnap;
   }
