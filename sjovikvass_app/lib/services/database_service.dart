@@ -629,6 +629,14 @@ class DatabaseService {
     });
   }
 
+  static Future<DocumentSnapshot> getContactById(String contactId, String supplierId) {
+    Future<DocumentSnapshot> contactSnap;
+    if(contactId != null){
+        contactSnap = contactsRef.document(supplierId).collection('hasContacts').document(contactId).get();
+    }
+    return contactSnap;
+  }
+
   //METHODS FOR ARCHIVE ----------------------------
 
   static void addArchiveObject(String season, String inObjectId) {
