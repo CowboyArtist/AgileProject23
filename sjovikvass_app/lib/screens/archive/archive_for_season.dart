@@ -63,8 +63,9 @@ class ArchiveForSeason extends StatelessWidget {
                                       archive: archive,
                                     ))),
                         title: Text(archive.objectTitle),
-                        trailing:
-                            Text(archive.billingSum.toInt().toString() + ' kr'),
+                        trailing: Text(
+                            archive.billingSum.truncateToDouble().toString() +
+                                ' kr'),
                         subtitle: FutureBuilder(
                             future: DatabaseService.getCustomerById(
                                 archive.ownerId),
