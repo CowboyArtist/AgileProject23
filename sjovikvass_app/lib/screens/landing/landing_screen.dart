@@ -70,9 +70,9 @@ class _LandingScreenState extends State<LandingScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  '   Sjövik Förvaring',
+                  '   Sjövik Vass Förvaring',
                   style: TextStyle(
-                      fontSize: 27.0,
+                      fontSize: 26.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87),
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/screens/addObject/add_object_screen.dart';
+import 'package:sjovikvass_app/screens/archive/archive_screen.dart';
 import 'package:sjovikvass_app/screens/landing/landing_screen.dart';
 import 'package:sjovikvass_app/screens/supplierscreen/supplierScreen.dart';
 
@@ -30,7 +31,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           children: <Widget>[
           LandingScreen(),
           SupplierScreen(),
-          Center(child: Text('Statistik')),
+          ArchiveSeasonsScreen(),
+          
         ]),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
