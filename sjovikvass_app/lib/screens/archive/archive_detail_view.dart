@@ -43,98 +43,22 @@ class ArchiveDetailView extends StatelessWidget {
         });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: DetailAppBar.buildAppBar(archive.objectTitle, context),
-      body: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 15.0,
-          ),
-
-          //Gets the customer from the Database
-          FutureBuilder(
-              future: DatabaseService.getCustomerById(archive.ownerId),
-              builder: (context, snapshot) {
-                Customer customer;
-                if (snapshot.data != null) {
-                  customer = Customer.fromDoc(snapshot.data);
-                }
-                return Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: 15.0,
-                    ),
-                    Text(
-                      'Kund:',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10.0,
-                    ),
-                    _getCustomerName(),
-                    Spacer(),
-                    _buildActionButton(
-                        Icons.phone,
-                        () => PhoneCallService.showPhoneCallDialog(
-                            context, customer.name, customer.phone)),
-                    SizedBox(width: 10.0),
-                    _buildActionButton(
-                        Icons.mail,
-                        () => EmailService.showEmailDialog(
-                            context, customer.name, customer.email)),
-                    SizedBox(
-                      width: 10.0,
-                    ),
-                  ],
-                );
-              }),
-
-          SizedBox(height: 15.0),
-
-          //fields for address etc
-          Row(
+  FutureBuilder _buildNameCallAndMailButtonsRow() {
+    //Gets the customer from the Database
+    return FutureBuilder(
+        future: DatabaseService.getCustomerById(archive.ownerId),
+        builder: (context, snapshot) {
+          Customer customer;
+          if (snapshot.data != null) {
+            customer = Customer.fromDoc(snapshot.data);
+          }
+          return Row(
             children: <Widget>[
               SizedBox(
                 width: 15.0,
               ),
               Text(
-                'Adress:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                ),
-              ),
-              SizedBox(width: 10.0),
-              FutureBuilder(
-                  future: DatabaseService.getCustomerById(archive.ownerId),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Text('hämtar kundnamn');
-                    }
-
-                    return Text(snapshot.data['address'] +
-                        ', ' +
-                        snapshot.data['postalCode'] +
-                        ' ' +
-                        snapshot.data['city']);
-                  }),
-            ],
-          ),
-          SizedBox(
-            height: 15.0,
-          ),
-          Row(
-            children: <Widget>[
-              SizedBox(
-                width: 15.0,
-              ),
-              Text(
-                'Total kostnad:',
+                'Kund:',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18.0,
@@ -143,9 +67,182 @@ class ArchiveDetailView extends StatelessWidget {
               SizedBox(
                 width: 10.0,
               ),
-              Text(archive.billingSum.truncateToDouble().toString() + ' kr'),
+              _getCustomerName(),
+              Spacer(),
+              _buildActionButton(
+                  Icons.phone,
+                  () => PhoneCallService.showPhoneCallDialog(
+                      context, customer.name, customer.phone)),
+              SizedBox(width: 10.0),
+              _buildActionButton(
+                  Icons.mail,
+                  () => EmailService.showEmailDialog(
+                      context, customer.name, customer.email)),
+              SizedBox(
+                width: 10.0,
+              ),
             ],
+          );
+        });
+  }
+
+  Row _buildAddressRow() {
+    return Row(
+      children: <Widget>[
+        SizedBox(
+          width: 15.0,
+        ),
+        Text(
+          'Adress:',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18.0,
           ),
+        ),
+        SizedBox(width: 10.0),
+        FutureBuilder(
+            future: DatabaseService.getCustomerById(archive.ownerId),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Text('hämtar kundnamn');
+              }
+
+              return Text(snapshot.data['address'] +
+                  ', ' +
+                  snapshot.data['postalCode'] +
+                  ' ' +
+                  snapshot.data['city']);
+            }),
+      ],
+    );
+  }
+
+  Row _buildTotalPriceRow() {
+    return Row(
+      children: <Widget>[
+        SizedBox(
+          width: 15.0,
+        ),
+        Text(
+          'Total kostnad:',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18.0,
+          ),
+        ),
+        SizedBox(
+          width: 10.0,
+        ),
+        Text(archive.billingSum.truncateToDouble().toString() + ' kr'),
+      ],
+    );
+  }
+
+  Expanded _buildWorkOrderListView() {
+    return Expanded(
+      child: StreamBuilder(
+        stream: DatabaseService.getWorkOrders(archive.id),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: Text('Laddar in arkiv...'));
+          }
+          return ListView.builder(
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (BuildContext context, int index) {
+                WorkOrder workOrder =
+                    WorkOrder.fromDoc(snapshot.data.documents[index]);
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: Colors.black12,
+                      ),
+                      margin: EdgeInsets.only(bottom: 8.0),
+
+                      //customized ExpansionTile to make arrow icon leading.
+                      child: MyExpansionTile(
+                        backgroundColor: Colors.lightBlue[50],
+                        initiallyExpanded: false,
+                        title: Text(
+                          workOrder.title,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        trailing: Text(
+                            workOrder.sum.truncateToDouble().toString() +
+                                ' kr'),
+                        children: <Widget>[
+                          StreamBuilder(
+                              stream: DatabaseService.getWorkOrderMaterials(
+                                  workOrder.id),
+                              builder: (BuildContext contect,
+                                  AsyncSnapshot snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(child: Text('laddar'));
+                                }
+                                return ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: snapshot.data.documents.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      WorkOrderMaterial workOrderMaterial =
+                                          WorkOrderMaterial.fromDoc(
+                                              snapshot.data.documents[index]);
+
+                                      return Container(
+                                          child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            8.0, 0.0, 0.0, 8.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            SizedBox(width: 20.0),
+                                            Container(
+                                                width: 90.0,
+                                                child: Text(
+                                                    workOrderMaterial.title)),
+                                            SizedBox(
+                                              width: 120.0,
+                                            ),
+                                            Text(workOrderMaterial.amount
+                                                .toStringAsFixed(1)),
+                                            Spacer(),
+                                            Text(workOrderMaterial.cost
+                                                    .truncateToDouble()
+                                                    .toString() +
+                                                ' kr'),
+                                            SizedBox(width: 15.0),
+                                          ],
+                                        ),
+                                      ));
+                                    });
+                              })
+                        ],
+                      )),
+                );
+              });
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: DetailAppBar.buildAppBar(archive.objectTitle, context),
+      body: Column(
+        children: <Widget>[
+          SizedBox(height: 15.0),
+
+          _buildNameCallAndMailButtonsRow(),
+
+          SizedBox(height: 15.0),
+
+          //Text for address
+          _buildAddressRow(),
+
+          SizedBox(height: 15.0),
+
+          _buildTotalPriceRow(),
           SizedBox(
             height: 30.0,
           ),
@@ -166,96 +263,8 @@ class ArchiveDetailView extends StatelessWidget {
               thickness: 1.0,
             ),
           ),
-
           //builds the listview with workorders with related materials
-          Expanded(
-            child: StreamBuilder(
-              stream: DatabaseService.getWorkOrders(archive.id),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(child: Text('Laddar in arkiv...'));
-                }
-                return ListView.builder(
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      WorkOrder workOrder =
-                          WorkOrder.fromDoc(snapshot.data.documents[index]);
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                        child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors.black12,
-                            ),
-                            margin: EdgeInsets.only(bottom: 8.0),
-                            child: MyExpansionTile(
-                              backgroundColor: Colors.lightBlue[50],
-                              initiallyExpanded: false,
-                              title: Text(
-                                workOrder.title,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              trailing: Text(
-                                  workOrder.sum.truncateToDouble().toString() +
-                                      ' kr'),
-                              children: <Widget>[
-                                StreamBuilder(
-                                    stream:
-                                        DatabaseService.getWorkOrderMaterials(
-                                            workOrder.id),
-                                    builder: (BuildContext contect,
-                                        AsyncSnapshot snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return Center(child: Text('laddar'));
-                                      }
-                                      return ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount:
-                                              snapshot.data.documents.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            WorkOrderMaterial
-                                                workOrderMaterial =
-                                                WorkOrderMaterial.fromDoc(
-                                                    snapshot
-                                                        .data.documents[index]);
-
-                                            return Container(
-                                                child: Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      8.0, 0.0, 0.0, 8.0),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  SizedBox(width: 20.0),
-                                                  Container(
-                                                      width: 90.0,
-                                                      child: Text(
-                                                          workOrderMaterial
-                                                              .title)),
-                                                  SizedBox(
-                                                    width: 120.0,
-                                                  ),
-                                                  Text(workOrderMaterial.amount
-                                                      .toStringAsFixed(1)),
-                                                  Spacer(),
-                                                  Text(workOrderMaterial.cost
-                                                          .truncateToDouble()
-                                                          .toString() +
-                                                      ' kr'),
-                                                  SizedBox(width: 15.0),
-                                                ],
-                                              ),
-                                            ));
-                                          });
-                                    })
-                              ],
-                            )),
-                      );
-                    });
-              },
-            ),
-          ),
+          _buildWorkOrderListView()
         ],
       ),
       bottomNavigationBar: Container(
