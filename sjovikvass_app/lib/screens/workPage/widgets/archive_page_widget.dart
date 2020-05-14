@@ -15,17 +15,17 @@ class ArchivePage extends StatefulWidget {
 }
 
 class _ArchivePageState extends State<ArchivePage> {
-  List<String> seasons = [];
+  Future<List<String>> seasons;
 
   @override
   void initState() {
     super.initState();
-    //  _setupSeasons();
+    _setupSeasons();
   }
 
   _setupSeasons() async {
-    List<String> _seasons =
-        await DatabaseService.getSeasonsForObjectArchive(widget.objectId);
+    Future<List<String>> _seasons =
+        DatabaseService.getSeasonsForObjectArchive(widget.objectId);
     setState(() {
       seasons = _seasons;
     });
@@ -38,20 +38,34 @@ class _ArchivePageState extends State<ArchivePage> {
         body: Column(
           children: <Widget>[
             Expanded(
+                /*
               child: FutureBuilder(
                   future: DatabaseService.getSeasonsForObjectArchive(
                       widget.objectId),
                   builder: (context, snapshot) {
+                    
                     print(snapshot.data.length);
-                    return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return SeasonTile(
-                            season: snapshot.data[index],
-                          );
-                        });
-                  }),
-            ),
+                    */
+                child: FutureBuilder(
+                    future: DatabaseService.getSeasonsForObjectArchive(
+                        widget.objectId),
+                    builder: (context, snapshot) {
+                      print(snapshot.toString());
+                      if (!snapshot.hasData) {
+                        return Center(child: Text('Har inte data'));
+                      }
+                      if (snapshot.data.length == 0) {
+                        return Center(child: Text('Inga arkivobjekt'));
+                      }
+                      return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            // print(seasons.length);
+                            return SeasonTile(
+                              season: snapshot.data[index],
+                            );
+                          });
+                    })),
           ],
         ));
   }

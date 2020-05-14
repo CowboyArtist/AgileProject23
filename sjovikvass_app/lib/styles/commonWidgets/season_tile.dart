@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SeasonTile extends StatelessWidget {
-  String season;
+  final String season;
 
   SeasonTile({
     this.season,

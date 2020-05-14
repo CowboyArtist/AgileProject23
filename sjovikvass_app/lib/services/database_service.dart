@@ -632,6 +632,7 @@ class DatabaseService {
   //METHODS FOR ARCHIVE ----------------------------
 
   static void addArchiveObject(String season, String inObjectId) {
+    seasonsRef.add({'season': season});
     archiveRef.document(season).collection('hasArchive').add({}).then((value) {
       getObjectById(inObjectId).then((doc) {
         archiveRef
@@ -684,24 +685,58 @@ class DatabaseService {
     return objectArchiveStream;
   }
 
-  static Future<List<String>> getSeasonsForObjectArchive(
-      String objectId) async {
-    List<String> seasons = [];
-    archiveRef.getDocuments().then((value) {
+  static Future<List<String>> getSeasonsForObjectArchiveOld(String objectId) {
+    List<String> seasons;
+/*
+    print(archiveRef
+        .document(objectId)
+        .collection('hasArchive')
+        .snapshots()
+        .length);
+*/
+    seasonsRef.getDocuments().then((value) {
       value.documents.forEach((element) {
+        // List<String> seasons = [];
         archiveRef
-            .document(element.documentID)
+            .document(element['season'])
             .collection('hasArchive')
             .where('objectId', isEqualTo: objectId)
             .getDocuments()
             .then((data) {
           if (data.documents.length > 0) {
-            seasons.add(element.documentID);
+            seasons.add(element['season']);
+            print(element['season']);
+          }
+        }).then((value) {
+          print('${seasons.toString()} <-------------------------');
+          return seasons;
+        });
+      });
+    });
+
+    //return seasons;
+  }
+
+  static Future<List<String>> getSeasonsForObjectArchive(
+      String objectId) async {
+    List<String> seasons = [];
+
+    await seasonsRef.getDocuments().then((value) {
+      value.documents.forEach((element) {
+        archiveRef
+            .document(element['season'])
+            .collection('hasArchive')
+            .where('objectId', isEqualTo: objectId)
+            .getDocuments()
+            .then((value) {
+          if (value.documents.length > 0) {
+            seasons.add(element['season']);
+            print('Added ${element['season']}');
           }
         });
       });
     });
-    print('This is seasons length' + seasons.length.toString());
+
     return seasons;
   }
 
