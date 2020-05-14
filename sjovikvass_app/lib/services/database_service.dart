@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sjovikvass_app/models/archive_model.dart';
+
 import 'package:sjovikvass_app/models/contact_model.dart';
 import 'package:sjovikvass_app/models/customer_model.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
@@ -634,7 +634,7 @@ class DatabaseService {
   static void addArchiveObject(String season, String inObjectId) {
     seasonsRef.where('season', isEqualTo: season).getDocuments().then((value) {
       if (value.documents.length == 0) {
-        seasonsRef.add({'season': season});
+        seasonsRef.add({'season': season, 'timestamp': Timestamp.fromDate(DateTime.now())});
       }
     });
 
@@ -690,60 +690,12 @@ class DatabaseService {
     return objectArchiveStream;
   }
 
-  static Future<List<String>> getSeasonsForObjectArchiveOld(String objectId) {
-    List<String> seasons;
-/*
-    print(archiveRef
-        .document(objectId)
-        .collection('hasArchive')
-        .snapshots()
-        .length);
-*/
-    seasonsRef.getDocuments().then((value) {
-      value.documents.forEach((element) {
-        // List<String> seasons = [];
-        archiveRef
-            .document(element['season'])
-            .collection('hasArchive')
-            .where('objectId', isEqualTo: objectId)
-            .getDocuments()
-            .then((data) {
-          if (data.documents.length > 0) {
-            seasons.add(element['season']);
-            print(element['season']);
-          }
-        }).then((value) {
-          print('${seasons.toString()} <-------------------------');
-          return seasons;
-        });
-      });
-    });
 
-    //return seasons;
+  static Future<bool> objectHasArchiveForSeason(String season, String objectId) async {
+    QuerySnapshot snap = await archiveRef.document(season).collection('hasArchive').where('objectId', isEqualTo: objectId).getDocuments();
+    return snap.documents.length > 0; 
   }
 
-  static Future<List<String>> getSeasonsForObjectArchive(
-      String objectId) async {
-    List<String> seasons = [];
-
-    await seasonsRef.getDocuments().then((value) {
-      value.documents.forEach((element) {
-        archiveRef
-            .document(element['season'])
-            .collection('hasArchive')
-            .where('objectId', isEqualTo: objectId)
-            .getDocuments()
-            .then((value) {
-          if (value.documents.length > 0) {
-            seasons.add(element['season']);
-            print('Added ${element['season']}');
-          }
-        });
-      });
-    });
-
-    return seasons;
-  }
 
   static void updateArchiveIsBilled(
       String archiveId, String season, bool value) {

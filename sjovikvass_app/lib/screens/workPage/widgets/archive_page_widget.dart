@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/season_tile.dart';
+import 'package:sjovikvass_app/utils/constants.dart';
 
 class ArchivePage extends StatefulWidget {
   final String objectId;
@@ -15,57 +16,61 @@ class ArchivePage extends StatefulWidget {
 }
 
 class _ArchivePageState extends State<ArchivePage> {
-  Future<List<String>> seasons;
+ 
 
   @override
   void initState() {
     super.initState();
-    _setupSeasons();
+    
   }
 
-  _setupSeasons() async {
-    Future<List<String>> _seasons =
-        DatabaseService.getSeasonsForObjectArchive(widget.objectId);
-    setState(() {
-      seasons = _seasons;
-    });
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: DetailAppBar.buildAppBar('Arkiv', context),
         body: Column(
           children: <Widget>[
-            Expanded(
-                /*
-              child: FutureBuilder(
-                  future: DatabaseService.getSeasonsForObjectArchive(
-                      widget.objectId),
-                  builder: (context, snapshot) {
-                    
-                    print(snapshot.data.length);
-                    */
-                child: FutureBuilder(
-                    future: DatabaseService.getSeasonsForObjectArchive(
-                        widget.objectId),
-                    builder: (context, snapshot) {
-                      print(snapshot.toString());
-                      if (!snapshot.hasData) {
-                        return Center(child: Text('Har inte data'));
-                      }
-                      if (snapshot.data.length == 0) {
-                        return Center(child: Text('Inga arkivobjekt'));
-                      }
-                      return ListView.builder(
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            // print(seasons.length);
-                            return SeasonTile(
-                              season: snapshot.data[index],
-                            );
-                          });
-                    })),
+            FutureBuilder(
+                future: seasonsRef.orderBy('timestamp').getDocuments(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                        child: Container(
+                      height: 80.0,
+                      width: 80.0,
+                      child: CircularProgressIndicator(),
+                    ));
+                  }
+
+                  if (snapshot.data.documents.length == 0) {
+                    return Center(
+                      child: Text('Inget arkiv ännu...'),
+                    );
+                  }
+                  return Expanded(
+                    child: ListView.builder(
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return FutureBuilder(
+                              future: DatabaseService.objectHasArchiveForSeason(
+                                  snapshot.data.documents[index]['season'],
+                                  widget.objectId),
+                              builder: (context, snap) {
+                                if (!snap.hasData) {
+                                  return SizedBox.shrink();
+                                }
+                                return snap.data
+                                    ? ListTile(
+                                        title: Text(snapshot
+                                            .data.documents[index]['season']),
+                                      )
+                                    : SizedBox.shrink();
+                              });
+                        }),
+                  );
+                })
+      
           ],
         ));
   }

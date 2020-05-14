@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sjovikvass_app/models/archive_model.dart';
-import 'package:sjovikvass_app/models/customer_model.dart';
 import 'package:sjovikvass_app/screens/archive/archive_detail_view.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
