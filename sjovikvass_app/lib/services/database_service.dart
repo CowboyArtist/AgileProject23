@@ -632,7 +632,12 @@ class DatabaseService {
   //METHODS FOR ARCHIVE ----------------------------
 
   static void addArchiveObject(String season, String inObjectId) {
-    seasonsRef.add({'season': season});
+    seasonsRef.where('season', isEqualTo: season).getDocuments().then((value) {
+      if (value.documents.length == 0) {
+        seasonsRef.add({'season': season});
+      }
+    });
+
     archiveRef.document(season).collection('hasArchive').add({}).then((value) {
       getObjectById(inObjectId).then((doc) {
         archiveRef
