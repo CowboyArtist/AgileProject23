@@ -14,6 +14,8 @@ class ArchiveForSeason extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: DetailAppBar.buildAppBar(season, context),
+
+        //builds listview with archived objects for a specific season
         body: StreamBuilder(
           stream: DatabaseService.getArchiveForSeason(season),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -33,9 +35,11 @@ class ArchiveForSeason extends StatelessWidget {
                       Column(
                         children: <Widget>[
                           Checkbox(
-                              value: archive.isBilled == null
+                              value:
+                                  /* archive.isBilled == null
                                   ? false
-                                  : archive.isBilled,
+                                  : archive.isBilled,*/
+                                  false,
                               onChanged: (value) =>
                                   DatabaseService.updateArchiveIsBilled(
                                       archive.id, season, value)),
@@ -46,9 +50,11 @@ class ArchiveForSeason extends StatelessWidget {
                     child: Container(
                       margin: EdgeInsets.only(bottom: 5.0),
                       decoration: BoxDecoration(
-                          color: archive.isBilled
+                          color:
+                              /*archive.isBilled
                               ? Colors.lightGreen[200]
-                              : Colors.white,
+                              : Colors.white,*/
+                              Colors.white,
                           boxShadow: [
                             BoxShadow(
                                 blurRadius: 5.0,
