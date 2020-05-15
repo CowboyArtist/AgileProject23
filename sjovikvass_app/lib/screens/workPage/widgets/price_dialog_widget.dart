@@ -50,12 +50,11 @@ class _PriceDialogState extends State<PriceDialog> {
 
     if (widget.workOrder.isDone) {
       DatabaseService.updateObject(
-          widget.inObjectId, widget.workOrder.sum + totalPrice);
+          widget.inObjectId, widget.workOrder.sum + totalPrice, false);
       widget.valueNotifier.value++;
-         DatabaseService.updateWorkOrderSum(
-      widget.inObjectId, widget.workOrder.id, totalPrice);
+      DatabaseService.updateWorkOrderSum(
+          widget.inObjectId, widget.workOrder.id, totalPrice);
     }
-  
   }
 
   //Calculates the price for the work order and sets it to hours.
@@ -129,7 +128,7 @@ class _PriceDialogState extends State<PriceDialog> {
               ),
             ),
           ),
-         
+
           Padding(
             padding: const EdgeInsets.only(left: 30),
             child: Row(
@@ -208,7 +207,7 @@ class _PriceDialogState extends State<PriceDialog> {
                           _calculateHourlyPrice();
                           _toggleIsDone();
                           Navigator.pop(context);
-                        //  widget.height.value -= 90;
+                          //  widget.height.value -= 90;
                         }
                       }
                     },

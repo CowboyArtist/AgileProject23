@@ -246,7 +246,8 @@ class DatabaseService {
     return objectSnapshot;
   }
 
-  static void updateObject(String storedObjectId, double addToBillingSum) {
+  static void updateObject(
+      String storedObjectId, double addToBillingSum, bool reset) {
     StoredObject storedObject;
     getObjectById(storedObjectId).then((data) {
       storedObject = StoredObject.fromDoc(data);
@@ -267,7 +268,7 @@ class DatabaseService {
         'space': storedObject.space,
         'storageType': storedObject.storageType,
         'serialnumber': storedObject.serialnumber,
-        'billingSum': storedObject.billingSum + addToBillingSum,
+        'billingSum': reset ? 0.0 : storedObject.billingSum + addToBillingSum,
         'ownerId': storedObject.ownerId
       });
     });
@@ -634,7 +635,10 @@ class DatabaseService {
   static void addArchiveObject(String season, String inObjectId) {
     seasonsRef.where('season', isEqualTo: season).getDocuments().then((value) {
       if (value.documents.length == 0) {
-        seasonsRef.add({'season': season, 'timestamp': Timestamp.fromDate(DateTime.now())});
+        seasonsRef.add({
+          'season': season,
+          'timestamp': Timestamp.fromDate(DateTime.now())
+        });
       }
     });
 
@@ -652,6 +656,7 @@ class DatabaseService {
           'ownerId': doc['ownerId'],
           'isBilled': doc['isBilled'],
         });
+        updateObject(inObjectId, 0.0, true);
       });
       workOrderRef
           .document(inObjectId)
@@ -690,12 +695,15 @@ class DatabaseService {
     return objectArchiveStream;
   }
 
-
-  static Future<bool> objectHasArchiveForSeason(String season, String objectId) async {
-    QuerySnapshot snap = await archiveRef.document(season).collection('hasArchive').where('objectId', isEqualTo: objectId).getDocuments();
-    return snap.documents.length > 0; 
+  static Future<bool> objectHasArchiveForSeason(
+      String season, String objectId) async {
+    QuerySnapshot snap = await archiveRef
+        .document(season)
+        .collection('hasArchive')
+        .where('objectId', isEqualTo: objectId)
+        .getDocuments();
+    return snap.documents.length > 0;
   }
-
 
   static void updateArchiveIsBilled(
       String archiveId, String season, bool value) {

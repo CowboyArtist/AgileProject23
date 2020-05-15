@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/screens/object/object_screen.dart';
-import 'package:sjovikvass_app/screens/workPage/widgets/archive_page_widget.dart';
+
+import 'package:sjovikvass_app/screens/workPage/widgets/season_page_widget.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
 //Custom AppBar for the entire app.
@@ -39,7 +40,7 @@ class WorkOrderAppBar {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => ArchivePage(
+                      builder: (_) => SeasonPage(
                             objectId: objectId,
                           )));
             },
