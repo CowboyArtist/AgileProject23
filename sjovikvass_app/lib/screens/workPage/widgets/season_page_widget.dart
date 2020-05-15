@@ -5,6 +5,7 @@ import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 
 import 'package:sjovikvass_app/utils/constants.dart';
 
+//The page that displays all the seasons that this object has been worked on
 class SeasonPage extends StatefulWidget {
   final String objectId;
 
@@ -45,6 +46,7 @@ class _SeasonPageState extends State<SeasonPage> {
                       child: Text('Inget arkiv ännu...'),
                     );
                   }
+                  //Displays only the seasons for which the object has work orders in.
                   return Expanded(
                     child: ListView.builder(
                         itemCount: snapshot.data.documents.length,

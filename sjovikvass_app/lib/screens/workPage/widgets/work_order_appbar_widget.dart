@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sjovikvass_app/screens/object/object_screen.dart';
 
 import 'package:sjovikvass_app/screens/workPage/widgets/season_page_widget.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
-//Custom AppBar for the entire app.
+//Custom AppBar for the SeasonPage
 
 class WorkOrderAppBar {
   static AppBar buildAppBar(

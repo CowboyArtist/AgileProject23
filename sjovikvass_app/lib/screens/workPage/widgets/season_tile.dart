@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/archive_model.dart';
-import 'package:sjovikvass_app/screens/archive/archive_detail_view.dart';
 import 'package:sjovikvass_app/screens/workPage/widgets/archive_page_widget.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 
+//The list tile for the seasons
 class SeasonTile extends StatelessWidget {
   final String season;
   final String inObjectId;
@@ -23,17 +23,6 @@ class SeasonTile extends StatelessWidget {
             BoxShadow(
                 color: Colors.black12, blurRadius: 3.0, offset: Offset(3, 3))
           ]),
-      /* child: GestureDetector(
-         onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ArchivePage(
-                        season: season,
-                        inObjectId: inObjectId,
-                      )),
-            );
-          }, */
       child: StreamBuilder(
         stream: DatabaseService.getArchiveForObject(inObjectId, season),
         builder: (context, snapshot) {

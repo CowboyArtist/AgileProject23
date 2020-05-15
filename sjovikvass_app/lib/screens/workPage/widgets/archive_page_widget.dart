@@ -1,181 +1,182 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/models/archive_model.dart';
-import 'package:sjovikvass_app/models/customer_model.dart';
+
 import 'package:sjovikvass_app/models/work_order_material_model.dart';
 import 'package:sjovikvass_app/models/work_order_model.dart';
 import 'package:sjovikvass_app/screens/archive/widgets/custom_expansiontile.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
-import 'package:sjovikvass_app/services/email_service.dart';
-import 'package:sjovikvass_app/services/phoneCall_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
-import 'package:sjovikvass_app/styles/my_colors.dart';
+import 'package:sjovikvass_app/utils/constants.dart';
 
-class ArchivePage extends StatelessWidget {
-  String season;
-  String inObjectId;
-  Archive archive;
+//The page for the archives for one specific object
+class ArchivePage extends StatefulWidget {
+  final String season;
+  final String inObjectId;
+  final Archive archive;
 
   ArchivePage({this.season, this.inObjectId, this.archive});
 
-//builds phone and email button
-  Widget _buildActionButton(IconData icon, Function onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-            color: MyColors.primary, borderRadius: BorderRadius.circular(5.0)),
-        child: Icon(
-          icon,
-          size: 15.0,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
+  @override
+  _ArchivePageState createState() => _ArchivePageState();
+}
 
-  FutureBuilder _buildPriceCallAndMailRow() {
-    //Gets the customer from the Database
-    return FutureBuilder(
-        future: DatabaseService.getCustomerById(archive.ownerId),
-        builder: (context, snapshot) {
-          Customer customer;
+class _ArchivePageState extends State<ArchivePage> {
+  double totalBillingSum = 0.0;
 
-          if (snapshot.data != null) {
-            customer = Customer.fromDoc(snapshot.data);
-          }
-          return Row(
-            children: <Widget>[
-              SizedBox(
-                width: 15.0,
-              ),
-              Text(
-                'Total kostnad:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                ),
-              ),
-              SizedBox(
-                width: 10.0,
-              ),
-              Text(archive.billingSum.truncateToDouble().toString() + ' kr'),
-              Spacer(),
-              _buildActionButton(
-                  Icons.phone,
-                  () => PhoneCallService.showPhoneCallDialog(
-                      context, customer.name, customer.phone)),
-              SizedBox(width: 10.0),
-              _buildActionButton(
-                  Icons.mail,
-                  () => EmailService.showEmailDialog(
-                      context, customer.name, customer.email)),
-              SizedBox(
-                width: 10.0,
-              ),
-            ],
-          );
+  //Calculates the total billing sum of all the archives during a season
+  calculateTotalBillingSum() {
+    archiveRef
+        .document(widget.season)
+        .collection('hasArchive')
+        .where('objectId', isEqualTo: widget.inObjectId)
+        .getDocuments()
+        .then((value) {
+      value.documents.forEach((element) {
+        setState(() {
+          totalBillingSum += element['billingSum'];
         });
+      });
+    });
   }
 
+//Builds the list view for the workorders that are archived.
   Expanded _buildWorkOrderListView() {
     return Expanded(
       child: StreamBuilder(
-        stream: DatabaseService.getWorkOrders(archive.id),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
+        stream: DatabaseService.getArchiveForObject(
+            widget.inObjectId, widget.season),
+        builder: (
+          BuildContext context,
+          AsyncSnapshot snapshot,
+        ) {
           if (!snapshot.hasData) {
             return Center(child: Text('Laddar in arkiv...'));
           }
           return ListView.builder(
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (BuildContext context, int index) {
-                WorkOrder workOrder =
-                    WorkOrder.fromDoc(snapshot.data.documents[index]);
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                  child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: Colors.black12,
-                      ),
-                      margin: EdgeInsets.only(bottom: 8.0),
+            shrinkWrap: true,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (BuildContext context, int index) {
+              Archive insideArchive =
+                  Archive.fromdoc(snapshot.data.documents[index]);
 
-                      //customized ExpansionTile to make arrow icon leading.
-                      child: MyExpansionTile(
-                        backgroundColor: Colors.lightBlue[50],
-                        initiallyExpanded: false,
-                        title: Text(
-                          workOrder.title,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        trailing: Text(
-                            workOrder.sum.truncateToDouble().toString() +
-                                ' kr'),
-                        children: <Widget>[
-                          StreamBuilder(
-                              stream: DatabaseService.getWorkOrderMaterials(
-                                  workOrder.id),
-                              builder: (BuildContext contect,
-                                  AsyncSnapshot snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Center(child: Text('Laddar'));
-                                }
-                                return ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: snapshot.data.documents.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      WorkOrderMaterial workOrderMaterial =
-                                          WorkOrderMaterial.fromDoc(
-                                              snapshot.data.documents[index]);
+              return StreamBuilder(
+                stream: DatabaseService.getWorkOrders(insideArchive.id),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: Text('Laddar in arkiv...'));
+                  }
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        WorkOrder workOrder =
+                            WorkOrder.fromDoc(snapshot.data.documents[index]);
 
-                                      return Container(
-                                          child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            8.0, 0.0, 0.0, 8.0),
-                                        child: Row(
-                                          children: <Widget>[
-                                            SizedBox(width: 20.0),
-                                            Container(
-                                                width: 90.0,
-                                                child: Text(
-                                                    workOrderMaterial.title)),
-                                            SizedBox(
-                                              width: 120.0,
-                                            ),
-                                            Text(workOrderMaterial.amount
-                                                .toStringAsFixed(1)),
-                                            Spacer(),
-                                            Text(workOrderMaterial.cost
-                                                    .truncateToDouble()
-                                                    .toString() +
-                                                ' kr'),
-                                            SizedBox(width: 15.0),
-                                          ],
-                                        ),
-                                      ));
-                                    });
-                              })
-                        ],
-                      )),
-                );
-              });
+                        return Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.black12,
+                              ),
+                              margin: EdgeInsets.only(bottom: 8.0),
+
+                              //customized ExpansionTile to make arrow icon leading.
+                              child: MyExpansionTile(
+                                backgroundColor: Colors.lightBlue[50],
+                                initiallyExpanded: false,
+                                title: Text(
+                                  workOrder.title,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                trailing: Text(workOrder.sum
+                                        .truncateToDouble()
+                                        .toString() +
+                                    ' kr'),
+                                children: <Widget>[
+                                  StreamBuilder(
+                                      stream:
+                                          DatabaseService.getWorkOrderMaterials(
+                                              workOrder.id),
+                                      builder: (BuildContext contect,
+                                          AsyncSnapshot snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return Center(child: Text('Laddar'));
+                                        }
+                                        return ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount:
+                                                snapshot.data.documents.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              WorkOrderMaterial
+                                                  workOrderMaterial =
+                                                  WorkOrderMaterial.fromDoc(
+                                                      snapshot.data
+                                                          .documents[index]);
+
+                                              return Container(
+                                                  child: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        8.0, 0.0, 0.0, 8.0),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    SizedBox(width: 20.0),
+                                                    Container(
+                                                        width: 90.0,
+                                                        child: Text(
+                                                            workOrderMaterial
+                                                                .title)),
+                                                    SizedBox(
+                                                      width: 120.0,
+                                                    ),
+                                                    Text(workOrderMaterial
+                                                        .amount
+                                                        .toStringAsFixed(1)),
+                                                    Spacer(),
+                                                    Text(workOrderMaterial.cost
+                                                            .truncateToDouble()
+                                                            .toString() +
+                                                        ' kr'),
+                                                    SizedBox(width: 15.0),
+                                                  ],
+                                                ),
+                                              ));
+                                            });
+                                      })
+                                ],
+                              )),
+                        );
+                      });
+                },
+              );
+            },
+          );
         },
       ),
     );
   }
 
   @override
+  void initState() {
+    super.initState();
+    calculateTotalBillingSum();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DetailAppBar.buildAppBar(archive.objectTitle, context),
+      appBar: DetailAppBar.buildAppBar(widget.archive.objectTitle, context),
       body: Column(
         children: <Widget>[
           SizedBox(height: 15.0),
 
-          archive.ownerId == null
-              ? Text(archive.billingSum.truncateToDouble().toString() + ' kr')
-              : _buildPriceCallAndMailRow(),
+          Text(
+            'Totalkostnad: ' + totalBillingSum.toString() + 'kr',
+            style: TextStyle(fontSize: 20.0),
+          ),
 
           SizedBox(
             height: 30.0,
@@ -183,7 +184,7 @@ class ArchivePage extends StatelessWidget {
           Align(
               alignment: Alignment.center,
               child: Text(
-                'Utförda Arbeten',
+                'Utförda arbeten',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               )),
