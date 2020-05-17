@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sjovikvass_app/models/supplier_model.dart';
 
 //A ContactModels different attributes
 class ContactModel {
