@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sjovikvass_app/models/archive_model.dart';
+
 import 'package:sjovikvass_app/models/contact_model.dart';
 import 'package:sjovikvass_app/models/customer_model.dart';
 import 'package:sjovikvass_app/models/document_model.dart';
@@ -246,7 +246,8 @@ class DatabaseService {
     return objectSnapshot;
   }
 
-  static void updateObject(String storedObjectId, double addToBillingSum) {
+  static void updateObject(
+      String storedObjectId, double addToBillingSum, bool reset) {
     StoredObject storedObject;
     getObjectById(storedObjectId).then((data) {
       storedObject = StoredObject.fromDoc(data);
@@ -267,7 +268,7 @@ class DatabaseService {
         'space': storedObject.space,
         'storageType': storedObject.storageType,
         'serialnumber': storedObject.serialnumber,
-        'billingSum': storedObject.billingSum + addToBillingSum,
+        'billingSum': reset ? 0.0 : storedObject.billingSum + addToBillingSum,
         'ownerId': storedObject.ownerId
       });
     });
@@ -414,8 +415,6 @@ class DatabaseService {
       suppliersRef.document(supplier.id).updateData({
         'companyName': supplier.companyName,
         'description': supplier.description,
-        'phoneNr': supplier.phoneNr,
-        'email': supplier.email,
         'imageUrl': supplier.imageUrl,
         'mainContact': supplier.mainContact,
       });
@@ -431,8 +430,6 @@ class DatabaseService {
       suppliersRef.document(supplier.id).updateData({
         'companyName': supplier.companyName,
         'description': supplier.description,
-        'phoneNr': supplier.phoneNr,
-        'email': supplier.email,
         'imageUrl': supplier.imageUrl,
         'mainContact': contactModelId,
       });
@@ -443,8 +440,6 @@ class DatabaseService {
     suppliersRef.add({
       'companyName': supplier.companyName,
       'description': supplier.description,
-      'phoneNr': supplier.phoneNr,
-      'email': supplier.email,
       'imageUrl': supplier.imageUrl,
     });
   }
@@ -629,9 +624,31 @@ class DatabaseService {
     });
   }
 
+  static Future<DocumentSnapshot> getContactById(
+      String contactId, String supplierId) {
+    Future<DocumentSnapshot> contactSnap;
+    if (contactId != null) {
+      contactSnap = contactsRef
+          .document(supplierId)
+          .collection('hasContacts')
+          .document(contactId)
+          .get();
+    }
+    return contactSnap;
+  }
+
   //METHODS FOR ARCHIVE ----------------------------
 
   static void addArchiveObject(String season, String inObjectId) {
+    seasonsRef.where('season', isEqualTo: season).getDocuments().then((value) {
+      if (value.documents.length == 0) {
+        seasonsRef.add({
+          'season': season,
+          'timestamp': Timestamp.fromDate(DateTime.now())
+        });
+      }
+    });
+
     archiveRef.document(season).collection('hasArchive').add({}).then((value) {
       getObjectById(inObjectId).then((doc) {
         archiveRef
@@ -641,9 +658,12 @@ class DatabaseService {
             .updateData({
           'season': season,
           'objectTitle': doc['title'],
+          'objectId': inObjectId,
           'billingSum': doc['billingSum'],
           'ownerId': doc['ownerId'],
+          'isBilled': doc['isBilled'],
         });
+        updateObject(inObjectId, 0.0, true);
       });
       workOrderRef
           .document(inObjectId)
@@ -654,7 +674,8 @@ class DatabaseService {
           workOrderRef
               .document(value.documentID)
               .collection('hasWorkOrders')
-              .add({
+              .document(element.documentID)
+              .setData({
             'title': element['title'],
             'isDone': element['isDone'],
             'sum': element['sum']
@@ -662,6 +683,43 @@ class DatabaseService {
           element.reference.delete();
         });
       });
+    });
+  }
+
+  static Stream getArchiveForSeason(String season) {
+    Stream archiveStream =
+        archiveRef.document(season).collection('hasArchive').snapshots();
+
+    return archiveStream;
+  }
+
+  static Stream getArchiveForObject(String objectId, String season) {
+    Stream objectArchiveStream = archiveRef
+        .document(season)
+        .collection('hasArchive')
+        .where('objectId', isEqualTo: objectId)
+        .snapshots();
+    return objectArchiveStream;
+  }
+
+  static Future<bool> objectHasArchiveForSeason(
+      String season, String objectId) async {
+    QuerySnapshot snap = await archiveRef
+        .document(season)
+        .collection('hasArchive')
+        .where('objectId', isEqualTo: objectId)
+        .getDocuments();
+    return snap.documents.length > 0;
+  }
+
+  static void updateArchiveIsBilled(
+      String archiveId, String season, bool value) {
+    archiveRef
+        .document(season)
+        .collection('hasArchive')
+        .document(archiveId)
+        .updateData({
+      'isBilled': value,
     });
   }
 }

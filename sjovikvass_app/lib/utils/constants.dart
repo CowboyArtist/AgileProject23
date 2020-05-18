@@ -15,3 +15,4 @@ final workOrderMaterialsRef = _firestore.collection('workOrderMaterials');
 final customerRef = _firestore.collection('customers');
 final contactsRef = _firestore.collection('contacts');
 final archiveRef = _firestore.collection('archive');
+final seasonsRef = _firestore.collection('seasons');

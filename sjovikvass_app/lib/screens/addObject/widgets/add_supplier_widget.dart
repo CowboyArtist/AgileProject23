@@ -36,8 +36,6 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
       Supplier storedSupplier = Supplier(
         companyName: _supplierName,
         description: _supplierDescription,
-        phoneNr: _supplierPhone,
-        email: _supplierEmail,
       );
 
       _supplierNameController.clear();
