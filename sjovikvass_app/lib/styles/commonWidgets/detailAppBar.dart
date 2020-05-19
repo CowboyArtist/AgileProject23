@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
-
 //Custom AppBar for the entire app.
 class DetailAppBar {
   static AppBar buildAppBar(String title, BuildContext context) {
@@ -23,19 +22,6 @@ class DetailAppBar {
           color: Colors.black,
         ),
       ),
-      actions: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: InkResponse(
-            onTap: () => print('Go to more from' ' $title'),
-            child: Icon(
-              Icons.more_vert,
-              size: 30.0,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ],
       backgroundColor: MyColors.backgroundLight,
     );
   }
