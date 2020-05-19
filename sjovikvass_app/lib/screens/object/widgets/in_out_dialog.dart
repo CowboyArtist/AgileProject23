@@ -7,12 +7,13 @@ import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/time_service.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-
 //Builds the view shown in panel for object_screen.dart
 class InOutDialog extends StatefulWidget {
   final StoredObject object; //current object
-  final PanelController pc; //controller to open and close the panel in parent class
-  final Function updateFunction; //Used to update the UI in parent widget when new changes occur
+  final PanelController
+      pc; //controller to open and close the panel in parent class
+  final Function
+      updateFunction; //Used to update the UI in parent widget when new changes occur
   InOutDialog({this.object, this.pc, this.updateFunction});
 
   @override
@@ -56,11 +57,14 @@ class _InOutDialogState extends State<InOutDialog> {
     super.initState();
 
     //If the object already has assigned dates it's given to the attributes shown in UI
-    if (widget.object.inDate != null && widget.object.outDate != null) {
+    if (widget.object.inDate != null) {
       setState(() {
         _inDate = widget.object.inDate.toDate();
+      });
+    }
+    if (widget.object.outDate != null) {
+      setState(() {
         _outDate = widget.object.outDate.toDate();
-        
       });
     }
     setState(() {
@@ -68,34 +72,32 @@ class _InOutDialogState extends State<InOutDialog> {
     });
   }
 
-
   _submitChanges() {
     if (!_isLoading) {
-      setState((){
+      setState(() {
         _isLoading = true;
         widget.object.storageType = _storageType;
       });
 
       StoredObject updatedObject = StoredObject(
-        id: widget.object.id,
-        title: widget.object.title,
-        timestamp: widget.object.timestamp,
-        description: widget.object.description,
-        engine: widget.object.engine,
-        engineSerialnumber: widget.object.engineSerialnumber,
-        model: widget.object.model,
-        serialnumber: widget.object.serialnumber,
-        billingSum: widget.object.billingSum,
-        inDate: _inDate != null ? Timestamp.fromDate(_inDate) : null,
-        outDate: _outDate != null ? Timestamp.fromDate(_outDate) : null,
-        imageUrl: widget.object.imageUrl,
-        storageType: _storageType,
-        space: widget.object.space,
-        category: widget.object.category
-      );
+          id: widget.object.id,
+          title: widget.object.title,
+          timestamp: widget.object.timestamp,
+          description: widget.object.description,
+          engine: widget.object.engine,
+          engineSerialnumber: widget.object.engineSerialnumber,
+          model: widget.object.model,
+          serialnumber: widget.object.serialnumber,
+          billingSum: widget.object.billingSum,
+          inDate: _inDate != null ? Timestamp.fromDate(_inDate) : null,
+          outDate: _outDate != null ? Timestamp.fromDate(_outDate) : null,
+          imageUrl: widget.object.imageUrl,
+          storageType: _storageType,
+          space: widget.object.space,
+          category: widget.object.category,
+          ownerId: widget.object.ownerId);
 
       DatabaseService.updateObjectTotal(updatedObject);
-      
 
       setState(() {
         _isLoading = false;
@@ -144,18 +146,21 @@ class _InOutDialogState extends State<InOutDialog> {
                     children: <Widget>[
                       Text(
                         'Inlämning',
-                        style:
-                            TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 16.0, fontWeight: FontWeight.bold),
                       ),
-                      Icon(Icons.edit, size: 18.0,)
+                      Icon(
+                        Icons.edit,
+                        size: 18.0,
+                      )
                     ],
                   ),
                   SizedBox(
                     height: 5.0,
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 22.0, vertical: 12.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 22.0, vertical: 12.0),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.0)),
                     child: Center(
@@ -185,18 +190,21 @@ class _InOutDialogState extends State<InOutDialog> {
                     children: <Widget>[
                       Text(
                         'Utlämning',
-                        style:
-                            TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 16.0, fontWeight: FontWeight.bold),
                       ),
-                      Icon(Icons.edit, size: 18.0,)
+                      Icon(
+                        Icons.edit,
+                        size: 18.0,
+                      )
                     ],
                   ),
                   SizedBox(
                     height: 5.0,
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 22.0, vertical: 12.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 22.0, vertical: 12.0),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.0)),
                     child: Center(
@@ -230,43 +238,42 @@ class _InOutDialogState extends State<InOutDialog> {
                     height: 5.0,
                   ),
                   DropdownButton<String>(
-                      value: _storageType,
-                      icon: Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Icon(
-                              Icons.arrow_downward,
-                            ),
-                          ],
-                        ),
+                    value: _storageType,
+                    icon: Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Icon(
+                            Icons.arrow_downward,
+                          ),
+                        ],
                       ),
-                      iconSize: 20,
-                      elevation: 16,
-                      style: TextStyle(color: Colors.black),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.black38,
-                      ),
-                      onChanged: (String newValue) {
-                        setState(() {
-                          _storageType = newValue;
-                        });
-                      },
-                      //Hard coded categories. Add new categories here.
-                      items: <String>[
-                        'Hall ej angedd',
-                        'Varmhall',
-                        'Kallhall',
-                        'Övrigt',
-                        
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
                     ),
+                    iconSize: 20,
+                    elevation: 16,
+                    style: TextStyle(color: Colors.black),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.black38,
+                    ),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        _storageType = newValue;
+                      });
+                    },
+                    //Hard coded categories. Add new categories here.
+                    items: <String>[
+                      'Hall ej angedd',
+                      'Varmhall',
+                      'Kallhall',
+                      'Övrigt',
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
                 ],
               ),
               null),
