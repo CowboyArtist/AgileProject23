@@ -6,6 +6,7 @@ import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/email_service.dart';
 import 'package:sjovikvass_app/services/phoneCall_service.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
 import '../supplierDetailScreen.dart';
@@ -246,7 +247,20 @@ class _SuppliersListState extends State<SuppliersList> {
               future: _suppliers,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Text('Ingen data');
+                  return Center(
+                      child: Container(
+                    height: 80.0,
+                    width: 80.0,
+                    child: CircularProgressIndicator(),
+                  ));
+                }
+                if (snapshot.data.documents.length == 0) {
+                  return Center(
+                      child: MyPlaceholder(
+                    title: 'Inga leverantörer',
+                    subtitle: 'Klicka på "+" för att lägga till ny leverantör.',
+                    assetPath: 'assets/images/missing.png',
+                  ));
                 }
 
                 return ListView.builder(

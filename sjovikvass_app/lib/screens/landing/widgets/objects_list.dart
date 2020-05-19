@@ -7,6 +7,7 @@ import 'package:sjovikvass_app/models/stored_object_model.dart';
 import 'package:sjovikvass_app/screens/object/object_screen.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/circular_indicator.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
 
 //This Widget will return the list of objects required by the user
 class ObjectsList extends StatefulWidget {
@@ -222,9 +223,9 @@ class _ObjectsListState extends State<ObjectsList> {
               ));
             }
             if (snapshot.data.documents.length == 0) {
-              return Center(
-                child: Text('Inga resultat'),
-              );
+              if (snapshot.data.documents.length == 0) {
+                  return Center(child: MyPlaceholder(title: 'Inga objekt', subtitle: 'Klicka på "+" för att lägga till nya objekt.', assetPath: 'assets/images/missing.png',));
+                }
             }
 
             return ListView.builder(
