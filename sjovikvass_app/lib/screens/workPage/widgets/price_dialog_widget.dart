@@ -153,6 +153,7 @@ class _PriceDialogState extends State<PriceDialog> {
                           }
                           return null;
                         },
+                        textCapitalization: TextCapitalization.sentences,
                         controller: hoursField,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(

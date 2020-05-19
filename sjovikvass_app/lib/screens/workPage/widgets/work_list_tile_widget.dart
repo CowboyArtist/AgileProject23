@@ -245,6 +245,7 @@ class _WorkListTileState extends State<WorkListTile>
                                               _decorateNewMaterialContainer(),
                                           child: TextField(
                                             controller: materialController,
+                                            textCapitalization: TextCapitalization.sentences,
                                             decoration: InputDecoration(
                                               hintText: 'Nytt material',
                                               border: InputBorder.none,

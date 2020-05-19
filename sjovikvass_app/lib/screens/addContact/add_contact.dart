@@ -129,7 +129,7 @@ class _AddContactState extends State<AddContact> {
                     maxLines: null,
                     controller: _contactEmailController,
                     keyboardType: TextInputType.emailAddress,
-                    textCapitalization: TextCapitalization.sentences,
+
                     decoration: InputDecoration(
                       labelStyle: TextStyle(fontSize: 15.0),
                       labelText: 'Email',

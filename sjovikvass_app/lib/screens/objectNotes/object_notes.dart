@@ -109,6 +109,7 @@ class _NotePageState extends State<NotePage> {
                     child: TextField(
                       controller: noteController,
                       maxLines: null,
+                      textCapitalization: TextCapitalization.sentences,
                     ),
                   ),
                 ],
