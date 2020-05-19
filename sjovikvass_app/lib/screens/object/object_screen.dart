@@ -168,7 +168,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
         controller: _pcOwner,
         borderRadius: radius,
         minHeight: 0.0,
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
         panel: OwnerDetails(
           object: widget.object,
           pc: _pcOwner,
@@ -179,7 +179,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
           controller: _pc,
           borderRadius: radius,
           minHeight: 0.0,
-          maxHeight: MediaQuery.of(context).size.height * 0.7,
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
           panel: InOutDialog(
             updateFunction: setupDynamicFields,
             object: widget.object,
