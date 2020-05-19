@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:sjovikvass_app/services/handle_image_service.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_dialog.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
@@ -328,39 +329,18 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
     });
 
     if (!_objectIsLoading && _title.isNotEmpty) {
-      // set up the button
-      Widget okButton = FlatButton(
-        child: Text("Spara"),
-        onPressed: () {
-          _submitStoredObject();
-          Navigator.of(context).pop();
-        },
-      );
-
-      Widget cancelButton = FlatButton(
-        child: Text("Avbryt"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      );
-
-      // set up the AlertDialog
-      AlertDialog alert = AlertDialog(
-        shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
-        title: Text("Bekräfta objekt"),
-        content: Text("Vill du spara ${_title}?"),
-        actions: [
-          cancelButton,
-          okButton,
-        ],
+      MyDialog myDialog = MyDialog(
+        title: 'Bekräfta objekt',
+        body: 'Vill du spara ${_title}?',
+        onPressed: _submitStoredObject,
+        done: 'Spara',
       );
 
       // show the dialog
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alert;
+          return myDialog;
         },
       );
     }
