@@ -9,7 +9,7 @@ class MyLayout {
         onTap: onTap,
               child: Container(
           margin: EdgeInsets.symmetric(horizontal: 8.0),
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(11.0),
           decoration: BoxDecoration(
             color: MyColors.lightBlue,
             borderRadius: BorderRadius.circular(16.0),
