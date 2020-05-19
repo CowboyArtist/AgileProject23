@@ -8,6 +8,7 @@ import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/email_service.dart';
 import 'package:sjovikvass_app/services/phoneCall_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_button.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
 class ArchiveDetailView extends StatelessWidget {
@@ -16,19 +17,7 @@ class ArchiveDetailView extends StatelessWidget {
 
 //builds phone and email button
   Widget _buildActionButton(IconData icon, Function onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-            color: MyColors.primary, borderRadius: BorderRadius.circular(5.0)),
-        child: Icon(
-          icon,
-          size: 15.0,
-          color: Colors.white,
-        ),
-      ),
-    );
+    return MyButton(icon: icon, onTap: onTap);
   }
 
   FutureBuilder _getCustomerName() {
