@@ -14,8 +14,11 @@ import 'package:sjovikvass_app/screens/object/widgets/owner_widget.dart';
 import 'package:sjovikvass_app/screens/objectNotes/object_notes.dart';
 import 'package:sjovikvass_app/screens/workPage/work_page.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
+import 'package:sjovikvass_app/services/email_service.dart';
+import 'package:sjovikvass_app/services/phoneCall_service.dart';
 import 'package:sjovikvass_app/services/time_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/circular_indicator.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_button.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,8 +33,6 @@ class ObjectScreen extends StatefulWidget {
 }
 
 class _ObjectScreenState extends State<ObjectScreen> {
-
-
   int _doneOrders = 0;
   int _totalOrders = 0;
   int _imageCount = 0;
@@ -50,10 +51,10 @@ class _ObjectScreenState extends State<ObjectScreen> {
     topRight: Radius.circular(14.0),
   );
 
-  PanelController _pc = PanelController(); //Controlls the panel for in and out date
-  PanelController _pcOwner = PanelController(); //Controlls the panel for owner details
-
-  
+  PanelController _pc =
+      PanelController(); //Controlls the panel for in and out date
+  PanelController _pcOwner =
+      PanelController(); //Controlls the panel for owner details
 
   @override
   void initState() {
@@ -163,7 +164,8 @@ class _ObjectScreenState extends State<ObjectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SlidingUpPanel( //Sliding panel with owner details
+      body: SlidingUpPanel(
+        //Sliding panel with owner details
         backdropEnabled: true,
         controller: _pcOwner,
         borderRadius: radius,
@@ -172,9 +174,10 @@ class _ObjectScreenState extends State<ObjectScreen> {
         panel: OwnerDetails(
           object: widget.object,
           pc: _pcOwner,
-          updateFunction: setupOwner, 
+          updateFunction: setupOwner,
         ),
-        body: SlidingUpPanel( //Sliding panel with in- and outdate updates
+        body: SlidingUpPanel(
+          //Sliding panel with in- and outdate updates
           backdropEnabled: true,
           controller: _pc,
           borderRadius: radius,
@@ -331,7 +334,6 @@ class _ObjectScreenState extends State<ObjectScreen> {
                 height: 100.0,
                 width: MediaQuery.of(context).size.width,
                 child: Row(children: <Widget>[
-                  
                   MyLayout.oneItem(
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -477,15 +479,21 @@ class _ObjectScreenState extends State<ObjectScreen> {
                                   ),
                                   Row(
                                     children: <Widget>[
-                                      _buildActionButton(
-                                          Icons.phone,
-                                          () => print(
-                                              'phone to ${customer.phone}')),
+                                      MyButton(
+                                        icon: Icons.phone,
+                                        onTap: () => PhoneCallService
+                                            .showPhoneCallDialog(context,
+                                                customer.name, customer.phone),
+                                      ),
                                       SizedBox(width: 32.0),
-                                      _buildActionButton(
-                                          Icons.mail,
-                                          () => print(
-                                              'mail to ${customer.email}')),
+                                      MyButton(
+                                        icon: Icons.mail,
+                                        onTap: () =>
+                                            EmailService.showEmailDialog(
+                                                context,
+                                                customer.name,
+                                                customer.email),
+                                      ),
                                       SizedBox(width: 16.0),
                                     ],
                                   ),
