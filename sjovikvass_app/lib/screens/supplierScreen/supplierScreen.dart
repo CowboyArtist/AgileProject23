@@ -18,15 +18,21 @@ class _SupplierScreenState extends State<SupplierScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          elevation: 0.0,
-          
-            title: Text(
-              'Leverantörer',
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor),
-        body: SuppliersList()); //Scaffold
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0.0,
+      ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+                  '   Leverantörer',
+                  style: TextStyle(
+                      fontSize: 26.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87),
+                ),
+            Expanded(child: SuppliersList()),
+          ],
+        )); //Scaffold
   }
 }
