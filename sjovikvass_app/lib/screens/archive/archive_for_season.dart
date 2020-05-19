@@ -34,11 +34,7 @@ class ArchiveForSeason extends StatelessWidget {
                       Column(
                         children: <Widget>[
                           Checkbox(
-                              value:
-                                  /* archive.isBilled == null
-                                  ? false
-                                  : archive.isBilled,*/
-                                  false,
+                              value: archive.isBilled,
                               onChanged: (value) =>
                                   DatabaseService.updateArchiveIsBilled(
                                       archive.id, season, value)),
@@ -49,11 +45,9 @@ class ArchiveForSeason extends StatelessWidget {
                     child: Container(
                       margin: EdgeInsets.only(bottom: 5.0),
                       decoration: BoxDecoration(
-                          color:
-                              /*archive.isBilled
+                          color: archive.isBilled
                               ? Colors.lightGreen[200]
-                              : Colors.white,*/
-                              Colors.white,
+                              : Colors.white,
                           boxShadow: [
                             BoxShadow(
                                 blurRadius: 5.0,
@@ -78,7 +72,6 @@ class ArchiveForSeason extends StatelessWidget {
                               if (!snapshot.hasData) {
                                 return Text('hämtar kundnamn');
                               }
-                              //Customer customer
 
                               return Text(snapshot.data['name']);
                             }),
