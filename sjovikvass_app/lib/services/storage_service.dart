@@ -57,12 +57,15 @@ class StorageService {
   }
 
   static void deleteObjectMainImage(String imageUrl) async {
-    
-    String photoId = Uuid().v4();
+    if (imageUrl.isNotEmpty) {
+      String photoId = Uuid().v4();
     RegExp exp = RegExp(r'object_(.*).jpg');
       photoId = exp.firstMatch(imageUrl)[1];
       
     storageRef.child('images/objectsMain/object_$photoId.jpg').delete();
+    }
+    
+    
   }
 
   //Used to add documents to database

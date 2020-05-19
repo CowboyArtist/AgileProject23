@@ -14,7 +14,7 @@ class MyPlaceholder extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          Image.asset(assetPath),
+          assetPath != null ? Image.asset(assetPath) : SizedBox(height: 120.0,),
           Text(title, style: TextStyle(fontSize: 23.0, fontWeight: FontWeight.w600)),
           Text(subtitle, textAlign: TextAlign.center,)
         ]

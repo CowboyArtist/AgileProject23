@@ -145,6 +145,7 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
         _image = null;
         _year = null;
         _engineYear = null;
+        _selectedCustomerId = '';
       });
       Navigator.of(context).pop();
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/screens/archive/archive_for_season.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
 
 class ArchiveSeasonsScreen extends StatelessWidget {
@@ -37,7 +38,7 @@ class ArchiveSeasonsScreen extends StatelessWidget {
 
                     if (snapshot.data.documents.length == 0) {
                       return Center(
-                        child: Text('Inget arkiv ännu...'),
+                        child: MyPlaceholder(title: 'Inga arkiverade objekt', subtitle: 'När du klickat i "Arkivera" för någon arbetsorder hittar du dem här.',),
                       );
                     }
 

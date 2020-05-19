@@ -550,8 +550,13 @@ class DatabaseService {
   }
 
   static Future<DocumentSnapshot> getCustomerById(String customerId) {
-    Future<DocumentSnapshot> customerSnap =
+    print(customerId + '<-----------------------------------------------------------------');
+    Future<DocumentSnapshot> customerSnap;
+    if (customerId.isNotEmpty) {
+      customerSnap  =
         customerRef.document(customerId).get();
+    }
+    
     return customerSnap;
   }
 

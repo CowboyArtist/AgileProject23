@@ -78,6 +78,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
 
   setupOwner() {
     if (widget.object.ownerId != null && widget.object.ownerId.isNotEmpty) {
+      print('Gets inside if-statement with ${widget.object.ownerId} and ${widget.object.ownerId.isNotEmpty}');
       Future<DocumentSnapshot> owner =
           DatabaseService.getCustomerById(widget.object.ownerId);
       setState(() {
@@ -130,22 +131,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     });
   }
 
-  //Builds secondary button on Owner widget
-  Widget _buildActionButton(IconData icon, Function onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-            color: MyColors.primary, borderRadius: BorderRadius.circular(5.0)),
-        child: Icon(
-          icon,
-          size: 18.0,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
+
 
   //Opens model in browser with a google search
   Future<void> _launchInBrowser(String url) async {
@@ -583,6 +569,23 @@ class _ObjectScreenState extends State<ObjectScreen> {
                                         children: [
                                           TextSpan(
                                               text: widget.object.serialnumber,
+                                              style: TextStyle(
+                                                  fontWeight:
+                                                      FontWeight.normal))
+                                        ],
+                                      ),
+                                    ),
+                                    widget.object.space == 0.0
+                                  ? SizedBox.shrink()
+                                  : RichText(
+                                      text: TextSpan(
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.bold),
+                                        text: 'Yta: ',
+                                        children: [
+                                          TextSpan(
+                                              text: widget.object.space.toString() + ' kvm',
                                               style: TextStyle(
                                                   fontWeight:
                                                       FontWeight.normal))
