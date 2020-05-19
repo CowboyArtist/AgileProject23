@@ -76,7 +76,7 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Ny Leverantör',
+                    'Ny leverantör',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextField(
@@ -119,7 +119,7 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Primär Kontakt',
+                        'Primär kontakt',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextField(
@@ -176,9 +176,9 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
 
       // set up the AlertDialog
       AlertDialog alert = AlertDialog(
-        shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
-        title: Text("Bekräfta Leverantör"),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        title: Text("Bekräfta leverantör"),
         content: Text("Vill du spara ${_supplierName}?"),
         actions: [
           cancelButton,

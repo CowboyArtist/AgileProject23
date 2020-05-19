@@ -291,35 +291,6 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
         }).showDialog(context);
   }
 
-  // //Dialog to select space that the object takes.
-  // showPickerNumber(BuildContext context) {
-  //   new Picker(
-  //       confirmText: 'Bekräfta',
-  //       cancelText: 'Avbryt',
-  //       adapter: NumberPickerAdapter(data: [
-  //         NumberPickerColumn(begin: 1, end: 15),
-  //         NumberPickerColumn(begin: 1, end: 15),
-  //       ]),
-  //       delimiter: [
-  //         PickerDelimiter(
-  //             child: Container(
-  //           width: 30.0,
-  //           alignment: Alignment.center,
-  //           child: Text('X'),
-  //         ))
-  //       ],
-  //       hideHeader: true,
-  //       title: Text("Längd X Bredd"),
-  //       onConfirm: (Picker picker, List value) {
-  //         print(value.toString());
-  //         print(picker.getSelectedValues());
-  //         setState(() {
-  //           _space = picker.getSelectedValues().first *
-  //               picker.getSelectedValues()[1];
-  //         });
-  //       }).showDialog(context);
-  // }
-
   //Confirmation dialog before adding object to database
   showAlertDialog(BuildContext context) {
     setState(() {
@@ -460,7 +431,7 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Nytt Objekt',
+                          'Nytt objekt',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         TextField(
@@ -603,7 +574,7 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            'Objektets Kategori',
+                            'Objektets kategori',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           DropdownButton<String>(

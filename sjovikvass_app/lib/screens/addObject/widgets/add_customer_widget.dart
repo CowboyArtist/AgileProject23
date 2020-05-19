@@ -4,7 +4,6 @@ import 'package:sjovikvass_app/models/customer_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
-
 //Screen for creating new Customers
 class AddCustomer extends StatefulWidget {
   @override
@@ -12,7 +11,6 @@ class AddCustomer extends StatefulWidget {
 }
 
 class _AddCustomerState extends State<AddCustomer> {
-
   bool _nameValidate = false;
   bool _isLoading = false;
 
@@ -94,9 +92,9 @@ class _AddCustomerState extends State<AddCustomer> {
 
       // set up the AlertDialog
       AlertDialog alert = AlertDialog(
-        shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
-        title: Text("Bekräfta Kund"),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        title: Text("Bekräfta kund"),
         content: Text("Vill du spara ${_name}?"),
         actions: [
           cancelButton,
@@ -137,7 +135,7 @@ class _AddCustomerState extends State<AddCustomer> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Ny Kund',
+                      'Ny kund',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextField(

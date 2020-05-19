@@ -35,13 +35,13 @@ class _AddObjectScreenState extends State<AddObjectScreen>
             indicatorColor: Colors.white,
             tabs: [
               Tab(
-                text: 'Nytt Objekt',
+                text: 'Objekt',
               ),
               Tab(
-                text: 'Ny kund',
+                text: 'Kund',
               ),
               Tab(
-                text: 'Ny Leverantör',
+                text: 'Leverantör',
               ),
             ],
           ),
