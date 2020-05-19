@@ -169,26 +169,6 @@ class _BoatImagesState extends State<BoatImages> {
     }
   }
 
-  //Creates button according to the app style for adding new images
-  _buildNewImageBtn(BuildContext context) {
-    return ButtonTheme(
-      minWidth: 30.0,
-      height: 30.0,
-      child: RaisedButton(
-        color: MyColors.lightBlue,
-        child: Icon(
-          Icons.add_a_photo,
-          color: MyColors.primary,
-        ),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16.0))),
-        padding: EdgeInsets.all(10.0),
-        onPressed: () =>
-            ImageService.showSelectImageDialog(context, _handleImage),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,20 +177,7 @@ class _BoatImagesState extends State<BoatImages> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           SizedBox(height: 30.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _buildNewImageBtn(context),
-            ],
-          ),
-          Text(
-            'Ny bild',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 11.0,
-            ),
-          ),
-          SizedBox(height: 20.0),
+
           //Fetch the stream of new images added to the database and displays it in the app UI
           StreamBuilder(
             stream: DatabaseService.getObjectImages(widget.inObjectId),
@@ -231,6 +198,29 @@ class _BoatImagesState extends State<BoatImages> {
             },
           ),
         ],
+      ),
+      bottomNavigationBar: GestureDetector(
+        onTap: () => ImageService.showSelectImageDialog(context, _handleImage),
+        child: Container(
+            margin: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 40.0),
+            padding: EdgeInsets.symmetric(vertical: 16.0),
+            height: 50.0,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                color: MyColors.primary,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(3, 3),
+                      blurRadius: 5.0)
+                ],
+                borderRadius: BorderRadius.circular(10.0)),
+            child: Center(
+                child: Text(
+              'Ny bild',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ))),
       ),
     );
   }
