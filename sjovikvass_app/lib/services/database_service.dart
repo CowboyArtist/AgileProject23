@@ -644,7 +644,8 @@ class DatabaseService {
       if (value.documents.length == 0) {
         seasonsRef.add({
           'season': season,
-          'timestamp': Timestamp.fromDate(DateTime.now())
+          'timestamp': Timestamp.fromDate(DateTime.now()),
+          'isBilled': false,
         });
       }
     });
