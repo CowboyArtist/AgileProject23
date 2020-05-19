@@ -83,6 +83,7 @@ flutter:
     - assets/images/placeholder_boat.jpg
     - assets/images/no_objects.png
     - assets/images/missing.png
+    - assets/images/missing_lev.png
     - assets/images/launcher/background.png
     - assets/images/launcher/forground.png
     - assets/images/launcher/icon.png

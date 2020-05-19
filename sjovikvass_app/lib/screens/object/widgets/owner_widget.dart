@@ -42,7 +42,7 @@ class _OwnerDetailsState extends State<OwnerDetails> {
     super.initState();
     _setupCustomerList();
     setState(() {
-      _hasOwner = widget.object.ownerId != null;
+      _hasOwner = widget.object.ownerId != null && widget.object.ownerId.isNotEmpty;
     });
   }
   //Populate the list of customer with name+id as value

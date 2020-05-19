@@ -259,7 +259,7 @@ class _SuppliersListState extends State<SuppliersList> {
                       child: MyPlaceholder(
                     title: 'Inga leverantörer',
                     subtitle: 'Klicka på "+" för att lägga till ny leverantör.',
-                    assetPath: 'assets/images/missing.png',
+                    assetPath: 'assets/images/missing_lev.png',
                   ));
                 }
 

@@ -77,7 +77,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
   }
 
   setupOwner() {
-    if (widget.object.ownerId != null) {
+    if (widget.object.ownerId != null && widget.object.ownerId.isNotEmpty) {
       Future<DocumentSnapshot> owner =
           DatabaseService.getCustomerById(widget.object.ownerId);
       setState(() {
