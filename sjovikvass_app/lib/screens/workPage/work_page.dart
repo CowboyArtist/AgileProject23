@@ -10,6 +10,7 @@ import 'package:sjovikvass_app/screens/workPage/widgets/work_order_appbar_widget
 
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/circular_indicator.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
 
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
@@ -324,6 +325,9 @@ class _WorkPageState extends State<WorkPage> {
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return Text('Hämtar data');
+                      }
+                      if (snapshot.data.documents.length == 0) {
+                        return Center(child: MyPlaceholder(icon: Icons.build, title: 'Inga arbetsordrar', subtitle: 'Lägg till nya arbetsordrar genom att klicka på "+".',));
                       }
                       return ListView.builder(
                         itemCount: snapshot.data.documents.length,

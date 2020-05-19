@@ -38,7 +38,7 @@ class ArchiveSeasonsScreen extends StatelessWidget {
 
                     if (snapshot.data.documents.length == 0) {
                       return Center(
-                        child: MyPlaceholder(title: 'Inga arkiverade objekt', subtitle: 'När du klickat i "Arkivera" för någon arbetsorder hittar du dem här.',),
+                        child: MyPlaceholder( icon: Icons.archive, title: 'Inga arkiverade objekt', subtitle: 'När du klickat i "Arkivera" för någon arbetsorder hittar du dem här.',),
                       );
                     }
 

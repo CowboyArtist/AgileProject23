@@ -8,6 +8,7 @@ import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/services/time_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:open_file/open_file.dart';
 
@@ -116,6 +117,9 @@ class _DocumentScreenState extends State<DocumentScreen> {
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData) {
                 return Text('Laddar in dokument');
+              }
+              if (snapshot.data.documents.length == 0) {
+                return Center(child: MyPlaceholder(icon: Icons.pages, title: 'Det finns inga dokument', subtitle: 'Skanna in nya datumstämplade dokument med knappen nedan.',));
               }
               return Expanded(
                 child: ListView.builder(

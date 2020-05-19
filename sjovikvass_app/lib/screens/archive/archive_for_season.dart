@@ -69,8 +69,7 @@ class ArchiveForSeason extends StatelessWidget {
                             future: DatabaseService.getCustomerById(
                                 archive.ownerId),
                             builder: (context, snapshot) {
-                              print('<----------------------' +
-                                  snapshot.data.toString());
+                            
                               if (!snapshot.hasData) {
                                 return Text('Ingen tilldelad ägare');
                               }

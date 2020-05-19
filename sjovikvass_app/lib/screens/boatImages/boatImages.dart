@@ -10,6 +10,7 @@ import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/handle_image_service.dart';
 import 'package:sjovikvass_app/services/storage_service.dart';
 import 'package:sjovikvass_app/services/time_service.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
 
@@ -176,26 +177,35 @@ class _BoatImagesState extends State<BoatImages> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          SizedBox(height: 30.0),
-
           //Fetch the stream of new images added to the database and displays it in the app UI
-          StreamBuilder(
-            stream: DatabaseService.getObjectImages(widget.inObjectId),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (!snapshot.hasData) {
-                return Text('Laddar in bilder');
-              }
-              return Expanded(
-                child: ListView.builder(
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      //Translates database documents to a BoatImageModel object.
-                      BoatImageModel image = BoatImageModel.fromDoc(
-                          snapshot.data.documents[index]);
-                      return _buildImageTile(image);
-                    }),
-              );
-            },
+          Expanded(
+            child: StreamBuilder(
+              stream: DatabaseService.getObjectImages(widget.inObjectId),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (!snapshot.hasData) {
+                  return Text('Laddar in bilder');
+                }
+                if (snapshot.data.documents.length == 0) {
+                  return Center(
+                      child: MyPlaceholder(
+                    icon: Icons.image,
+                    title: 'Det finns inga bilder',
+                    subtitle:
+                        'Lägg till nya datumstämplade bilder med knappen nedan.',
+                  ));
+                }
+                return Expanded(
+                  child: ListView.builder(
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        //Translates database documents to a BoatImageModel object.
+                        BoatImageModel image = BoatImageModel.fromDoc(
+                            snapshot.data.documents[index]);
+                        return _buildImageTile(image);
+                      }),
+                );
+              },
+            ),
           ),
         ],
       ),

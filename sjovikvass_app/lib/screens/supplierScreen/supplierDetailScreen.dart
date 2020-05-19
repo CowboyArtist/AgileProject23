@@ -3,6 +3,7 @@ import 'package:sjovikvass_app/models/contact_model.dart';
 import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 import 'package:sjovikvass_app/screens/addContact/add_contact.dart';
 import 'package:sjovikvass_app/screens/addContact/contact_tile.dart';
@@ -24,7 +25,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
       body: Column(
         children: <Widget>[
           SizedBox(height: 30.0),
-          Row(
+          widget.supplier.description.isEmpty ? SizedBox.shrink() : Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
@@ -37,18 +38,11 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                   style: TextStyle(color: Colors.grey),
                 ),
               ),
+              SizedBox(height: 15.0),
+              Divider()
             ],
           ),
-          SizedBox(height: 30.0),
-          SizedBox(height: 10.0),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.0),
-            child: Container(
-              height: 2.0,
-              width: double.infinity,
-              color: Colors.grey[200],
-            ),
-          ),
+     
           SizedBox(height: 10.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -92,6 +86,9 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                       if (!snapshot.hasData) {
                         return Text('Hämtar data');
                       }
+                      if (snapshot.data.documents.length == 0) {
+                return Center(child: MyPlaceholder(icon: Icons.people, title: 'Inga kontaktpersoner', subtitle: 'Lägg till nya kontaktpesoner med knappen ovan.',));
+              }
                       return ListView.builder(
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (BuildContext context, int index) {

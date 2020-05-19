@@ -4,6 +4,7 @@ import 'package:sjovikvass_app/models/object_note_model.dart';
 import 'package:sjovikvass_app/screens/objectNotes/widgets/note_list_tile_widget.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/detailAppBar.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
 class NotePage extends StatefulWidget {
@@ -43,6 +44,9 @@ class _NotePageState extends State<NotePage> {
                       if (!snapshot.hasData) {
                         return Text('Hämtar data');
                       }
+                      if (snapshot.data.documents.length == 0) {
+                return Center(child: MyPlaceholder(icon: Icons.note, title: 'Det finns inga Post-its', subtitle: 'Lägg till nya datumstämplade anteckningar med knappen nedan.',));
+              }
                       return ListView.builder(
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (BuildContext context, int index) {
