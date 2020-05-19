@@ -53,7 +53,7 @@ class _AddObjectWidgetState extends State<AddObjectWidget> {
   List<DropdownMenuItem<String>> _customers = [];
 
   String _selectedCustomer = '';
-  String _selectedCustomerId;
+  String _selectedCustomerId = '';
 
   @override
   void initState() {

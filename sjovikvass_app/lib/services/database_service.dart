@@ -645,7 +645,6 @@ class DatabaseService {
         seasonsRef.add({
           'season': season,
           'timestamp': Timestamp.fromDate(DateTime.now()),
-          'isBilled': false,
         });
       }
     });
@@ -662,7 +661,7 @@ class DatabaseService {
           'objectId': inObjectId,
           'billingSum': doc['billingSum'],
           'ownerId': doc['ownerId'],
-          'isBilled': doc['isBilled'],
+          'isBilled': false,
         });
         updateObject(inObjectId, 0.0, true);
       });

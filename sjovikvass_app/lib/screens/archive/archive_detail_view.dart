@@ -36,10 +36,12 @@ class ArchiveDetailView extends StatelessWidget {
         future: DatabaseService.getCustomerById(archive.ownerId),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Text('hämtar kundnamn');
+            return Text('Ingen tilldelad ägare');
+          } else if (!snapshot.data.exists) {
+            return Text('Kunden är borttagen från systemet');
+          } else {
+            return Text(snapshot.data['name']);
           }
-
-          return Text(snapshot.data['name']);
         });
   }
 
@@ -49,9 +51,17 @@ class ArchiveDetailView extends StatelessWidget {
         future: DatabaseService.getCustomerById(archive.ownerId),
         builder: (context, snapshot) {
           Customer customer;
-          if (snapshot.data != null) {
+          String name;
+          if (!snapshot.hasData) {
+            //chillax bro
+            Text('sdfds');
+          } else if (!snapshot.data.exists) {
+            name = 'Kunden är borttagen från systemet';
+          } else {
             customer = Customer.fromDoc(snapshot.data);
+            name = customer.name;
           }
+
           return Row(
             children: <Widget>[
               SizedBox(
@@ -69,15 +79,19 @@ class ArchiveDetailView extends StatelessWidget {
               ),
               _getCustomerName(),
               Spacer(),
-              _buildActionButton(
-                  Icons.phone,
-                  () => PhoneCallService.showPhoneCallDialog(
-                      context, customer.name, customer.phone)),
+              (snapshot.hasData && snapshot.data.exists)
+                  ? _buildActionButton(
+                      Icons.phone,
+                      () => PhoneCallService.showPhoneCallDialog(
+                          context, name, customer.phone))
+                  : Container(),
               SizedBox(width: 10.0),
-              _buildActionButton(
-                  Icons.mail,
-                  () => EmailService.showEmailDialog(
-                      context, customer.name, customer.email)),
+              (snapshot.hasData && snapshot.data.exists)
+                  ? _buildActionButton(
+                      Icons.mail,
+                      () => EmailService.showEmailDialog(
+                          context, name, customer.email))
+                  : Container(),
               SizedBox(
                 width: 10.0,
               ),
@@ -104,14 +118,16 @@ class ArchiveDetailView extends StatelessWidget {
             future: DatabaseService.getCustomerById(archive.ownerId),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return Text('hämtar kundnamn');
+                return Text('Ingen tilldelad ägare');
+              } else if (!snapshot.data.exists) {
+                return Text('Kunden är borttagen från systemet');
+              } else {
+                return Text(snapshot.data['address'] +
+                    ', ' +
+                    snapshot.data['postalCode'] +
+                    ' ' +
+                    snapshot.data['city']);
               }
-
-              return Text(snapshot.data['address'] +
-                  ', ' +
-                  snapshot.data['postalCode'] +
-                  ' ' +
-                  snapshot.data['city']);
             }),
       ],
     );
