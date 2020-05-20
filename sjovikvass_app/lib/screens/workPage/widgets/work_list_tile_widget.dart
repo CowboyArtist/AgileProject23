@@ -123,238 +123,261 @@ class _WorkListTileState extends State<WorkListTile>
                   valueListenable: _extraheight,
                   builder:
                       (BuildContext context, double extraheight, Widget child) {
-                    return Container(
-                      height: resized
-                          ? _height.value + extraheight + 90.0
-                          : _height.value,
-                      margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 10.0),
-                      decoration: BoxDecoration(
-                        color: widget.workOrder.isDone
-                            ? Colors.lightGreen[200]
-                            : Colors.black12,
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          ListTile(
-                            leading: GestureDetector(
-                              onTap: () {
-                                widget.workOrder.isDone
-                                    /*This setState sets the done button to not done and subtracts the cost of this work order
-                                    from the total price*/
-                                    ? setState(() {
-                                        widget.workOrder.isDone =
-                                            !widget.workOrder.isDone;
-                                        _isDone.value = !_isDone.value;
-                                        DatabaseService.updateObject(
-                                            widget.inObjectId,
-                                            -widget.workOrder.sum,
-                                            false);
-                                        widget.valueNotifier.value--;
-                                        DatabaseService.updateWorkOrder(
-                                            widget.inObjectId,
-                                            widget.workOrder);
-                                        _setupNrMaterials();
-                                      })
-                                    //Makes the pop-up PriceDialog appear.
-                                    : showDialog(
-                                        context: context,
-                                        builder: (context) => PriceDialog(
-                                              inObjectId: widget.inObjectId,
-                                              workOrder: widget.workOrder,
-                                              valueNotifier:
-                                                  widget.valueNotifier,
-                                              isDone: _isDone,
-                                              height: _height,
-                                            ));
-                              },
-                              child: AnimatedContainer(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  color: widget.workOrder.isDone
-                                      ? Colors.green
-                                      : Colors.black12,
+                    return Slidable(
+                      actionPane: SlidableDrawerActionPane(),
+                      actionExtentRatio: 0.25,
+                      secondaryActions: <Widget>[
+                        IconSlideAction(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            foregroundColor: Colors.red,
+                            caption: 'Radera Objekt',
+                            icon: Icons.delete,
+                            onTap: () => _showDeleteAlertDialog(context))
+                      ],
+                      child: Container(
+                        height: resized
+                            ? _height.value + extraheight + 90.0
+                            : _height.value,
+                        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 10.0),
+                        decoration: BoxDecoration(
+                          color: widget.workOrder.isDone
+                              ? Colors.lightGreen[200]
+                              : Colors.black12,
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(
+                              leading: GestureDetector(
+                                onTap: () {
+                                  widget.workOrder.isDone
+                                      /*This setState sets the done button to not done and subtracts the cost of this work order
+                                      from the total price*/
+                                      ? setState(() {
+                                          widget.workOrder.isDone =
+                                              !widget.workOrder.isDone;
+                                          _isDone.value = !_isDone.value;
+                                          DatabaseService.updateObject(
+                                              widget.inObjectId,
+                                              -widget.workOrder.sum,
+                                              false);
+                                          widget.valueNotifier.value--;
+                                          DatabaseService.updateWorkOrder(
+                                              widget.inObjectId,
+                                              widget.workOrder);
+                                          _setupNrMaterials();
+                                        })
+                                      //Makes the pop-up PriceDialog appear.
+                                      : showDialog(
+                                          context: context,
+                                          builder: (context) => PriceDialog(
+                                                inObjectId: widget.inObjectId,
+                                                workOrder: widget.workOrder,
+                                                valueNotifier:
+                                                    widget.valueNotifier,
+                                                isDone: _isDone,
+                                                height: _height,
+                                              ));
+                                },
+                                child: AnimatedContainer(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    color: widget.workOrder.isDone
+                                        ? Colors.green
+                                        : Colors.black12,
+                                  ),
+                                  height: 20.0,
+                                  width: 20.0,
+                                  duration: Duration(milliseconds: 150),
+                                  curve: Curves.linear,
                                 ),
-                                height: 20.0,
-                                width: 20.0,
-                                duration: Duration(milliseconds: 150),
-                                curve: Curves.linear,
+                              ),
+                              title: Text(
+                                widget.workOrder.title,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              trailing: Text(
+                                widget.workOrder.sum.toStringAsFixed(1) + ' kr',
+                                style: TextStyle(fontSize: 16.0),
                               ),
                             ),
-                            title: Text(
-                              widget.workOrder.title,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            trailing: Text(
-                              widget.workOrder.sum.toStringAsFixed(1) + ' kr',
-                              style: TextStyle(fontSize: 16.0),
-                            ),
-                          ),
-                          // This part builds the ListView if the work order is expanded.
-                          resized
-                              ? Expanded(
-                                  child: StreamBuilder(
-                                      stream:
-                                          DatabaseService.getWorkOrderMaterials(
-                                              widget.workOrder.id),
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return Text(' ');
-                                        }
+                            // This part builds the ListView if the work order is expanded.
+                            resized
+                                ? Expanded(
+                                    child: StreamBuilder(
+                                        stream: DatabaseService
+                                            .getWorkOrderMaterials(
+                                                widget.workOrder.id),
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData) {
+                                            return Text(' ');
+                                          }
 
-                                        return ListView.builder(
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          itemCount:
-                                              snapshot.data.documents.length,
-                                          itemBuilder: (context, index) {
-                                            WorkOrderMaterial
-                                                workOrderMaterial =
-                                                WorkOrderMaterial.fromDoc(
-                                                    snapshot
-                                                        .data.documents[index]);
-                                            _extraheight.value = (snapshot
-                                                    .data.documents.length *
-                                                40.0);
+                                          return ListView.builder(
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            itemCount:
+                                                snapshot.data.documents.length,
+                                            itemBuilder: (context, index) {
+                                              WorkOrderMaterial
+                                                  workOrderMaterial =
+                                                  WorkOrderMaterial.fromDoc(
+                                                      snapshot.data
+                                                          .documents[index]);
+                                              _extraheight.value = (snapshot
+                                                      .data.documents.length *
+                                                  40.0);
 
-                                            return MaterialListTile(
-                                              workOrderMaterial:
-                                                  workOrderMaterial,
-                                              inWorkOrderId:
-                                                  widget.workOrder.id,
-                                              inObjectId: widget.inObjectId,
-                                              parentIsDone: _isDone,
-                                            );
-                                          },
-                                        );
-                                      }),
-                                )
-                              : SizedBox.shrink(),
-                          /*The boxes for the "Nytt material" section which will only pop up when the
-                              workorder is not done */
-                          (_resized.value && !widget.workOrder.isDone)
-                              ? Padding(
-                                  padding: EdgeInsets.fromLTRB(16, 0, 16, 20),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Container(
+                                              return MaterialListTile(
+                                                workOrderMaterial:
+                                                    workOrderMaterial,
+                                                inWorkOrderId:
+                                                    widget.workOrder.id,
+                                                inObjectId: widget.inObjectId,
+                                                parentIsDone: _isDone,
+                                              );
+                                            },
+                                          );
+                                        }),
+                                  )
+                                : SizedBox.shrink(),
+                            /*The boxes for the "Nytt material" section which will only pop up when the
+                                workorder is not done */
+                            (_resized.value && !widget.workOrder.isDone)
+                                ? Padding(
+                                    padding: EdgeInsets.fromLTRB(16, 0, 16, 20),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Container(
+                                            padding:
+                                                EdgeInsets.only(left: 10.0),
+                                            height: 40,
+                                            decoration:
+                                                _decorateNewMaterialContainer(),
+                                            child: TextField(
+                                              controller: materialController,
+                                              textCapitalization:
+                                                  TextCapitalization.sentences,
+                                              maxLength: 20,
+                                              decoration: InputDecoration(
+                                                  hintText: 'Nytt material',
+                                                  border: InputBorder.none,
+                                                  counterText: ""),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5.0,
+                                        ),
+                                        Container(
                                           padding: EdgeInsets.only(left: 10.0),
+                                          width: 70,
                                           height: 40,
                                           decoration:
                                               _decorateNewMaterialContainer(),
                                           child: TextField(
-                                            controller: materialController,
-                                            textCapitalization: TextCapitalization.sentences,
+                                            controller: amountController,
+                                            keyboardType: TextInputType.number,
                                             decoration: InputDecoration(
-                                              hintText: 'Nytt material',
+                                              hintText: '1',
                                               border: InputBorder.none,
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: 5.0,
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.only(left: 10.0),
-                                        width: 70,
-                                        height: 40,
-                                        decoration:
-                                            _decorateNewMaterialContainer(),
-                                        child: TextField(
-                                          controller: amountController,
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                            hintText: '1',
-                                            border: InputBorder.none,
-                                          ),
+                                        SizedBox(
+                                          width: 5.0,
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: 5.0,
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.only(left: 10.0),
-                                        width: 70,
-                                        height: 40,
-                                        decoration:
-                                            _decorateNewMaterialContainer(),
-                                        child: TextField(
-                                          controller: costController,
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                            hintText: 'kr/st',
-                                            border: InputBorder.none,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 5.0,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          double _totalMaterialCost =
-                                              amountController.text.isEmpty
-                                                  ? double.parse(
-                                                      costController.text)
-                                                  : (double.parse(
-                                                          costController.text) *
-                                                      double.parse(
-                                                          amountController
-                                                              .text));
-                                          DatabaseService
-                                              .addMaterialToWorkOrder(
-                                            widget.workOrder.id,
-                                            WorkOrderMaterial(
-                                              title: materialController.text,
-                                              amount: amountController
-                                                      .text.isEmpty
-                                                  ? 1.0
-                                                  : double.parse(
-                                                      amountController.text),
-                                              cost: double.parse(
-                                                  costController.text),
+                                        Container(
+                                          padding: EdgeInsets.only(left: 10.0),
+                                          width: 70,
+                                          height: 40,
+                                          decoration:
+                                              _decorateNewMaterialContainer(),
+                                          child: TextField(
+                                            controller: costController,
+                                            keyboardType: TextInputType.number,
+                                            decoration: InputDecoration(
+                                              hintText: 'kr/st',
+                                              border: InputBorder.none,
                                             ),
-                                          );
-
-                                          DatabaseService.updateWorkOrder(
-                                            widget.inObjectId,
-                                            WorkOrder(
-                                                id: widget.workOrder.id,
-                                                title: widget.workOrder.title,
-                                                isDone: widget.workOrder.isDone,
-                                                sum: widget.workOrder.sum +=
-                                                    _totalMaterialCost),
-                                          );
-                                          setState(() {
-                                            widget.workOrder.sum +=
-                                                _totalMaterialCost;
-                                          });
-                                          _setupNrMaterials();
-                                          materialController.clear();
-                                          amountController.clear();
-                                          costController.clear();
-                                        },
-                                        child: Container(
-                                          height: 30,
-                                          width: 30,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(7.0),
-                                            color: MyColors.primary,
-                                          ),
-                                          child: Icon(
-                                            Icons.add,
-                                            color: Colors.white,
                                           ),
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              : SizedBox.shrink(),
-                        ],
+                                        SizedBox(
+                                          width: 5.0,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            FocusScopeNode currentFocus =
+                                                FocusScope.of(context);
+
+                                            if (!currentFocus.hasPrimaryFocus) {
+                                              currentFocus.unfocus();
+                                            }
+                                            double _totalMaterialCost =
+                                                amountController.text.isEmpty
+                                                    ? double.parse(
+                                                        costController.text)
+                                                    : (double.parse(
+                                                            costController
+                                                                .text) *
+                                                        double.parse(
+                                                            amountController
+                                                                .text));
+                                            DatabaseService
+                                                .addMaterialToWorkOrder(
+                                              widget.workOrder.id,
+                                              WorkOrderMaterial(
+                                                title: materialController.text,
+                                                amount: amountController
+                                                        .text.isEmpty
+                                                    ? 1.0
+                                                    : double.parse(
+                                                        amountController.text),
+                                                cost: double.parse(
+                                                    costController.text),
+                                              ),
+                                            );
+
+                                            DatabaseService.updateWorkOrder(
+                                              widget.inObjectId,
+                                              WorkOrder(
+                                                  id: widget.workOrder.id,
+                                                  title: widget.workOrder.title,
+                                                  isDone:
+                                                      widget.workOrder.isDone,
+                                                  sum: widget.workOrder.sum +=
+                                                      _totalMaterialCost),
+                                            );
+                                            setState(() {
+                                              widget.workOrder.sum +=
+                                                  _totalMaterialCost;
+                                            });
+                                            _setupNrMaterials();
+                                            materialController.clear();
+                                            amountController.clear();
+                                            costController.clear();
+                                          },
+                                          child: Container(
+                                            height: 30,
+                                            width: 30,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(7.0),
+                                              color: MyColors.primary,
+                                            ),
+                                            child: Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                : SizedBox.shrink(),
+                          ],
+                        ),
                       ),
                     );
                   });

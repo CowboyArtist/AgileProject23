@@ -10,6 +10,7 @@ import 'package:sjovikvass_app/screens/workPage/widgets/work_order_appbar_widget
 
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/circular_indicator.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_button.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
 
 import 'package:sjovikvass_app/styles/my_colors.dart';
@@ -230,7 +231,7 @@ class _WorkPageState extends State<WorkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: WorkOrderAppBar.buildAppBar('Arbete', context, widget.inObjectId),
       body: Column(
         children: <Widget>[
@@ -240,29 +241,14 @@ class _WorkPageState extends State<WorkPage> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 25.0),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 6.0,
-                            offset: Offset(3, 3),
-                            color: Colors.black26)
-                      ],
-                      color: MyColors.lightBlue,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: IconButton(
-                      iconSize: 30.0,
-                      color: MyColors.primary,
-                      icon: Icon(Icons.add),
-                      onPressed: () => _createWorkOrderDialog(context),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Text('Ny'),
+               
+                     MyLightBlueButton(
+                      icon: Icons.add,
+                      label: 'Ny',
+                      onTap: () {
+                        _createWorkOrderDialog(context);
+                      } 
+                    ), 
                 ],
               ),
               //Listens to changes of _counterTotal and rebuilds child widget
@@ -327,7 +313,13 @@ class _WorkPageState extends State<WorkPage> {
                         return Text('Hämtar data');
                       }
                       if (snapshot.data.documents.length == 0) {
-                        return Center(child: MyPlaceholder(icon: Icons.build, title: 'Inga arbetsordrar', subtitle: 'Lägg till nya arbetsordrar genom att klicka på "+".',));
+                        return Center(
+                            child: MyPlaceholder(
+                          icon: Icons.build,
+                          title: 'Inga arbetsordrar',
+                          subtitle:
+                              'Lägg till nya arbetsordrar genom att klicka på "+".',
+                        ));
                       }
                       return ListView.builder(
                         itemCount: snapshot.data.documents.length,
@@ -363,7 +355,8 @@ class _WorkPageState extends State<WorkPage> {
                       }
                       StoredObject storedObject =
                           StoredObject.fromDoc(snapshot.data);
-                      return Text(storedObject.billingSum.toString() + ' kr');
+                      return Text(
+                          storedObject.billingSum.toStringAsFixed(1) + ' kr');
                     },
                   ),
                 ),

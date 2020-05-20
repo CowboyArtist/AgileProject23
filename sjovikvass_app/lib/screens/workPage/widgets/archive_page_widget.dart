@@ -91,8 +91,7 @@ class _ArchivePageState extends State<ArchivePage> {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 trailing: Text(workOrder.sum
-                                        .truncateToDouble()
-                                        .toString() +
+                                        .toStringAsFixed(1) +
                                     ' kr'),
                                 children: <Widget>[
                                   StreamBuilder(
@@ -136,9 +135,8 @@ class _ArchivePageState extends State<ArchivePage> {
                                                         .amount
                                                         .toStringAsFixed(1)),
                                                     Spacer(),
-                                                    Text(workOrderMaterial.cost
-                                                            .truncateToDouble()
-                                                            .toString() +
+                                                    Text((workOrderMaterial.cost).toStringAsFixed(1)
+                                                      +
                                                         ' kr'),
                                                     SizedBox(width: 15.0),
                                                   ],
@@ -174,7 +172,7 @@ class _ArchivePageState extends State<ArchivePage> {
           SizedBox(height: 15.0),
 
           Text(
-            'Totalkostnad: ' + totalBillingSum.toString() + 'kr',
+            'Totalkostnad: ' + totalBillingSum.toStringAsFixed(1) + 'kr',
             style: TextStyle(fontSize: 20.0),
           ),
 

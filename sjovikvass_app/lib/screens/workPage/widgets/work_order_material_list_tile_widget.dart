@@ -35,6 +35,13 @@ class MaterialListTile extends StatelessWidget {
                         ? SizedBox.shrink()
                         : IconButton(
                             onPressed: () {
+                              FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
+
+                              if (!currentFocus.hasPrimaryFocus) {
+                                currentFocus.unfocus();
+                              }
+
                               /*The total price for the cost of the material calculating the amount 
                     of objects times the price for one*/
                               double _totalMaterialCost =

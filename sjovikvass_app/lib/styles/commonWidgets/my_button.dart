@@ -47,7 +47,7 @@ class MyLightBlueButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(16.0))),
             padding: EdgeInsets.all(10.0),
-            onPressed: () => onTap,
+            onPressed: onTap,
           ),
         ),
         Text(label),
