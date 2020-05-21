@@ -84,16 +84,16 @@ class _ContactTileState extends State<ContactTile> {
                         () {
                           // check if the contact isnt already the main contact.
                           // if it isnt already then we update it
-                          if (widget.supplierMainContact != widget.contact.id) {
-                            DatabaseService.updateContactIsMainContact(
-                                widget.inSupplierId, widget.contact.id);
+                          //if (widget.supplierMainContact != widget.contact.id) {
+                          DatabaseService.updateContactIsMainContact(
+                              widget.inSupplierId, widget.contact.id);
 
-                            //update the main contact variable in the supplier
-                            if (value == true) {
-                              DatabaseService.updateSupplierMainContact(
-                                  widget.inSupplierId, widget.contact.id);
-                            }
+                          //update the main contact variable in the supplier
+                          if (value == true) {
+                            DatabaseService.updateSupplierMainContact(
+                                widget.inSupplierId, widget.contact.id);
                           }
+                          //}
                         },
                       );
                     },
