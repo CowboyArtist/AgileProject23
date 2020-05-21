@@ -193,15 +193,6 @@ class _ContactTileState extends State<ContactTile> {
                 ),
               ),
             ),
-            Positioned(
-              bottom: 5.0,
-              right: 15.0,
-              child: IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () => print('Edit a Contact'),
-                color: Colors.grey,
-              ),
-            ),
           ],
         ),
       ),
