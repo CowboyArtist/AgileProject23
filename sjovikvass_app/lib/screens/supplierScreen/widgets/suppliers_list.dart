@@ -93,215 +93,101 @@ class _SuppliersListState extends State<SuppliersList> {
               onTap: () => _showDeleteAlertDialog(context, supplier)),
         ],
         child: Container(
-            margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-            height: 140.0,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6.0, // has the effect of softening the shadow
-                  spreadRadius: 2.0, // has the effect of extending the shadow
-                  offset: Offset(
-                    3.0, // horizontal, move right 10
-                    3.0, // vertical, move down 10
-                  ),
-                )
-              ],
-            ),
-            child: FutureBuilder(
-                future: DatabaseService.getContactById(
-                    supplier.mainContact, supplier.id),
-                builder: (context, snapshot) {
-                  ContactModel contact;
-                  if (snapshot.data != null) {
-                    contact = ContactModel.fromDoc(snapshot.data);
-                  }
-                  return Column(
+          margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+          height: 140.0,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 6.0, // has the effect of softening the shadow
+                spreadRadius: 2.0, // has the effect of extending the shadow
+                offset: Offset(
+                  3.0, // horizontal, move right 10
+                  3.0, // vertical, move down 10
+                ),
+              )
+            ],
+          ),
+          child: FutureBuilder(
+            future: DatabaseService.getContactById(
+                supplier.mainContact, supplier.id),
+            builder: (context, snapshot) {
+              ContactModel contact;
+              if (snapshot.data != null) {
+                contact = ContactModel.fromDoc(snapshot.data);
+              }
+              return Column(
+                children: <Widget>[
+                  Row(
                     children: <Widget>[
-                      SizedBox(height: 10),
-                      Row(
-                        children: <Widget>[
-                          SizedBox(width: 15),
-                          Container(
-                            width: 300.0,
-                            child: Text(
-                              supplier.companyName,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                            ),
-                          ),
-                          Spacer(),
-                          SizedBox(width: 17),
-                        ],
-                      ),
-                      SizedBox(width: 50),
-                      Row(
-                        children: <Widget>[
-                          SizedBox(width: 15),
-                          MyLightBlueButton(
-                              icon: Icons.phone,
-                              label: 'Ring',
-                              onTap: () => PhoneCallService.showPhoneCallDialog(
-                                  context,
-                                  contact != null
-                                      ? supplier.companyName +
-                                          "'s kontaktperson " +
-                                          contact.name
-                                      : _showErrorMessage(),
-                                  contact.phoneNumber)),
-                          SizedBox(width: 20),
-                          MyLightBlueButton(
-                              icon: Icons.mail,
-                              label: 'Maila',
-                              onTap: () => EmailService.showEmailDialog(
-                                    context,
-                                    contact != null
-                                        ? supplier.companyName +
-                                            "'s kontaktperson " +
-                                            contact.name
-                                        : _showErrorMessage(),
-                                    contact.email,
-                                  )),
-                          SizedBox(width: 15),
-                          Container(
-                              padding: EdgeInsets.all(5),
-                              height: 90,
-                              width: 220,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    supplier.description,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: 15),
-                                    maxLines: 4,
-                                  ),
-                                ],
-                              ))
-                        ],
-                      ),
-                    ],
-                  )
-
-                      /*Stack(
-                    children: <Widget>[
-                      Positioned(
-                        left: 16.0,
-                        top: 16.0,
-                        child: Container(
-                          width: 350.0,
-                          child: Text(
-                            supplier.companyName,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                          ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(15.0, 15.0, 0, 0),
+                        width: 300.0,
+                        child: Text(
+                          supplier.companyName,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
                         ),
                       ),
-                      Positioned(
-                        left: 130.0,
-                        top: 40.0,
-                        child: Container(
-                          height: 100,
-                          width: 250.0,
-                          color: Colors.white,
-                          padding: EdgeInsets.all(20.0),
+                    ],
+                  ),
+                  SizedBox(height: 15.0),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 15.0),
+                      MyLightBlueButton(
+                          icon: Icons.phone,
+                          label: 'Ring',
+                          onTap: () => PhoneCallService.showPhoneCallDialog(
+                              context,
+                              contact != null
+                                  ? supplier.companyName +
+                                      "'s kontaktperson " +
+                                      contact.name
+                                  : _showErrorMessage(),
+                              contact.phoneNumber)),
+                      SizedBox(width: 20),
+                      MyLightBlueButton(
+                        icon: Icons.mail,
+                        label: 'Maila',
+                        onTap: () => EmailService.showEmailDialog(
+                          context,
+                          contact != null
+                              ? supplier.companyName +
+                                  "'s kontaktperson " +
+                                  contact.name
+                              : _showErrorMessage(),
+                          contact.email,
+                        ),
+                      ),
+                      SizedBox(width: 15),
+                      Container(
+                          padding: EdgeInsets.all(5),
+                          height: 70,
+                          width: 220,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
                                 supplier.description,
                                 overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 15),
                                 maxLines: 3,
                               ),
                             ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 16.0,
-                        bottom: 32.0,
-                        child: ButtonTheme(
-                          minWidth: 30.0,
-                          height: 30.0,
-                          child: RaisedButton(
-                            color: MyColors.lightBlue,
-                            child: Icon(
-                              Icons.phone,
-                              color: MyColors.primary,
-                            ),
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16.0))),
-                            padding: EdgeInsets.all(10.0),
-                            onPressed: () =>
-                                PhoneCallService.showPhoneCallDialog(
-                              context,
-                              contact != null
-                                  ? supplier.companyName +
-                                      "'s kontaktperson " +
-                                      contact.name
-                                  : _showErrorMessage(),
-                              contact.phoneNumber,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 80.0,
-                        bottom: 32.0,
-                        child: ButtonTheme(
-                          minWidth: 30.0,
-                          height: 30.0,
-                          child: RaisedButton(
-                            color: MyColors.lightBlue,
-                            child: Icon(
-                              Icons.mail,
-                              color: MyColors.primary,
-                            ),
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16.0))),
-                            padding: EdgeInsets.all(10.0),
-                            onPressed: () => EmailService.showEmailDialog(
-                              context,
-                              contact != null
-                                  ? supplier.companyName +
-                                      "'s kontaktperson " +
-                                      contact.name
-                                  : _showErrorMessage(),
-                              contact.email,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 24.0,
-                        bottom: 10.0,
-                        child: Text(
-                          'Ring',
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                        ),
-                      ),
-                      Positioned(
-                        left: 85.0,
-                        bottom: 10.0,
-                        child: Text(
-                          'Maila',
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                        ),
-                      ),
+                          ))
                     ],
-                  )*/
-                      ;
-                })),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }

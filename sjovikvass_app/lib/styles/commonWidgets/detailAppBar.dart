@@ -8,7 +8,9 @@ class DetailAppBar {
       leading: Padding(
         padding: EdgeInsets.only(left: 5.0),
         child: InkResponse(
-          onTap: () => Navigator.pop(context),
+          onTap: () {
+            Navigator.pop(context);
+          },
           child: Icon(
             Icons.arrow_back_ios,
             size: 20.0,
