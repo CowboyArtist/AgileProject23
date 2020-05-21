@@ -6,6 +6,7 @@ import 'package:sjovikvass_app/models/supplier_model.dart';
 import 'package:sjovikvass_app/services/database_service.dart';
 import 'package:sjovikvass_app/services/email_service.dart';
 import 'package:sjovikvass_app/services/phoneCall_service.dart';
+import 'package:sjovikvass_app/styles/commonWidgets/my_button.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
@@ -117,7 +118,77 @@ class _SuppliersListState extends State<SuppliersList> {
                   if (snapshot.data != null) {
                     contact = ContactModel.fromDoc(snapshot.data);
                   }
-                  return Stack(
+                  return Column(
+                    children: <Widget>[
+                      SizedBox(height: 10),
+                      Row(
+                        children: <Widget>[
+                          SizedBox(width: 15),
+                          Container(
+                            width: 300.0,
+                            child: Text(
+                              supplier.companyName,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                          ),
+                          Spacer(),
+                          SizedBox(width: 17),
+                        ],
+                      ),
+                      SizedBox(width: 50),
+                      Row(
+                        children: <Widget>[
+                          SizedBox(width: 15),
+                          MyLightBlueButton(
+                              icon: Icons.phone,
+                              label: 'Ring',
+                              onTap: () => PhoneCallService.showPhoneCallDialog(
+                                  context,
+                                  contact != null
+                                      ? supplier.companyName +
+                                          "'s kontaktperson " +
+                                          contact.name
+                                      : _showErrorMessage(),
+                                  contact.phoneNumber)),
+                          SizedBox(width: 20),
+                          MyLightBlueButton(
+                              icon: Icons.mail,
+                              label: 'Maila',
+                              onTap: () => EmailService.showEmailDialog(
+                                    context,
+                                    contact != null
+                                        ? supplier.companyName +
+                                            "'s kontaktperson " +
+                                            contact.name
+                                        : _showErrorMessage(),
+                                    contact.email,
+                                  )),
+                          SizedBox(width: 15),
+                          Container(
+                              padding: EdgeInsets.all(5),
+                              height: 90,
+                              width: 220,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    supplier.description,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 15),
+                                    maxLines: 4,
+                                  ),
+                                ],
+                              ))
+                        ],
+                      ),
+                    ],
+                  )
+
+                      /*Stack(
                     children: <Widget>[
                       Positioned(
                         left: 16.0,
@@ -228,7 +299,8 @@ class _SuppliersListState extends State<SuppliersList> {
                         ),
                       ),
                     ],
-                  );
+                  )*/
+                      ;
                 })),
       ),
     );
