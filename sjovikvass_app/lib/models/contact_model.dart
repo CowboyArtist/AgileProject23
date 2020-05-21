@@ -6,18 +6,14 @@ class ContactModel {
   final String name;
   final String phoneNumber;
   final String email;
-  final String description;
   bool isMainContact;
-  // final Supplier supplier;
 
   ContactModel({
     this.id,
     this.name,
     this.phoneNumber,
     this.email,
-    this.description,
     this.isMainContact,
-    //   this.supplier list of contacts in supplier?
   });
 
 //Method to create an ContactModel from database document
@@ -27,9 +23,7 @@ class ContactModel {
       name: doc['name'],
       phoneNumber: doc['phoneNumber'],
       email: doc['email'],
-      description: doc['description'],
       isMainContact: doc['isMainContact'],
-      //supplier: doc['supplier']
     );
   }
 }

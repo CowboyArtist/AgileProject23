@@ -21,12 +21,6 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
       TextEditingController();
   String _supplierDescription = '';
 
-  TextEditingController _supplierPhoneController = TextEditingController();
-  String _supplierPhone = '';
-
-  TextEditingController _supplierEmailController = TextEditingController();
-  String _supplierEmail = '';
-
   _submitStoredSupplier() async {
     if (!_supplierIsLoading && _supplierName.isNotEmpty) {
       setState(() {
@@ -40,16 +34,12 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
 
       _supplierNameController.clear();
       _supplierDescriptionController.clear();
-      _supplierPhoneController.clear();
-      _supplierEmailController.clear();
 
       DatabaseService.addSupplierToDB(storedSupplier);
 
       setState(() {
         _supplierName = '';
         _supplierDescription = '';
-        _supplierPhone = '';
-        _supplierEmail = '';
       });
       Navigator.of(context).pop();
     }
@@ -104,45 +94,6 @@ class _AddSupplierWidgetState extends State<AddSupplierWidget> {
               ),
             ),
             SizedBox(height: 16.0),
-            Container(
-                padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 32.0),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(3, 3),
-                          blurRadius: 5.0)
-                    ],
-                    borderRadius: BorderRadius.circular(10.0)),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Primär kontakt',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      TextField(
-                        controller: _supplierPhoneController,
-                        textCapitalization: TextCapitalization.sentences,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelStyle: TextStyle(fontSize: 15.0),
-                          labelText: 'Telefon',
-                        ),
-                        onChanged: (input) => _supplierPhone = input,
-                      ),
-                      TextField(
-                        maxLines: null,
-                        controller: _supplierEmailController,
-                        textCapitalization: TextCapitalization.sentences,
-                        decoration: InputDecoration(
-                          labelStyle: TextStyle(fontSize: 15.0),
-                          labelText: 'Email',
-                        ),
-                        onChanged: (input) => _supplierEmail = input,
-                      ),
-                    ])),
           ],
         ),
       ),

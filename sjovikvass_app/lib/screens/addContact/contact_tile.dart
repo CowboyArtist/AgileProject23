@@ -83,24 +83,6 @@ class _ContactTileState extends State<ContactTile> {
               ),
             ),
             Positioned(
-              right: 40.0,
-              top: 40.0,
-              child: Container(
-                height: 120,
-                width: 220.0,
-                padding: EdgeInsets.all(20.0),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      widget.contact.description,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 4,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
               left: 16.0,
               bottom: 32.0,
               child: ButtonTheme(

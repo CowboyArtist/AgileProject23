@@ -550,13 +550,13 @@ class DatabaseService {
   }
 
   static Future<DocumentSnapshot> getCustomerById(String customerId) {
-    print(customerId + '<-----------------------------------------------------------------');
+    print(customerId +
+        '<-----------------------------------------------------------------');
     Future<DocumentSnapshot> customerSnap;
     if (customerId.isNotEmpty) {
-      customerSnap  =
-        customerRef.document(customerId).get();
+      customerSnap = customerRef.document(customerId).get();
     }
-    
+
     return customerSnap;
   }
 
@@ -569,7 +569,6 @@ class DatabaseService {
         .document(contactModel.id)
         .updateData({
       'name': contactModel.name,
-      'descripion': contactModel.description,
       'phoneNumber': contactModel.phoneNumber,
       'email': contactModel.email,
       'isMainContact': contactModel.isMainContact,
@@ -609,7 +608,6 @@ class DatabaseService {
   static void addContactToSupplier(ContactModel contact, String inSupplierId) {
     contactsRef.document(inSupplierId).collection('hasContacts').add({
       'name': contact.name,
-      'description': contact.description,
       'phoneNumber': contact.phoneNumber,
       'email': contact.email,
       'isMainContact': contact.isMainContact,

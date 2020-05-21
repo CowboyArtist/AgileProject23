@@ -27,9 +27,6 @@ class _AddContactState extends State<AddContact> {
   TextEditingController _contactNameController = TextEditingController();
   String _contactName = '';
 
-  TextEditingController _contactDescriptionController = TextEditingController();
-  String _contactDescription = '';
-
   TextEditingController _contactPhoneController = TextEditingController();
   String _contactPhone = '';
 
@@ -51,14 +48,12 @@ class _AddContactState extends State<AddContact> {
 
       ContactModel storedContact = ContactModel(
         name: _contactName,
-        description: _contactDescription,
         phoneNumber: _contactPhone,
         email: _contactEmail,
         isMainContact: false,
       );
 
       _contactNameController.clear();
-      _contactDescriptionController.clear();
       _contactPhoneController.clear();
       _contactEmailController.clear();
 
@@ -66,7 +61,6 @@ class _AddContactState extends State<AddContact> {
 
       setState(() {
         _contactName = '';
-        _contactDescription = '';
         _contactPhone = '';
         _contactEmail = '';
       });
@@ -106,16 +100,6 @@ class _AddContactState extends State<AddContact> {
                     onChanged: (input) => _contactName = input,
                   ),
                   TextField(
-                    maxLines: null,
-                    controller: _contactDescriptionController,
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                      labelStyle: TextStyle(fontSize: 15.0),
-                      labelText: 'Beskrivning',
-                    ),
-                    onChanged: (input) => _contactDescription = input,
-                  ),
-                  TextField(
                     controller: _contactPhoneController,
                     textCapitalization: TextCapitalization.sentences,
                     keyboardType: TextInputType.number,
@@ -129,7 +113,6 @@ class _AddContactState extends State<AddContact> {
                     maxLines: null,
                     controller: _contactEmailController,
                     keyboardType: TextInputType.emailAddress,
-
                     decoration: InputDecoration(
                       labelStyle: TextStyle(fontSize: 15.0),
                       labelText: 'Email',
