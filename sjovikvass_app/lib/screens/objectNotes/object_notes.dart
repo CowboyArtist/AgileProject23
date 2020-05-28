@@ -19,15 +19,6 @@ class NotePage extends StatefulWidget {
 }
 
 class _NotePageState extends State<NotePage> {
-  _setupObjectNotes() async {
-    int totalNotes = await DatabaseService.getAllObjectNotes(widget.inObjectId);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _setupObjectNotes();
-  }
 
   @override
   Widget build(BuildContext context) {

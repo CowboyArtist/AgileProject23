@@ -3,6 +3,7 @@ import 'package:sjovikvass_app/screens/archive/archive_for_season.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
 import 'package:sjovikvass_app/utils/constants.dart';
 
+//Page three of mai navigation. Displays all seasons that has an archive.
 class ArchiveSeasonsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

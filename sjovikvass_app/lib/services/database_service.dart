@@ -454,7 +454,6 @@ class DatabaseService {
     suppliersRef.document(supplierId).get().then((value) {
       if (value.exists) {
         value.reference.delete();
-        //TODO Cascade function to remove contactperons aswell.
       }
     });
   }

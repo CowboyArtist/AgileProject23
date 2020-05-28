@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sjovikvass_app/styles/my_colors.dart';
 
+//Custom dialog for the app.
 class MyDialog extends StatelessWidget {
   final Function onPressed;
   final String title;

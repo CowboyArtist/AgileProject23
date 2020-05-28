@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../my_colors.dart';
 
+
+//Custom button for the small blue button
 class MyButton extends StatelessWidget {
   final IconData icon;
   final GestureTapCallback onTap;
@@ -25,6 +27,7 @@ class MyButton extends StatelessWidget {
   }
 }
 
+//Custom button for bigger light blue button.
 class MyLightBlueButton extends StatelessWidget {
   final IconData icon;
   final String label;
