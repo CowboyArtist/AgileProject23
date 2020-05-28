@@ -8,7 +8,6 @@ import 'package:sjovikvass_app/services/email_service.dart';
 import 'package:sjovikvass_app/services/phoneCall_service.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/my_button.dart';
 import 'package:sjovikvass_app/styles/commonWidgets/my_placeholder.dart';
-import 'package:sjovikvass_app/styles/my_colors.dart';
 
 import '../supplierDetailScreen.dart';
 
@@ -101,11 +100,11 @@ class _SuppliersListState extends State<SuppliersList> {
             boxShadow: [
               BoxShadow(
                 color: Colors.black12,
-                blurRadius: 6.0, // has the effect of softening the shadow
-                spreadRadius: 2.0, // has the effect of extending the shadow
+                blurRadius: 6.0,
+                spreadRadius: 2.0,
                 offset: Offset(
-                  3.0, // horizontal, move right 10
-                  3.0, // vertical, move down 10
+                  3.0,
+                  3.0,
                 ),
               )
             ],
@@ -166,21 +165,14 @@ class _SuppliersListState extends State<SuppliersList> {
                         ),
                       ),
                       SizedBox(width: 15),
-                      Container(
-                          padding: EdgeInsets.all(5),
-                          height: 70,
-                          width: 220,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                supplier.description,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 15),
-                                maxLines: 3,
-                              ),
-                            ],
-                          ))
+                      Flexible(
+                        child: Text(
+                          supplier.description,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 15),
+                          maxLines: 3,
+                        ),
+                      )
                     ],
                   ),
                 ],
