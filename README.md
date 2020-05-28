@@ -6,6 +6,8 @@ This repository contains the deliverables for the course Agile Software Project 
 Coming soon...
 
 ## How to test application
+Note that the application is developed for a specific stakeholder with a specific phone-size. If installing on a smaller screensize then our stakeholder it may lead to overflow in some components in app.
+
 The application is developed in Flutter. 
 To run the code you'll need to install flutter. Guide: https://flutter.dev/docs/get-started/install
 Clone the code and use "flutter run" in the root of the project. 
