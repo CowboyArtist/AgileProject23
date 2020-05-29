@@ -24,6 +24,9 @@ Both Team- and Induvidual Reflections can be found in folder "Documents" .
 ### Source code
 The source code can be found in folder "sjovikvass_app".
 
+### Breakdown of contributions
+Breakdown of contributions can be found on github.com under Insights->Contributors. NOTE: We programmed in pairs.
+
 ### Google Drive
 Meeting protocols and reviews can be found in our Google Drive.
 
