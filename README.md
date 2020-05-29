@@ -19,7 +19,10 @@ To run the application on an Android device you can use the installation file in
 During the project we documented reflections, sprint reviews and the process. 
 
 ### Github
-Both Team- and Induvidual Reflections can be found in folder "Documents" 
+Both Team- and Induvidual Reflections can be found in folder "Documents" .
+
+### Source code
+The source code can be found in folder "sjovikvass_app".
 
 ### Google Drive
 Meeting protocols and reviews can be found in our Google Drive.
